@@ -1,0 +1,89 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <div layout-align="bottom left">
+                <mat-icon>directions_bus</mat-icon>
+                &nbsp; {{  id ? ('Edicion colectivo ' + (colectivo ? colectivo.id:'')) : 'Registro nuevo colectivo'}}
+            </div>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <mat-form-field appaerance="standard" style="width:100%">
+                        <mat-label>Numero de unidad</mat-label>
+                        <input matInput [formControl]="unidadIC" autocomplete="off" required/>
+                        <mat-error *ngIf="unidadIC.hasError('required')">requerido</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-5">
+                    <mat-form-field appaerance="standard" style="width: 100%;">
+                        <mat-label>Marca</mat-label>
+                        <input matInput [formControl]="marcaIC" autocomplete="off" required/>
+                        <mat-error *ngIf="marcaIC.hasError('required')">requerido</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-4">
+                    <mat-form-field appaerance="legacy" style="width: 100%;">
+                        <mat-label>Modelo</mat-label>
+                        <input matInput [formControl]="modeloIC" autocomplete="off"/>
+                    </mat-form-field>
+                </div>
+                <div class="col-3">
+                    <mat-form-field appaerance="legacy" style="width:100%">
+                        <mat-label>Año</mat-label>
+                        <input matInput [formControl]="anioIC" type="number"/>
+                        <mat-error *ngIf="anioIC.hasError('pattern')">Año invalido</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <mat-form-field appaerance="standard" style="width:100%">
+                        <mat-label>Patente</mat-label>
+                        <input matInput [formControl]="patenteIC" autocomplete="off" required/>
+                        <mat-error *ngIf="patenteIC.hasError('required')">requerido</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <mat-form-field appaerance="legacy">
+                        <mat-label>Capacidad</mat-label>
+                        <input matInput [formControl]="capacidadIC" type="number"/>
+                        <mat-error *ngIf="capacidadIC.hasError('pattern')">capacidad invalida (1 a 99)</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <mat-form-field appaerance="legacy">
+                        <mat-label>Fecha de compra</mat-label>
+                        <input matInput [formControl]="compraIC" [matDatepicker]="picker" autocomplete="off"/>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+            <br>
+            <div class="d-flex justify-content-end">
+                <button mat-stroked-button class="button-border" color="primary" (click)="guardarColectivo()" *ngIf="!id"
+                    [disabled]="unidadIC.hasError('required') || marcaIC.hasError('requred') || patenteIC.hasError('required')"> 
+                    Guardar
+                </button>
+                <button mat-stroked-button class="button-border" color="primary" (click)="actualizarColectivo()" *ngIf="id"
+                    [disabled]="unidadIC.hasError('required') || marcaIC.hasError('requred') || patenteIC.hasError('required')"> 
+                    Actualizar
+                </button>
+                <button mat-stroked-button class="button-border" [routerLink]="id ? ['../..']:['../']" color="primary">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

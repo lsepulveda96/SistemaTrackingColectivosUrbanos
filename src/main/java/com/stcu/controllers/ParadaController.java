@@ -1,0 +1,64 @@
+package com.stcu.controllers;
+
+import java.util.List;
+
+import com.stcu.controllers.dto.ParadaDTO;
+import com.stcu.model.Parada;
+import com.stcu.services.ParadaServiceImp;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class ParadaController {
+    
+    @Autowired
+    ParadaServiceImp service;
+
+    @GetMapping("/paradas")
+    public String findAllParadas() {
+        List<Parada> paradas = service.getAllParadas();
+        
+        List<ParadaDTO> paradasDto = ParadaDTO.toListDto(paradas);
+        Response<List<ParadaDTO>> response = new Response<List<ParadaDTO>>( false,200,"Listado de paradas", paradasDto );
+        return Mapper.getResponseAsJson(response);
+    }
+
+    @GetMapping("/parada/{codigo}")
+    public String findParada( @PathVariable  long codigo ) {
+        Parada parada = service.getParada(codigo);
+        Response<ParadaDTO> response;
+        if (parada != null )
+            response = new Response<ParadaDTO>( false,200,"Parada " + codigo, ParadaDTO.toDto(parada) );
+        else
+            response = new Response<ParadaDTO>( true, 400,"No se pudo recuperar Parada " + codigo, null );
+        return Mapper.getResponseAsJson(response);
+    }
+
+    @PostMapping("/paradas")
+    public String saveParada( @RequestBody ParadaDTO nParada ) {        
+        Parada newParada = service.saveParada( nParada.ToParada() );
+        Response<ParadaDTO> response;
+        if (newParada != null)
+            response = new Response<ParadaDTO>( false, 200,"Nueva parada creada", ParadaDTO.toDto(newParada) );
+        else
+            response = new Response<ParadaDTO>( true, 400,"No se pudo guardar nueva parada", null );
+        return Mapper.getResponseAsJson(response);
+    }
+
+    @PutMapping("/parada/{codigo}")
+    public String updateParada( @PathVariable long codigo, @RequestBody ParadaDTO paradaDto ) {
+        Parada parada = service.updateParada(codigo, paradaDto.ToParada() );
+        Response<ParadaDTO> response;
+        if (parada != null)
+            response = new Response<ParadaDTO>( false, 200,"Parada " + codigo + " actualizada", ParadaDTO.toDto(parada) );
+        else    
+            response = new Response<ParadaDTO>( true, 400, "No se puedo actualizar parada " + codigo, null );
+        return Mapper.getResponseAsJson(response);
+    }
+}
