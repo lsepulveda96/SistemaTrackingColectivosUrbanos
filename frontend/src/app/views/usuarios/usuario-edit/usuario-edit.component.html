@@ -8,7 +8,9 @@
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
-    <mat-spinner *ngIf="spin"></mat-spinner>
+    <div class="loading-indicator" *ngIf="waiting"> 
+        <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+    </div>
     <mat-card-content>
         <div class="container">
 
@@ -16,18 +18,21 @@
                 <div class="col-6">
                     <mat-form-field appearance="standard" style="width: 100%;">
                         <mat-label>Nombre de usuario</mat-label>
-                        <input matInput [formControl]="usuarioIC" autocomplete="off" required/>
+                        <input matInput [formControl]="usuarioIC" autocomplete="off" required [readonly]="usuario"/>
                         <mat-error *ngIf="usuarioIC.hasError('required')">requerido</mat-error>
+                        <mat-error *ngIf="usuarioIC.hasError('minlength')">al menos 5 caracteres</mat-error>
+                        <mat-error *ngIf="usuarioIC.hasError('pattern')">caracteres no permitidos</mat-error>
                     </mat-form-field>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" *ngIf="!usuario">
                 <div class="col-6">
                     <mat-form-field appearance="standard" style="width: 100%;">
                         <mat-label>Contraseña</mat-label>
                         <input matInput type="password" [formControl]="passwdIC" autocomplete="off" required/>
                         <mat-error *ngIf="passwdIC.hasError('required')">requerido</mat-error>
+                        <mat-error *ngIf="passwdIC.hasError('minlength') || passwdIC.hasError('maxlength')">entre 8 y 15 caracteres</mat-error>
                     </mat-form-field>
                 </div>
                 <div class="col-6">
@@ -35,6 +40,7 @@
                         <mat-label>Repetir contraseña</mat-label>
                         <input matInput type="password" [formControl]="passwd2IC" autocomplete="off" required/>
                         <mat-error *ngIf="passwd2IC.hasError('required')">requerido</mat-error>
+                        <mat-error *ngIf="passwd2IC.hasError('minlength') || passwd2IC.hasError('maxlength')">entre 8 y 15 caracteres</mat-error>
                     </mat-form-field>
                 </div>
             </div>
@@ -92,7 +98,7 @@
             <BR>
             <div class="row">
                 <div class="col-6">
-                    <mat-checkbox matInput [(value)]="superusr">Superusuario</mat-checkbox>
+                    <mat-checkbox [formControl]="superusrIC">Superusuario</mat-checkbox>
                 </div>
             </div>
             <BR>
@@ -100,11 +106,11 @@
             <br>
             <div class="d-flex justify-content-end">
                 <button mat-stroked-button color="primary" (click)="guardarUsuario()" *ngIf="!id" class="button-border"
-                        [disabled]="usuarioIC.hasError('required') || nombreIC.hasError('requred') || apellidoIC.hasError('required')"> 
+                        [disabled]="usuarioIC.invalid || passwdIC.invalid || passwd2IC.invalid ||nombreIC.invalid || apellidoIC.invalid"> 
                         Guardar
                 </button>
                 <button mat-stroked-button color="primary" (click)="actualizarUsuario()" *ngIf="id" class="button-border"
-                        [disabled]="usuarioIC.hasError('required') || nombreIC.hasError('requred') || apellidoIC.hasError('required')"> 
+                        [disabled]="usuarioIC.invalid || nombreIC.invalid || apellidoIC.invalid"> 
                         Actualizar
                 </button>
                 <button mat-stroked-button [routerLink]="id ? ['../..']:['../']" color="primary" class="button-border">

@@ -25,6 +25,10 @@ public class UsuarioServiceImp implements UsuarioService {
         return this.rep.findById(id);
     }
 
+    public Usuario getUsuario( String usr ) {
+        return this.rep.findByUsuario( usr );
+    }
+
     @Override
     public Usuario saveUsuario(Usuario usuario) {
 

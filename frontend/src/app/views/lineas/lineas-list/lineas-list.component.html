@@ -5,9 +5,14 @@
             Lineas
         </mat-card-title>
     </mat-card-header>
+    
     <mat-divider></mat-divider>
+    <div class="loading-indicator" *ngIf="waiting"> 
+        <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+    </div>
+
     <mat-card-content>
-        <mat-spinner *ngIf="spin"></mat-spinner>
+        <div class="container">
         <table mat-table [dataSource]="lineasDS" class="mat-elevation-z10">
             
             <ng-container matColumnDef="id">
@@ -47,5 +52,6 @@
             <tr mat-header-row *matHeaderRowDef="['id','denominacion','estado','acciones']"></tr>
             <tr mat-row *matRowDef="let row; columns: ['id','denominacion','estado','acciones']"></tr>
         </table>
+        </div>
     </mat-card-content>
 </mat-card>

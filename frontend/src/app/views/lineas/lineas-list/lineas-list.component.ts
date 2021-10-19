@@ -11,7 +11,7 @@ import { ParadaService } from 'src/app/services/parada.service';
 })
 export class LineasListComponent implements OnInit {
 
-  spin: boolean = true;
+  waiting: boolean = true;
   lineas: Linea[] = [];
   lineasDS: MatTableDataSource<Linea> = new MatTableDataSource<Linea>([]);
 
@@ -22,12 +22,12 @@ export class LineasListComponent implements OnInit {
   }
 
   getLineas() {
-    this.spin = true;
+    this.waiting = true;
     this.serviceLinea.getLineas()
       .subscribe( result => {
         this.lineas = result.data;
         this.lineasDS.data = this.lineas;
-        this.spin = false;
+        this.waiting = false;
       });
   }
 }

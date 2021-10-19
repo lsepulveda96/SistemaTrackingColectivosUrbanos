@@ -28,6 +28,7 @@ export class UsuariosListComponent implements OnInit {
           this.usuarios = result.data;
           this.usuariosDS.data = this.usuarios;
           this.waiting = false;
+          console.log("USuarios: ", result );
       });
   }
 

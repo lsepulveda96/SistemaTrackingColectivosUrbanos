@@ -24,8 +24,7 @@ public class ParadaController {
     public String findAllParadas() {
         List<Parada> paradas = service.getAllParadas();
         
-        List<ParadaDTO> paradasDto = ParadaDTO.toListDto(paradas);
-        Response<List<ParadaDTO>> response = new Response<List<ParadaDTO>>( false,200,"Listado de paradas", paradasDto );
+        Response<List<ParadaDTO>> response = new Response<List<ParadaDTO>>( false,200,"Listado de paradas", ParadaDTO.toListParadaDTO(paradas) );
         return Mapper.getResponseAsJson(response);
     }
 
@@ -34,7 +33,7 @@ public class ParadaController {
         Parada parada = service.getParada(codigo);
         Response<ParadaDTO> response;
         if (parada != null )
-            response = new Response<ParadaDTO>( false,200,"Parada " + codigo, ParadaDTO.toDto(parada) );
+            response = new Response<ParadaDTO>( false,200,"Parada " + codigo, new ParadaDTO(parada) );
         else
             response = new Response<ParadaDTO>( true, 400,"No se pudo recuperar Parada " + codigo, null );
         return Mapper.getResponseAsJson(response);
@@ -45,7 +44,7 @@ public class ParadaController {
         Parada newParada = service.saveParada( nParada.ToParada() );
         Response<ParadaDTO> response;
         if (newParada != null)
-            response = new Response<ParadaDTO>( false, 200,"Nueva parada creada", ParadaDTO.toDto(newParada) );
+            response = new Response<ParadaDTO>( false, 200,"Nueva parada creada", new ParadaDTO(newParada) );
         else
             response = new Response<ParadaDTO>( true, 400,"No se pudo guardar nueva parada", null );
         return Mapper.getResponseAsJson(response);
@@ -56,7 +55,7 @@ public class ParadaController {
         Parada parada = service.updateParada(codigo, paradaDto.ToParada() );
         Response<ParadaDTO> response;
         if (parada != null)
-            response = new Response<ParadaDTO>( false, 200,"Parada " + codigo + " actualizada", ParadaDTO.toDto(parada) );
+            response = new Response<ParadaDTO>( false, 200,"Parada " + codigo + " actualizada", new ParadaDTO(parada) );
         else    
             response = new Response<ParadaDTO>( true, 400, "No se puedo actualizar parada " + codigo, null );
         return Mapper.getResponseAsJson(response);

@@ -24,6 +24,20 @@ public class ParadaDTO implements Serializable {
 
     private double lng;
 
+    public ParadaDTO() {}
+
+    public ParadaDTO( Parada par ) {
+        codigo = par.getCodigo();
+        direccion = par.getDireccion();
+        descripcion = par.getDescripcion();
+        estado = par.getEstado();
+
+        Point point = par.getCoordenadas();
+        lat = point.getX();
+        lng = point.getY();
+
+    }
+
     public long getCodigo() {
         return codigo;
     }
@@ -86,24 +100,15 @@ public class ParadaDTO implements Serializable {
         return parada;
     }
 
-    public static List<ParadaDTO> toListDto( List<Parada> paradas ) {
+    public static List<ParadaDTO> toListParadaDTO( List<Parada> paradas ) {
         List<ParadaDTO> paradasDto = new ArrayList<ParadaDTO>();
         paradas.forEach( par ->  {
-            ParadaDTO pd = new ParadaDTO();
-            pd.setCodigo( par.getCodigo() );
-            pd.setDireccion( par.getDireccion() );
-            pd.setDescripcion(par.getDescripcion());
-            pd.setEstado( par.getEstado());
-            Point point = par.getCoordenadas();
-            pd.setLat( point.getX() );
-            pd.setLng( point.getY() );
-
-            paradasDto.add( pd );
+            paradasDto.add( toDTO( par ) );
         });
         return paradasDto;
     }
 
-    public static ParadaDTO toDto( Parada parada ) {
+    private static ParadaDTO toDTO( Parada parada ) {
         ParadaDTO paradaDto = new ParadaDTO();
         paradaDto.setCodigo( parada.getCodigo() );
         paradaDto.setDireccion( parada.getDireccion() );

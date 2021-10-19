@@ -12,20 +12,20 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 })
 export class UsuarioEditComponent implements OnInit {
 
-  spin: boolean;
+  waiting: boolean;
   id: number;
   usuario: Usuario;
 
-  usuarioIC = new FormControl('',Validators.required );
-  passwdIC = new FormControl('',Validators.required);
-  passwd2IC = new FormControl('',Validators.required );
+  usuarioIC = new FormControl('',[Validators.required, Validators.pattern('^[a-zA-Z0-9]*$'),Validators.minLength(5)] );
+  passwdIC = new FormControl('',[Validators.required, Validators.minLength(8), Validators.maxLength(15)]);
+  passwd2IC = new FormControl('',[Validators.required, Validators.minLength(8), Validators.maxLength(15)] );
   nombreIC = new FormControl( '',Validators.required );
   apellidoIC = new FormControl( '',Validators.required );
   dniIC = new FormControl('');
   direccionIC = new FormControl('');
   telefonoIC = new FormControl('') ;
   emailIC = new FormControl('', Validators.email );
-  superusr: boolean = false;
+  superusrIC = new FormControl(false);
 
   constructor( private servicioUsuario: UsuarioService,
               private _snackbar: MatSnackBar,
@@ -48,14 +48,15 @@ export class UsuarioEditComponent implements OnInit {
     this.direccionIC.setValue( '' );
     this.telefonoIC.setValue( '' );
     this.emailIC.setValue( '' );
-    this.superusr = false;
+    this.superusrIC.setValue( false );
   }
 
   editarUsuario( id: number ) {
-    this.spin = true;
+    this.waiting = true;
     this.servicioUsuario.getUsuario( id )
       .subscribe( result => {
-        this.spin = false;
+        console.log("editar usuario: ", result );
+        this.waiting = false;
         if (result.error) {
           this._snackbar.open( result.mensaje, '', {
             duration: 4500,
@@ -74,7 +75,7 @@ export class UsuarioEditComponent implements OnInit {
         this.direccionIC.setValue( this.usuario.direccion );
         this.telefonoIC.setValue( this.usuario.telefono );
         this.emailIC.setValue( this.usuario.email );
-        this.superusr = this.usuario.superusuario;
+        this.superusrIC.setValue( this.usuario.superusuario );
       })
   }
 
@@ -99,13 +100,13 @@ export class UsuarioEditComponent implements OnInit {
       direccion: this.direccionIC.value,
       telefono: this.telefonoIC.value,
       email: this.emailIC.value,
-      superusuario: this.superusr,
+      superusuario: this.superusrIC.value,
       estado: 'HABILITADO'
     }
-    this.spin = true;
+    this.waiting = true;
     this.servicioUsuario.saveUsuario( this.usuario )
       .subscribe( result => {
-        this.spin = false;
+        this.waiting = false;
         this._snackbar.open( result.mensaje, '', {
           duration: 4500,
           verticalPosition: result.error ? 'bottom':'top',
@@ -118,7 +119,7 @@ export class UsuarioEditComponent implements OnInit {
   }
 
   actualizarUsuario() {
-    this.spin = true;
+    this.waiting = true;
     this.usuario.usuario = this.usuarioIC.value;
     this.usuario.nombre = this.nombreIC.value;
     this.usuario.apellido = this.apellidoIC.value;
@@ -126,11 +127,14 @@ export class UsuarioEditComponent implements OnInit {
     this.usuario.direccion = this.direccionIC.value;
     this.usuario.telefono = this.telefonoIC.value;
     this.usuario.email = this.emailIC.value;
-    this.usuario.superusuario = this.superusr;
+    this.usuario.superusuario = this.superusrIC.value;
+    this.usuario.passwd = '';
+
+    console.log("*** Actualizar Usuario: ", this.usuario );
   
     this.servicioUsuario.updateUsuario( this.usuario )
       .subscribe( result => {
-        this.spin = false;
+        this.waiting = false;
         this._snackbar.open( result.mensaje, '', {
           duration: 4500,
           verticalPosition: result.error ? 'bottom':'top',

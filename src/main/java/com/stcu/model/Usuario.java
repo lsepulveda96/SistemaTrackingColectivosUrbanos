@@ -169,6 +169,14 @@ public class Usuario {
         this.baja = baja;
     }
 
+    @Override
+    public String toString() {
+        return "Usuario [alta=" + alta + ", apellido=" + apellido + ", baja=" + baja + ", direccion=" + direccion
+                + ", dni=" + dni + ", email=" + email + ", estado=" + estado + ", id=" + id + ", nombre=" + nombre
+                + ", passwd=" + passwd + ", superusuario=" + superusuario + ", telefono=" + telefono + ", usuario="
+                + usuario + "]";
+    }
+
     
 
 }
