@@ -66,7 +66,6 @@ export class ParadaEditComponent implements OnInit {
 
   editarParada( codigo: number ) {
     this.spin = true;
-    console.log("Editar parada: ", codigo );
     this.serviceParada.getParada( codigo )
       .subscribe( result => {
         if (result.error) {

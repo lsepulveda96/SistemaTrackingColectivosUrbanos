@@ -1,1 +1,75 @@
-<p>colectivo-view works!</p>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <div layout-align="bottom left">
+                <mat-icon>directions_bus</mat-icon>
+                &nbsp; {{  'Colectivo ' + (colectivo ? colectivo.id:'') }}
+            </div>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <mat-form-field appaerance="standard" style="width:100%">
+                        <mat-label>Numero de unidad</mat-label>
+                        <input matInput [value]="colectivo ? colectivo.unidad:''" autocomplete="off" [readonly]="true"/>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-5">
+                    <mat-form-field appaerance="standard" style="width: 100%;">
+                        <mat-label>Marca</mat-label>
+                        <input matInput [value]="colectivo ? colectivo.marca: ''" autocomplete="off" required [readonly]="true"/>
+                    </mat-form-field>
+                </div>
+                <div class="col-4">
+                    <mat-form-field appaerance="legacy" style="width: 100%;">
+                        <mat-label>Modelo</mat-label>
+                        <input matInput [value]="colectivo ? colectivo.modelo: '' " autocomplete="off" [readonly]="true"/>
+                    </mat-form-field>
+                </div>
+                <div class="col-3">
+                    <mat-form-field appaerance="legacy" style="width:100%">
+                        <mat-label>Año</mat-label>
+                        <input matInput [value]="colectivo ? colectivo.anio : ''" type="number" [readonly]="true"/>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <mat-form-field appaerance="standard" style="width:100%">
+                        <mat-label>Patente</mat-label>
+                        <input matInput [value]="colectivo ? colectivo.patente: ''" autocomplete="off" required [readonly]="true"/>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <mat-form-field appaerance="legacy">
+                        <mat-label>Capacidad</mat-label>
+                        <input matInput [value]="colectivo ? colectivo.capacidad: ''" type="number" [readonly]="true"/>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <mat-form-field appaerance="legacy">
+                        <mat-label>Fecha de compra</mat-label>
+                        <input matInput [value]="colectivo ? (colectivo.fechaCompra | date:'dd/MM/yyyy'):''" autocomplete="off" [readonly]="true"/>
+                    </mat-form-field>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+            <br>
+            <div class="d-flex justify-content-end">
+                <button mat-stroked-button class="button-border" [routerLink]="['../..']" color="primary">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
