@@ -1,6 +1,7 @@
-import { M } from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Colectivo } from 'src/app/data/colectivo';
@@ -9,7 +10,16 @@ import { ColectivoService } from 'src/app/services/colectivo.service';
 @Component({
   selector: 'app-colectivo-edit',
   templateUrl: './colectivo-edit.component.html',
-  styleUrls: ['./colectivo-edit.component.css']
+  styleUrls: ['./colectivo-edit.component.css'],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS }
+  ]
 })
 export class ColectivoEditComponent implements OnInit {
 
@@ -60,14 +70,14 @@ export class ColectivoEditComponent implements OnInit {
         }
         else {
           this.colectivo = result.data;
-
-          this.unidadIC.setValue( this.colectivo?.unidad );
-          this.patenteIC.setValue( this.colectivo?.patente )
-          this.marcaIC.setValue( this.colectivo?.marca);
-          this.modeloIC.setValue( this.colectivo?.modelo)
-          this.anioIC.setValue( this.colectivo?.anio)
-          this.capacidadIC.setValue( this.colectivo?.capacidad);
-          this.compraIC.setValue( this.colectivo?.fechaCompra );
+          console.log("Colectivo: ", this.colectivo )
+          this.unidadIC.setValue( this.colectivo.unidad );
+          this.patenteIC.setValue( this.colectivo.patente )
+          this.marcaIC.setValue( this.colectivo.marca);
+          this.modeloIC.setValue( this.colectivo.modelo)
+          this.anioIC.setValue( this.colectivo.anio)
+          this.capacidadIC.setValue( this.colectivo.capacidad);
+          this.compraIC.setValue( new Date( this.colectivo.fechaCompra ) );
         }
         this.spin = false;
       })

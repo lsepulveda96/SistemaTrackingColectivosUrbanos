@@ -17,6 +17,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RecorridoViewComponent } from './recorrido-view/recorrido-view.component';
+import { RecorridosListComponent } from './recorridos-list/recorridos-list.component';
+import { RecorridoEditComponent } from './recorrido-edit/recorrido-edit.component';
 
 
 @NgModule({
@@ -24,7 +27,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     LineasComponent,
     LineasListComponent,
     LineaViewComponent,
-    LineaEditComponent
+    LineaEditComponent,
+    RecorridoViewComponent,
+    RecorridosListComponent,
+    RecorridoEditComponent
   ],
   imports: [
     CommonModule,

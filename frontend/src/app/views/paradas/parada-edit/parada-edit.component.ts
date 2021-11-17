@@ -86,17 +86,26 @@ export class ParadaEditComponent implements OnInit {
         this.marker.on('dragend', (e2) => {
             this.spin = true;
             console.log("DRAGGED : ", e2 );
-            this.geocodeService.reverse().latlng( this.marker.getLatLng() )
-              .run( (error2, result2) => {
-                this.spin = false;
-                if (error2)
-                  return;
-                //this.marker.setLatLng( e2.target.latlng );
-                const popup2 = L.popup().setContent( result2.address.Match_addr ).setLatLng( this.marker.getLatLng() );
-                this.map.openPopup( popup2 );
-                this.direccionIC.setValue( result2.address.Match_addr );
-              });
-          })
+
+            this.searchDireccion( this.marker.getLatLng() );
+            // this.geocodeService.reverse().latlng( this.marker.getLatLng() )
+            //   .run( (error2, result2) => {
+            //     this.spin = false;
+            //     if (error2) {
+            //       this._snackbar.open( 'No se pudo obtener direccion, ingrese manualmente','', {
+            //         duration: 4000,
+            //         verticalPosition: 'bottom',
+            //         horizontalPosition: 'center',
+            //         panelClass: ['yellow-snackbar']
+            //       });
+            //       this.direccionIC.setValue('');
+            //       return;
+            //     }
+            //     const popup2 = L.popup().setContent( result2.address.Match_addr ).setLatLng( this.marker.getLatLng() );
+            //     this.map.openPopup( popup2 );
+            //     this.direccionIC.setValue( result2.address.Match_addr );
+            //   });
+          });
           const popup = L.popup().setContent( this.parada.direccion ).setLatLng( new L.LatLng( this.parada.lat, this.parada.lng ) );
           this.map.openPopup(popup);
           this.map.addLayer( this.marker );
@@ -123,41 +132,63 @@ export class ParadaEditComponent implements OnInit {
 
     tiles.addTo( this.map );
     this.map.on('click', (e) => {
-
-      this.spin = true;
       if (this.marker)
         this.map.removeLayer( this.marker );
+      this.marker = L.marker( e.latlng, { icon: this.iconOptions, draggable:true });
+      this.marker.on('dragend', (e2) => {
+        this.searchDireccion( this.marker.getLatLng() );
+      });
+      this.map.addLayer( this.marker );
 
-      this.geocodeService.reverse().latlng( e.latlng )
-        .run( (error,result ) => {
-          this.spin = false;
-          console.log("error: ", error );
-          console.log("result: ", result );
-          if (error)
-            return;
-          const msg: string = result.address.Match_addr;
+      this.searchDireccion( e.latlng );
 
-          this.marker = L.marker( e.latlng, { icon: this.iconOptions, draggable:true });
-          this.marker.on('dragend', (e2) => {
-            this.spin = true;
-            this.geocodeService.reverse().latlng( this.marker.getLatLng() )
-              .run( (error2, result2) => {
-                this.spin = false;
-                if (error2)
-                  return;
-                //this.marker.setLatLng( e2.latlng );
-                const popup2 = L.popup().setContent( result2.address.Match_addr ).setLatLng( this.marker.getLatLng() );
-                this.map.openPopup( popup2 );
-                this.direccionIC.setValue( result2.address.Match_addr );
-              });
-          })
-          const popup = L.popup().setContent( result.address.Match_addr ).setLatLng(e.latlng);
-          this.map.openPopup(popup);
-          this.map.addLayer( this.marker );
-          this.direccionIC.setValue( msg );
-        });
+      // this.geocodeService.reverse().latlng( e.latlng )
+      //   .run( (error,result ) => {
+      //     this.spin = false;
+      //     const msg = error ? '': result.address.Match_addr;
+      //     this.direccionIC.setValue( msg );
+      //     const popup = L.popup().setContent( msg ).setLatLng(e.latlng);
+      //     this.map.openPopup(popup);
+
+      //     this.marker.on('dragend', (e2) => {
+      //       this.spin = true;
+      //       this.geocodeService.reverse().latlng( this.marker.getLatLng() )
+      //         .run( (error2, result2) => {
+      //           this.spin = false;
+      //           if (error2)
+      //             return;
+      //           //this.marker.setLatLng( e2.latlng );
+      //           const popup2 = L.popup().setContent( result2.address.Match_addr ).setLatLng( this.marker.getLatLng() );
+      //           this.map.openPopup( popup2 );
+      //           this.direccionIC.setValue( result2.address.Match_addr );
+      //         });
+      //     }); 
+          
+      //   });
     });
+  }
 
+  searchDireccion( latlng: any ) {
+    console.log("searchDireccion , latlng: ", latlng );
+    this.direccionIC.setValue('');
+    this.spin = true;
+    this.geocodeService.reverse().latlng( latlng )
+          .run( (error2, result2) => {
+            this.spin = false;
+            if (error2) {
+              this._snackbar.open( 'No se pudo obtener direccion, ingrese manualmente','', {
+                  duration: 4000,
+                  verticalPosition: 'bottom',
+                  horizontalPosition: 'center',
+                   panelClass: ['yellow-snackbar']
+              });
+              this.direccionIC.setValue('');
+              return;
+            }
+            const popup2 = L.popup().setContent( result2.address.Match_addr ).setLatLng( this.marker.getLatLng() );
+            this.map.openPopup( popup2 );
+            this.direccionIC.setValue( result2.address.Match_addr );
+          });
   }
 
   guardarParada() {

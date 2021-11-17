@@ -6,8 +6,6 @@ import { Parada } from 'src/app/data/parada';
 import { ParadaService } from 'src/app/services/parada.service';
 
 import * as L from 'leaflet';
-import * as esri from 'esri-leaflet';
-import * as esrigeo from 'esri-leaflet-geocoder';
 
 @Component({
   selector: 'app-parada-view',
