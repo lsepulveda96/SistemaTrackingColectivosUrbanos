@@ -35,7 +35,6 @@ public class ParadaDTO implements Serializable {
         Point point = par.getCoordenadas();
         lat = point.getX();
         lng = point.getY();
-
     }
 
     public long getCodigo() {

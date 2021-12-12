@@ -8,11 +8,18 @@ import java.util.List;
 import com.stcu.model.Linea;
 import com.stcu.model.Recorrido;
 
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+
 public class RecorridoDTO implements Serializable {
 
     class PointLS {
         double lat;
         double lng;
+        PointLS( double la, double ln ) {
+            lat = la;
+            lng = ln;
+        }
     }
 
     private long id;
@@ -33,6 +40,34 @@ public class RecorridoDTO implements Serializable {
         this.fechaFin = rec.getFechaFin();
         this.activo = rec.isActivo();
         this.linea = rec.getLinea();
+
+        LineString trays = rec.getTrayectos();
+        trayectos = new ArrayList<PointLS>();
+        for (int i = 0; i < trays.getNumPoints(); i++) {
+            trayectos.add( new PointLS( trays.getPointN(i).getX(), trays.getPointN(i).getY() ) );
+        }
+            trays.getPointN( 5 );
+        
+        LineString wpts = rec.getWaypoints();
+        waypoints = new ArrayList<PointLS>();
+        for (int i=0; i < wpts.getNumPoints(); i++) {
+            waypoints.add( new PointLS( wpts.getPointN(i).getX(), wpts.getPointN(i).getY() ) );
+        }
+    }
+
+    public Recorrido toRecorrido( RecorridoDTO drec ) {
+
+        Recorrido rec = new Recorrido();
+        rec.setId( drec.getId() );
+        rec.setFechaInicio( drec.getFechaInicio());
+        rec.setFechaFin( drec.getFechaFin() );
+        rec.setActivo( drec.isActivo() );
+        rec.setLinea( drec.getLinea() );
+        
+        //GeometryFactory geometryFactory = new GeometryFactory();
+
+        return rec;
+        
     }
 
     private static RecorridoDTO toDTO( Recorrido recorrido ) {

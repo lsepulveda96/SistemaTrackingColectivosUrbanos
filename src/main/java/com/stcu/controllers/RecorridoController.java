@@ -36,7 +36,16 @@ public class RecorridoController {
     }
 
     @PostMapping("/recorridos")
-    public String saveRecorrido( @RequestBody rec ) {
-        
+    public String saveRecorrido( @RequestBody RecorridoDTO drec ) {
+        /*
+        Recorrido newRec = service.saveRecorrido( drec.toDTO() );
+        Response<ParadaDTO> response;
+        if (newParada != null)
+            response = new Response<ParadaDTO>( false, 200,"Nueva parada creada", new ParadaDTO(newParada) );
+        else
+            response = new Response<ParadaDTO>( true, 400,"No se pudo guardar nueva parada", null );
+        return Mapper.getResponseAsJson(response);
+        */
+        return "OK";
     }
 }
