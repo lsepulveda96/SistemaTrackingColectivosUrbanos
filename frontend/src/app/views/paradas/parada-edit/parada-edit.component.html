@@ -45,10 +45,12 @@
         <mat-divider></mat-divider>
             <br>
             <div class="d-flex justify-content-end">
-                <button mat-stroked-button color="primary" *ngIf="!codigo" class="button-border" (click)="guardarParada()">
+                <button mat-stroked-button color="primary" *ngIf="!codigo" class="button-border" (click)="guardarParada()"
+                    [disabled]="direccionIC.hasError('required')">
                     Guardar
                 </button>
-                <button mat-stroked-button color="primary" *ngIf="codigo" class="button-border" (click)="actualizarParada()">
+                <button mat-stroked-button color="primary" *ngIf="codigo" class="button-border" (click)="actualizarParada()"
+                    [disabled]="direccionIC.hasError('required')">
                     Actualizar
                 </button>
                 <button mat-stroked-button color="primary" [routerLink]="codigo ? ['../..']:['../']" class="button-border">
