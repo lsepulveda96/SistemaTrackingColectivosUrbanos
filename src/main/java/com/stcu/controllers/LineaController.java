@@ -3,6 +3,8 @@ package com.stcu.controllers;
 import java.util.List;
 
 import com.stcu.model.Linea;
+import com.stcu.model.Parada;
+import com.stcu.model.Recorrido;
 import com.stcu.services.LineaServiceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 public class LineaController {
@@ -19,6 +23,10 @@ public class LineaController {
     @Autowired
     LineaServiceImp service;
 
+    /**
+     * Recupera todas las lineas 
+     * @return json arreglo de lineas
+     */
     @GetMapping("/lineas")
     public String findAllLineas() {
         List<Linea> lineas = service.getAllLineas();
@@ -26,6 +34,11 @@ public class LineaController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * REcupera una linea por su id
+     * @param id
+     * @return json de respuesta con objecto linea si se encontro.
+     */
     @GetMapping("/linea/{id}")
     public String findLinea( @PathVariable long id ){
         Linea linea = service.getLinea( id );
@@ -37,6 +50,11 @@ public class LineaController {
         return Mapper.getResponseAsJson(response);
     }    
 
+    /**
+     * Registra una nueva linea-
+     * @param linea
+     * @return json respuesta con objeto linea creado.
+     */
     @PostMapping("/lineas")
     public String saveLinea( @RequestBody Linea linea ) {
         Response<Linea> response;
@@ -54,6 +72,12 @@ public class LineaController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Actualiza una linea por su id.
+     * @param id
+     * @param linea
+     * @return json respuesta con el objeto linea actualizado.
+     */
     @PutMapping("/linea/{id}")
     public String updateLinea( @PathVariable long id, @RequestBody Linea linea ) {
         Linea ulinea = service.updateLinea(id, linea);
@@ -64,4 +88,38 @@ public class LineaController {
             response = new Response<Linea>( true, 400, "No se pudo actualizar Linea " + id, null );
         return Mapper.getResponseAsJson(response);
     }
+
+    /**
+     * Recupera todas las paradas del recorrido activo de una linea.
+     * @param id
+     * @return json respuesta con objeto Lista de paradas
+     */
+    @GetMapping(value="/linea/paradas/{id}")
+    public String getParadasLinea(@PathVariable long id ) {
+        Recorrido recorridoActual = service.getRecorridoActual( id );
+        Response<List<Parada>> response;
+
+        if (recorridoActual != null) {
+            List<Parada> paradasRecorrido = service.getParadas( recorridoActual.getId() );
+            response = new Response<List<Parada>>( false, 200, "Paradas de recorrido " + recorridoActual.getId(), paradasRecorrido );
+        }
+        else {
+            response = new Response<List<Parada>>( true, 400, "No se encontro recorrido actual para linea " + id, null );
+        }
+        return Mapper.getResponseAsJson(response);
+    }
+    
+
+    /**
+     * Recupera lista de recorridos de una linea (pasados y actual)
+     * @param id
+     * @return json respuesta con objeto Lista de recorridos.
+     */
+    @GetMapping(value = "/linea/recorridos/{id}")
+    public String getRecorridosLinea( @PathVariable long id ) {
+        List<Recorrido> recorridos = service.getRecorridos( id );
+
+        Response<List<Recorrido>> response = new Response<List<Recorrido>>( false, 200, "Recorridos de linea " + id, recorridos );
+        return Mapper.getResponseAsJson(response);
+     }
 }

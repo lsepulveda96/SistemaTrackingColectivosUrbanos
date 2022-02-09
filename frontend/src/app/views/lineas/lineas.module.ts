@@ -20,6 +20,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RecorridoViewComponent } from './recorrido-view/recorrido-view.component';
 import { RecorridosListComponent } from './recorridos-list/recorridos-list.component';
 import { RecorridoEditComponent } from './recorrido-edit/recorrido-edit.component';
+import { ParadasEditComponent } from './paradas-edit/paradas-edit.component';
+import { ParadasViewComponent } from './paradas-view/paradas-view.component';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { RecorridoEditComponent } from './recorrido-edit/recorrido-edit.componen
     LineaEditComponent,
     RecorridoViewComponent,
     RecorridosListComponent,
-    RecorridoEditComponent
+    RecorridoEditComponent,
+    ParadasEditComponent,
+    ParadasViewComponent
   ],
   imports: [
     CommonModule,

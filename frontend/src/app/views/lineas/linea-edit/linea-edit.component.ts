@@ -22,6 +22,7 @@ export class LineaEditComponent implements OnInit {
   estadoIC = new FormControl('');
 
   habilitado: boolean = true;
+  habilitadoIC = new FormControl( false );
 
   constructor( private _snackbar: MatSnackBar, 
               private router: Router,
@@ -40,6 +41,7 @@ export class LineaEditComponent implements OnInit {
     this.descripcionIC.setValue('');
     this.denominacionIC.setValue('');
     this.estadoIC.setValue('');
+    this.habilitadoIC.setValue( true );
   }
 
   editarLinea( id: number ) {
@@ -51,6 +53,7 @@ export class LineaEditComponent implements OnInit {
           this.denominacionIC.setValue( this.linea.denominacion );
           this.descripcionIC.setValue( this.linea.descripcion );
           this.habilitado = true;
+          this.habilitadoIC.setValue( this.linea.estado == 'ACTIVA' );
           this.estadoIC.setValue( this.linea.estado );
         }
         else {
@@ -92,8 +95,10 @@ export class LineaEditComponent implements OnInit {
   actualizarLinea() {
     this.linea.denominacion = this.denominacionIC.value;
     this.linea.descripcion = this.descripcionIC.value;
-    this.linea.estado = this.habilitado ? 'ACTIVA':'NO ACTIVA';
+    this.linea.estado = this.habilitadoIC.value ? 'ACTIVA':'NO ACTIVA';
     this.spin = true;
+    console.log("+++ ACTUALIZAR LINEA: ", this.linea );
+    console.log("+++ ACTUALIZAR LINEA habilitado: ", this.habilitado );
     this.servicioLinea.updateLinea( this.linea )
       .subscribe( result => {
         this._snackbar.open( result.mensaje, '', {
