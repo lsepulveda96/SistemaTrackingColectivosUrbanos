@@ -1,14 +1,17 @@
 package com.stcu.model;
 
+import java.util.List;
 import java.util.Calendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,8 +23,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import org.locationtech.jts.geom.LineString;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Table(name="RECORRIDOS")
+@Getter @Setter @ToString
 public class Recorrido {
     
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,8 +51,8 @@ public class Recorrido {
     @JoinColumn(name = "linea_id",nullable=false)
     private Linea linea;
 
-    /* @OneToMany(mappedBy="recorrido", fetch=FetchType.LAZY)
-    private List<ParadaRecorrido> paradas; */
+    @OneToMany(mappedBy="recorrido", fetch=FetchType.LAZY)
+    private List<ParadaRecorrido> paradas; 
 
     @Column(name="trayectos", columnDefinition="Geometry")
     @JsonSerialize(using = GeometrySerializer.class)
@@ -58,66 +66,5 @@ public class Recorrido {
 
     public Recorrido() {}
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Calendar getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(Calendar fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public Calendar getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(Calendar fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public Linea getLinea() {
-        return linea;
-    }
-
-    public void setLinea(Linea linea) {
-        this.linea = linea;
-    }
-
-    public LineString getTrayectos() {
-        return this.trayectos;
-    }
-
-    public void setTrayectos( LineString trayectos ) {
-        this.trayectos = trayectos;
-    }
-
-    public LineString getWaypoints() {
-        return this.waypoints;
-    }
-
-    public void setWaypoints( LineString wp ) {
-        this.waypoints = wp;
-    }
-
-    public String toString() {
-        return "Recorrido [id =" + id + ", fecha_inicio =" + fechaInicio + ", fecha_fin =" + fechaFin + ", activo =" + activo + 
-                ", Linea =" + linea.getId() + ", " + 
-                ", trayectos =" + trayectos + 
-                ", waypoints =" + waypoints + "]";
-    }
+    
 }

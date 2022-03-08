@@ -5,6 +5,8 @@ import { Linea } from 'src/app/data/linea';
 import { Recorrido } from 'src/app/data/recorrido';
 import { LineaService } from 'src/app/services/linea.service';
 
+import * as L from 'leaflet';
+
 @Component({
   selector: 'app-recorrido-view',
   templateUrl: './recorrido-view.component.html',
@@ -12,10 +14,12 @@ import { LineaService } from 'src/app/services/linea.service';
 })
 export class RecorridoViewComponent implements OnInit {
 
-  spin: boolean;
+  waiting: boolean;
   id: any;
   linea: Linea;
   recorrido: Recorrido;
+  map: any;
+  marker: any;
 
   constructor( private serviceLinea: LineaService,
               private _matsnack: MatSnackBar,
@@ -23,8 +27,40 @@ export class RecorridoViewComponent implements OnInit {
               private route: ActivatedRoute ) { }
 
   ngOnInit(): void {
-    this.spin = true;
     
+    this.id = this.route.snapshot.paramMap.get("id");
+    this.waiting = true;
+    this.serviceLinea.getLinea( parseInt(this.id ))
+      .subscribe( result => {
+        if (!result.error)
+          this.linea = result.data;
+      });
+    this.serviceLinea.getRecorridoActivo( parseInt(this.id) ) 
+      .subscribe( result => {
+        this.waiting = false;
+        console.log("result: ", result );
+      });
+    this.initMap();
+  }
+
+
+  initMap() {
+    this.map = L.map( 'map', {
+      center: [-42.775935, -65.038144],
+      zoom: 14
+    });
+
+    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      minZoom: 12,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+
+    tiles.addTo( this.map );
+  }
+
+  editarRecorrido() {
+    console.log("Editar recorrido: ");
   }
 
 }

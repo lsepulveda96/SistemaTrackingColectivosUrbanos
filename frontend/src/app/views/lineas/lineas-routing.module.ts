@@ -19,8 +19,7 @@ const routes: Routes = [
       { path:'edit/:id', component: LineaEditComponent },
       { path:'view/:id', component: LineaViewComponent },
       { path:'recorrido/view/:id', component: RecorridoViewComponent },
-      { path:'recorrido/edit/:id', component: RecorridoEditComponent },
-      { path:'recorrido/new/:id', component: RecorridoEditComponent },
+      { path:'recorrido/:modo/:id', component: RecorridoEditComponent },
       { path:'recorridos/:id', component: RecorridosListComponent }
     ]
   }

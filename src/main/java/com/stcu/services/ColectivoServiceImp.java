@@ -42,6 +42,7 @@ public class ColectivoServiceImp implements ColectivoService {
             colectivo.setAnio( col.getAnio() );
             colectivo.setPatente( col.getPatente() );
             colectivo.setFechaCompra( col.getFechaCompra() );
+            colectivo.setEstado( col.getEstado());
             return this.rep.save(colectivo);
         }
         return null;

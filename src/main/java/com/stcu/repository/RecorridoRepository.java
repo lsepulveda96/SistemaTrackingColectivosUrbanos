@@ -13,10 +13,10 @@ public interface RecorridoRepository extends JpaRepository<Recorrido,Long> {
 
     Recorrido findById( long id );
 
-    @Query("Select r from Recorrido r Where r.linea.id = ?1 And r.activo is TRUE")
+    @Query("SELECT r FROM Recorrido r WHERE r.linea.id = ?1 AND r.activo is TRUE")
     Recorrido findActivo( long idlinea );
 
-    @Query("Select r from Recorrido r Where r.linea.id = ?1")
+    @Query("SELECT r FROM Recorrido r WHERE r.linea.id = ?1")
     List<Recorrido> findAll( long idlinea );
 
 }

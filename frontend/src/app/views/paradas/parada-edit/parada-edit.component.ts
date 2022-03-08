@@ -82,7 +82,7 @@ export class ParadaEditComponent implements OnInit {
         this.descripcionIC.setValue( this.parada.descripcion );
         this.direccionIC.setValue( this.parada.direccion);
         
-        this.marker = L.marker( [this.parada.lat, this.parada.lng], { icon: this.iconOptions, draggable:true });
+        this.marker = L.marker( [this.parada.coordenada.lat, this.parada.coordenada.lng], { icon: this.iconOptions, draggable:true });
         this.marker.on('dragend', (e2) => {
             this.spin = true;
             console.log("DRAGGED : ", e2 );
@@ -106,7 +106,7 @@ export class ParadaEditComponent implements OnInit {
             //     this.direccionIC.setValue( result2.address.Match_addr );
             //   });
           });
-          const popup = L.popup().setContent( this.parada.direccion ).setLatLng( new L.LatLng( this.parada.lat, this.parada.lng ) );
+          const popup = L.popup().setContent( this.parada.direccion ).setLatLng( new L.LatLng( this.parada.coordenada.lat, this.parada.coordenada.lng ) );
           this.map.openPopup(popup);
           this.map.addLayer( this.marker );
           
@@ -199,8 +199,10 @@ export class ParadaEditComponent implements OnInit {
       direccion: this.direccionIC.value,
       descripcion: this.descripcionIC.value,
       estado: 'HABILITADA',
-      lat: this.marker.getLatLng().lat, 
-      lng: this.marker.getLatLng().lng 
+      coordenada: { 
+        lat: this.marker.getLatLng().lat, 
+        lng: this.marker.getLatLng().lng 
+      }
     }
 
     this.spin = true;
@@ -222,8 +224,11 @@ export class ParadaEditComponent implements OnInit {
   actualizarParada() {
     this.parada.direccion = this.direccionIC.value;
     this.parada.descripcion = this.descripcionIC.value;
-    this.parada.lat = this.marker.getLatLng().lat;
-    this.parada.lng = this.marker.getLatLng().lng;
+    this.parada.coordenada = { 
+      lat: this.marker.getLatLng().lat,
+      lng: this.marker.getLatLng().lng
+    }
+    
 
     console.log("Actualizar Parada ", this.parada);
     this.spin = true;

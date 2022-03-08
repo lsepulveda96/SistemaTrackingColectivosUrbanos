@@ -7,8 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Table(name="LINEAS")
+@Getter @Setter @ToString
 public class Linea {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,43 +42,4 @@ public class Linea {
         this.estado = estado;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getDenominacion() {
-        return denominacion;
-    }
-
-    public void setDenominacion(String denominacion) {
-        this.denominacion = denominacion;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion( String desc ) {
-        this.descripcion = desc;
-    }
-
-    public boolean isEnServicio() {
-        return enServicio;
-    }
-
-    public void setEnServicio(boolean enServicio) {
-        this.enServicio = enServicio;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
 }

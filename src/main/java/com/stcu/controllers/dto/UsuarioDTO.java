@@ -5,6 +5,10 @@ import java.util.List;
 
 import com.stcu.model.Usuario;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class UsuarioDTO {
     
     private long id;
@@ -42,86 +46,7 @@ public class UsuarioDTO {
         estado = usr.getEstado();
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getDni() {
-        return dni;
-    }
-
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean getSuperusuario() {
-        return superusuario;
-    }
-
-    public void setSuperusuario( Boolean superusuario) {
-        this.superusuario = superusuario;
-    }
-
-    public String isEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
+    
     public static List<UsuarioDTO> toListUsuarioDTO( List<Usuario> listUsuarios ) {
         List<UsuarioDTO> list = new ArrayList<UsuarioDTO>();
         listUsuarios.forEach( usr -> {
@@ -152,7 +77,5 @@ public class UsuarioDTO {
                 + ", estado=" + estado + ", id=" + id + ", nombre=" + nombre + ", superusuario=" + superusuario
                 + ", telefono=" + telefono + ", usuario=" + usuario + "]";
     }
-
-    
     
 }

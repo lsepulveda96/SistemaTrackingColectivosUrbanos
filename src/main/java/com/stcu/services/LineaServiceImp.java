@@ -6,6 +6,7 @@ import com.stcu.model.Linea;
 import com.stcu.model.Parada;
 import com.stcu.model.Recorrido;
 import com.stcu.repository.LineaRepository;
+import com.stcu.repository.RecorridoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,21 +48,18 @@ public class LineaServiceImp implements LineaService {
 
     @Override
     public List<Recorrido> getRecorridos(long idLinea) {
-        // List<Recorrido> recorridos = repo
-        // TODO Auto-generated method stub
-        return null;
+        return repo.findAllRecorridos( idLinea );
     }
 
     @Override
     public Recorrido getRecorridoActual(long idLinea) {
-        // TODO Auto-generated method stub
-        return null;
+        return  repo.findRecorridoActual( idLinea );
     }
 
     @Override
     public List<Parada> getParadas(long idRecorrido) {
-        // TODO Auto-generated method stub
-        return null;
+        return repo.findParadas(idRecorrido);
     }
     
+
 }

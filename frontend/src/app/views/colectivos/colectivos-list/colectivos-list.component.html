@@ -23,16 +23,16 @@
                 <td mat-cell *matCellDef="let col">{{ col.patente }}</td>
             </ng-container>
             <ng-container matColumnDef="marca">
-                <th mat-header-cell *matHeaderCellDef>Marca</th>
-                <td mat-cell *matCellDef="let col">{{ col.marca }}</td>
-            </ng-container>
-            <ng-container matColumnDef="modelo">
-                <th mat-header-cell *matHeaderCellDef>Modelo</th>
-                <td mat-cell *matCellDef="let col">{{ col.modelo }}</td>
+                <th mat-header-cell *matHeaderCellDef>Marca y modelo</th>
+                <td mat-cell *matCellDef="let col">{{ col.marca + ' ' + col.modelo}}</td>
             </ng-container>
             <ng-container matColumnDef="capacidad">
                 <th mat-header-cell *matHeaderCellDef>Capacidad</th>
                 <td mat-cell *matCellDef="let col">{{ col.capacidad }}</td>
+            </ng-container>
+            <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let col">{{ col.estado }}</td>
             </ng-container>
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef>
@@ -56,8 +56,8 @@
                 </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="['unidad','patente','marca','modelo','capacidad','acciones']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['unidad','patente','marca','modelo','capacidad','acciones']"></tr>
+            <tr mat-header-row *matHeaderRowDef="['unidad','patente','marca','capacidad','estado','acciones']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['unidad','patente','marca','capacidad','estado','acciones']"></tr>
         </table>
     </mat-card-content>
 </mat-card>

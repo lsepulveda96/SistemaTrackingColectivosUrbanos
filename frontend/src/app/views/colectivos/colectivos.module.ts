@@ -19,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectModule
   ]
 })
 export class ColectivosModule { }

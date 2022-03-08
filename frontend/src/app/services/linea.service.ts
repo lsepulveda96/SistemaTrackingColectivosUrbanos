@@ -33,19 +33,22 @@ export class LineaService {
 
   // -----------------  RECORRIDOS -----------------------------------------------------
 
+  getRecorrido( idRecorrido: number ): Observable<any> {
+    return this.http.get( HTTPCONFIG.url + '/linea/recorrido/' + idRecorrido );
+  }
   getRecorridoActivo( idlinea: number  ): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/recorrido/activo/' + idlinea );
+    return this.http.get( HTTPCONFIG.url + '/linea/recorrido/activo/' + idlinea );
   }
 
   getRecorridosLinea( idlinea: number ): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/recorridos/' + idlinea );
+    return this.http.get( HTTPCONFIG.url + '/linea/recorridos/' + idlinea );
   }
 
   saveRecorrido( recorrido: Recorrido ): Observable<any>  {
-    return this.http.post( HTTPCONFIG.url + '/recorrido', recorrido );
+    return this.http.post( HTTPCONFIG.url + '/linea/recorrido' , recorrido );
   }
 
   updateRecorrido( recorrido: Recorrido ): Observable<any> {
-    return this.http.put( HTTPCONFIG.url + '/recorrido/' + recorrido.id, recorrido  );
+    return this.http.put( HTTPCONFIG.url + '/linea/recorrido/' + recorrido.id, recorrido  );
   }
 }

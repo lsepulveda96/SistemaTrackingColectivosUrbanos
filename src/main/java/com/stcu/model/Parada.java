@@ -15,8 +15,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 //import org.springframework.data.geo.Point;
 import org.locationtech.jts.geom.Point;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity 
 @Table(name="PARADAS")
+@Getter @Setter @ToString
 public class Parada {
 
     @Id
@@ -45,53 +50,6 @@ public class Parada {
         this.direccion = dir;
         this.coordenadas = co;
     }
-
-    public long getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(long codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion( String desc ) {
-        this.descripcion = desc;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Point getCoordenadas() {
-        return coordenadas;
-    }
-
-    public void setCoordenadas(Point co) {
-        this.coordenadas = co;
-    }
-
-    @Override
-    public String toString() {
-        return "Parada [codigo=" + codigo + ", coordenadas=" + coordenadas + ", direccion=" + direccion + ", estado="
-                + estado + ", descriocion=" + descripcion + "]";
-    }
-
     
 
 }

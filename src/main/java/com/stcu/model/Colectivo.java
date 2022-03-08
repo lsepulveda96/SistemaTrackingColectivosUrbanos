@@ -11,8 +11,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Table(name="COLECTIVOS")
+@Getter @Setter @ToString
 public class Colectivo {
     
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -57,94 +62,6 @@ public class Colectivo {
         this.id =id;
         this.unidad = unidad;
         this.patente = patente;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getUnidad() {
-        return unidad;
-    }
-
-    public String getPatente() {
-        return patente;
-    }
-
-    public void setPatente(String patente) {
-        this.patente = patente;
-    }
-
-    public String getMarca() {
-        return marca;
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
-    public int getAnio() {
-        return anio;
-    }
-
-    public void setAnio(int anio) {
-        this.anio = anio;
-    }
-
-    public int getCapacidad() {
-        return capacidad;
-    }
-
-    public void setCapacidad(int capacidad) {
-        this.capacidad = capacidad;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setUnidad(String unidad) {
-        this.unidad = unidad;
-    }
-
-    public Calendar getFechaCompra() {
-        return fechaCompra;
-    }
-
-    public void setFechaCompra(Calendar fechaCompra) {
-        this.fechaCompra = fechaCompra;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Calendar getFechaBaja() {
-        return fechaBaja;
-    }
-
-    public void setFechaBaja(Calendar fechaBaja) {
-        this.fechaBaja = fechaBaja;
-    }
-
-    public boolean isEnCirculacion() {
-        return enCirculacion;
-    }
-
-    public void setEnCirculacion(boolean enCirculacion) {
-        this.enCirculacion = enCirculacion;
     }
 
 

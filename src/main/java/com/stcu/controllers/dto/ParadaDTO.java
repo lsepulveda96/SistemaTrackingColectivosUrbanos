@@ -10,6 +10,10 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class ParadaDTO implements Serializable {
     
     private long codigo;
@@ -20,9 +24,7 @@ public class ParadaDTO implements Serializable {
     
     private String estado;
 
-    private double lat;
-
-    private double lng;
+    private CoordenadaDTO coordenada;
 
     public ParadaDTO() {}
 
@@ -33,58 +35,13 @@ public class ParadaDTO implements Serializable {
         estado = par.getEstado();
 
         Point point = par.getCoordenadas();
-        lat = point.getX();
-        lng = point.getY();
+        coordenada = new CoordenadaDTO( point.getX(), point.getY() );
     }
 
-    public long getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(long codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
-
+    /**
+     * Convierte el objeto actual paradaDTO en un objeto Parada
+     * @return parada
+     */
     public Parada ToParada() {
         Parada parada = new Parada();
         parada.setCodigo(codigo);
@@ -93,12 +50,17 @@ public class ParadaDTO implements Serializable {
         parada.setEstado(estado);
         
         GeometryFactory geometryFactory = new GeometryFactory();
-        Point point = geometryFactory.createPoint(new Coordinate( lat, lng ));
+        Point point = geometryFactory.createPoint(new Coordinate( coordenada.getLat(), coordenada.getLng() ));
         parada.setCoordenadas( point );
         
         return parada;
     }
 
+    /**
+     * Convierte una lista de objetos Parada a una lista de objetos ParadaDTO
+     * @param paradas
+     * @return
+     */
     public static List<ParadaDTO> toListParadaDTO( List<Parada> paradas ) {
         List<ParadaDTO> paradasDto = new ArrayList<ParadaDTO>();
         paradas.forEach( par ->  {
@@ -107,15 +69,21 @@ public class ParadaDTO implements Serializable {
         return paradasDto;
     }
 
+    /**
+     * Convierte un objeto de tipo Parada a un objeto de tipo ParadaDTO.
+     * @param parada
+     * @return
+     */
     private static ParadaDTO toDTO( Parada parada ) {
         ParadaDTO paradaDto = new ParadaDTO();
         paradaDto.setCodigo( parada.getCodigo() );
         paradaDto.setDireccion( parada.getDireccion() );
         paradaDto.setDescripcion( parada.getDescripcion() );
         paradaDto.setEstado( parada.getEstado() );
+        
         Point point = parada.getCoordenadas();
-        paradaDto.setLat( point.getX() );
-        paradaDto.setLng( point.getY() );
+        paradaDto.setCoordenada( new CoordenadaDTO( point.getX(), point.getY() ));
+
         return paradaDto;
     }
     

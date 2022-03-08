@@ -28,12 +28,15 @@ export class ColectivoEditComponent implements OnInit {
   colectivo: Colectivo | undefined;
 
   unidadIC = new FormControl('',Validators.required );
-  patenteIC = new FormControl('',Validators.required );
+  patenteIC = new FormControl('',[Validators.required, Validators.pattern('^[A-Z]{2}[0-9]{3}[A-Z]{2}$|^[A-Z]{3}[0-9]{3}$')] );
   marcaIC = new FormControl('', Validators.required );
   modeloIC = new FormControl('');
   anioIC = new FormControl('', Validators.pattern('^[12]{1}[09]{1}[0-9]{2}$') ); // 19xx o 20xx
   capacidadIC = new FormControl('', Validators.pattern('^[1-9][0-9]?$') ); // numero entre 1 y 100
   compraIC = new FormControl('');
+
+  estados: string[] = ['HABILITADO','NO HABILITADO'];
+  estadoIC = new FormControl('');
 
   constructor( private router: Router, 
     private route: ActivatedRoute,
@@ -57,6 +60,7 @@ export class ColectivoEditComponent implements OnInit {
     this.anioIC.setValue('')
     this.capacidadIC.setValue(null);
     this.compraIC.setValue(null);
+    this.estadoIC.setValue( this.estados[0]);
     this.spin = false;
   }
 
@@ -78,6 +82,7 @@ export class ColectivoEditComponent implements OnInit {
           this.anioIC.setValue( this.colectivo.anio)
           this.capacidadIC.setValue( this.colectivo.capacidad);
           this.compraIC.setValue( new Date( this.colectivo.fechaCompra ) );
+          this.estadoIC.setValue( this.colectivo.estado );
         }
         this.spin = false;
       })
@@ -129,7 +134,7 @@ export class ColectivoEditComponent implements OnInit {
       anio: this.anioIC.value,
       capacidad: this.capacidadIC.value,
       fechaCompra: this.compraIC.value, 
-      estado: '',
+      estado: this.estadoIC.value,
       enCirculacion: false,
       fechaBaja: null,
     }

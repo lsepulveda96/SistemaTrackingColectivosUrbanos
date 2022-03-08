@@ -13,8 +13,10 @@ const routes: Routes = [
       { path: 'lineas', loadChildren: () => import('./lineas/lineas.module').then(m => m.LineasModule) },
       { path: 'monitoreo', loadChildren: () => import('./monitoreo/monitoreo.module').then(m => m.MonitoreoModule) },
       { path: 'notificaciones', loadChildren: () => import('./notificaciones/notificaciones.module').then(m => m.NotificacionesModule) },
+      { path: 'principal', loadChildren: () => import('./principal/principal.module').then(m => m.PrincipalModule) },
     ]
    },
+  
   
 ];
 

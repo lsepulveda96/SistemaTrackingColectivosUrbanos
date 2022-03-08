@@ -27,10 +27,6 @@ public class UsuarioController {
         
         Response<List<UsuarioDTO>> response = new Response<List<UsuarioDTO>>( false, 200, "Lista de usuarios", UsuarioDTO.toListUsuarioDTO(usrs) );
 
-        System.out.println("++++ Usuarios list: " );
-        for (UsuarioDTO ud: UsuarioDTO.toListUsuarioDTO( usrs )) {
-            System.out.println(" ++++++ Usuario dto: " + ud.toString() );
-        }
         return Mapper.getResponseAsJson(response);
     }
 

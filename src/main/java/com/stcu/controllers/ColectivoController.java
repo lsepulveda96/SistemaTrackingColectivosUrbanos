@@ -40,7 +40,6 @@ public class ColectivoController {
 
     @PostMapping("/colectivos")
     public String saveColectivo( @RequestBody Colectivo col ) {
-        System.out.println("****** Save Colectivo: " + col.toString() );
         
         Colectivo colectivo = service.saveColectivo(col);
         Response<Colectivo> response;

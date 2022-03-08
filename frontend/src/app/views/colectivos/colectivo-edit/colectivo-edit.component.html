@@ -12,7 +12,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-4">
-                    <mat-form-field appaerance="standard" style="width:100%">
+                    <mat-form-field appearance="standard" style="width:100%">
                         <mat-label>Numero de unidad</mat-label>
                         <input matInput [formControl]="unidadIC" autocomplete="off" required/>
                         <mat-error *ngIf="unidadIC.hasError('required')">requerido</mat-error>
@@ -21,20 +21,20 @@
             </div>
             <div class="row">
                 <div class="col-5">
-                    <mat-form-field appaerance="standard" style="width: 100%;">
+                    <mat-form-field appearance="standard" style="width: 100%;">
                         <mat-label>Marca</mat-label>
                         <input matInput [formControl]="marcaIC" autocomplete="off" required/>
                         <mat-error *ngIf="marcaIC.hasError('required')">requerido</mat-error>
                     </mat-form-field>
                 </div>
                 <div class="col-4">
-                    <mat-form-field appaerance="legacy" style="width: 100%;">
+                    <mat-form-field appearance="standard" style="width: 100%;">
                         <mat-label>Modelo</mat-label>
                         <input matInput [formControl]="modeloIC" autocomplete="off"/>
                     </mat-form-field>
                 </div>
                 <div class="col-3">
-                    <mat-form-field appaerance="legacy" style="width:100%">
+                    <mat-form-field appearance="standard" style="width:100%">
                         <mat-label>Año</mat-label>
                         <input matInput [formControl]="anioIC" type="number"/>
                         <mat-error *ngIf="anioIC.hasError('pattern')">Año invalido</mat-error>
@@ -43,29 +43,42 @@
             </div>
             <div class="row">
                 <div class="col-2">
-                    <mat-form-field appaerance="standard" style="width:100%">
+                    <mat-form-field appearance="standard" style="width:100%">
                         <mat-label>Patente</mat-label>
                         <input matInput [formControl]="patenteIC" autocomplete="off" required/>
                         <mat-error *ngIf="patenteIC.hasError('required')">requerido</mat-error>
+                        <mat-error *ngIf="patenteIC.hasError('pattern')">patente invalida</mat-error>
                     </mat-form-field>
                 </div>
             </div>
             <div class="row">
                 <div class="col-2">
-                    <mat-form-field appaerance="legacy">
+                    <mat-form-field appearance="legacy">
                         <mat-label>Capacidad</mat-label>
-                        <input matInput [formControl]="capacidadIC" type="number"/>
+                        <input matInput [formControl]="capacidadIC"/>
                         <mat-error *ngIf="capacidadIC.hasError('pattern')">capacidad invalida (1 a 99)</mat-error>
                     </mat-form-field>
                 </div>
             </div>
             <div class="row">
                 <div class="col-2">
-                    <mat-form-field appaerance="legacy">
+                    <mat-form-field appearance="legacy">
                         <mat-label>Fecha de compra</mat-label>
                         <input matInput [formControl]="compraIC" [matDatepicker]="picker" autocomplete="off"/>
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <mat-form-field appearance="standard">
+                        <mat-label>Estado</mat-label>
+                        <mat-select [formControl]="estadoIC">
+                            <mat-option *ngFor="let est of estados" [value]="est">
+                                {{ est  }}
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
                 </div>
             </div>

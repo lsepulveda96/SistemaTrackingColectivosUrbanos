@@ -12,36 +12,36 @@
 
     <mat-card-content>
         <div class="container">
-        <div class="row">
-            <div class="col-3">
-                <mat-form-field appearance="legacy" style="width: 100%" floatLabel="always">
-                    <mat-label>Codigo</mat-label>
-                    <input matInput [value]="parada ? parada.codigo : ''" placeholder="automatico" [readonly]="true"/>
-                </mat-form-field>
+            <div class="row">
+                <div class="col-3">
+                    <mat-form-field appearance="legacy" style="width: 100%" floatLabel="always">
+                        <mat-label>Codigo</mat-label>
+                        <input matInput [value]="parada ? parada.codigo : ''" placeholder="automatico" [readonly]="true" />
+                    </mat-form-field>
+                </div>
+                <div class="col-9">
+                    <mat-form-field appearance="legacy" style="width: 100%">
+                        <mat-label>Direccion</mat-label>
+                        <input matInput [value]="parada ? parada.direccion: ''" autocomplete="off" required [readonly]="true" />
+                    </mat-form-field>
+                </div>
             </div>
-            <div class="col-9">
-                <mat-form-field appearance="legacy" style="width: 100%">
-                    <mat-label>Direccion</mat-label>
-                    <input matInput [value]="parada ? parada.direccion: ''"  autocomplete="off" required [readonly]="true"/>
-                </mat-form-field>
+            <div class="row">
+                <div class="col-12">
+                    <mat-form-field appearance="legacy" style="width: 100%;">
+                        <mat-label>Descripcion</mat-label>
+                        <input matInput [value]="parada ? parada.descripcion:''" autocomplete="off" [readonly]="true" />
+                    </mat-form-field>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <mat-form-field appearance="legacy" style="width: 100%;">
-                    <mat-label>Descripcion</mat-label>
-                    <input matInput [value]="parada ? parada.descripcion:''" autocomplete="off" [readonly]="true"/>
-                </mat-form-field>
+            <br>
+        
+            <div class="map-container">
+                <div class="map-frame">
+                    <div id="map"></div>
+                </div>
             </div>
-        </div>
-        <br>
-
-        <div class="map-container">
-            <div class="map-frame">
-                <div id="map"></div>
-            </div>
-        </div>
-        <mat-divider></mat-divider>
+            <mat-divider></mat-divider>
             <br>
             <div class="d-flex justify-content-end">
                 <button mat-stroked-button color="primary" [routerLink]="['../..']" class="button-border">
@@ -49,7 +49,7 @@
                 </button>
             </div>
         
-    </div>
+        </div>
     </mat-card-content>
 
 </mat-card> 

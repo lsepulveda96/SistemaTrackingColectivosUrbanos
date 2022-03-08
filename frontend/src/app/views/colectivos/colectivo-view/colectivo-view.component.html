@@ -12,7 +12,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-4">
-                    <mat-form-field appaerance="standard" style="width:100%">
+                    <mat-form-field appearance="legacy" style="width:100%">
                         <mat-label>Numero de unidad</mat-label>
                         <input matInput [value]="colectivo ? colectivo.unidad:''" autocomplete="off" [readonly]="true"/>
                     </mat-form-field>
@@ -20,19 +20,19 @@
             </div>
             <div class="row">
                 <div class="col-5">
-                    <mat-form-field appaerance="standard" style="width: 100%;">
+                    <mat-form-field appearance="legacy" style="width: 100%;">
                         <mat-label>Marca</mat-label>
                         <input matInput [value]="colectivo ? colectivo.marca: ''" autocomplete="off" required [readonly]="true"/>
                     </mat-form-field>
                 </div>
                 <div class="col-4">
-                    <mat-form-field appaerance="legacy" style="width: 100%;">
+                    <mat-form-field appearance="legacy" style="width: 100%;">
                         <mat-label>Modelo</mat-label>
                         <input matInput [value]="colectivo ? colectivo.modelo: '' " autocomplete="off" [readonly]="true"/>
                     </mat-form-field>
                 </div>
                 <div class="col-3">
-                    <mat-form-field appaerance="legacy" style="width:100%">
+                    <mat-form-field appearance="legacy" style="width:100%">
                         <mat-label>Año</mat-label>
                         <input matInput [value]="colectivo ? colectivo.anio : ''" type="number" [readonly]="true"/>
                     </mat-form-field>
@@ -40,7 +40,7 @@
             </div>
             <div class="row">
                 <div class="col-2">
-                    <mat-form-field appaerance="standard" style="width:100%">
+                    <mat-form-field appearance="legacy" style="width:100%">
                         <mat-label>Patente</mat-label>
                         <input matInput [value]="colectivo ? colectivo.patente: ''" autocomplete="off" required [readonly]="true"/>
                     </mat-form-field>
@@ -48,7 +48,7 @@
             </div>
             <div class="row">
                 <div class="col-2">
-                    <mat-form-field appaerance="legacy">
+                    <mat-form-field appearance="legacy">
                         <mat-label>Capacidad</mat-label>
                         <input matInput [value]="colectivo ? colectivo.capacidad: ''" type="number" [readonly]="true"/>
                     </mat-form-field>
@@ -56,9 +56,17 @@
             </div>
             <div class="row">
                 <div class="col-2">
-                    <mat-form-field appaerance="legacy">
+                    <mat-form-field appearance="legacy">
                         <mat-label>Fecha de compra</mat-label>
                         <input matInput [value]="colectivo ? (colectivo.fechaCompra | date:'dd/MM/yyyy'):''" autocomplete="off" [readonly]="true"/>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <mat-form-field appearance="legacy">
+                        <mat-label>Estado</mat-label>
+                        <input matInput [value]="colectivo?.estado" autocomplete="off" [readonly]="true"/>
                     </mat-form-field>
                 </div>
             </div>

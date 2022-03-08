@@ -8,7 +8,8 @@ import java.util.List;
 import com.stcu.model.Linea;
 
 @Repository
-public interface LineaRepository extends JpaRepository<Linea, Long> {
+public interface LineaRepository extends JpaRepository<Linea, Long>, LineaRepositoryCustom {
+
     List<Linea> findAll();
     Linea findById( long id );
 }

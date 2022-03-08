@@ -57,8 +57,9 @@ export class ParadaViewComponent implements OnInit {
         }
         this.parada = result.data;
         
-        this.marker = L.marker( [this.parada.lat, this.parada.lng], { icon: this.iconOptions, draggable:false });
-        const popup = L.popup().setContent( this.parada.direccion ).setLatLng( new L.LatLng( this.parada.lat, this.parada.lng ) );
+        console.log("PARADA: ", this.parada );
+        this.marker = L.marker( [this.parada.coordenada.lat, this.parada.coordenada.lng], { icon: this.iconOptions, draggable:false });
+        const popup = L.popup().setContent( this.parada.direccion ).setLatLng( new L.LatLng( this.parada.coordenada.lat, this.parada.coordenada.lng ) );
         this.map.openPopup(popup);
         this.map.addLayer( this.marker );
           

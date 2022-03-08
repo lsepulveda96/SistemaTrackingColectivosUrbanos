@@ -8,19 +8,15 @@ import java.util.List;
 import com.stcu.model.Linea;
 import com.stcu.model.Recorrido;
 
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
-public class RecorridoDTO implements Serializable {
+import lombok.Getter;
+import lombok.Setter;
 
-    class PointLS {
-        double lat;
-        double lng;
-        PointLS( double la, double ln ) {
-            lat = la;
-            lng = ln;
-        }
-    }
+@Getter @Setter 
+public class RecorridoDTO implements Serializable {
 
     private long id;
     private Calendar fechaInicio;
@@ -29,8 +25,8 @@ public class RecorridoDTO implements Serializable {
 
     private Linea linea;
 
-    private List<PointLS> trayectos;
-    private List<PointLS> waypoints;
+    private List<CoordenadaDTO> trayectos;
+    private List<CoordenadaDTO> waypoints;
     
     public RecorridoDTO() { }
 
@@ -42,16 +38,15 @@ public class RecorridoDTO implements Serializable {
         this.linea = rec.getLinea();
 
         LineString trays = rec.getTrayectos();
-        trayectos = new ArrayList<PointLS>();
+        trayectos = new ArrayList<CoordenadaDTO>();
         for (int i = 0; i < trays.getNumPoints(); i++) {
-            trayectos.add( new PointLS( trays.getPointN(i).getX(), trays.getPointN(i).getY() ) );
+            trayectos.add( new CoordenadaDTO( trays.getPointN(i).getX(), trays.getPointN(i).getY() ) );
         }
-            trays.getPointN( 5 );
         
         LineString wpts = rec.getWaypoints();
-        waypoints = new ArrayList<PointLS>();
+        waypoints = new ArrayList<CoordenadaDTO>();
         for (int i=0; i < wpts.getNumPoints(); i++) {
-            waypoints.add( new PointLS( wpts.getPointN(i).getX(), wpts.getPointN(i).getY() ) );
+            waypoints.add( new CoordenadaDTO( wpts.getPointN(i).getX(), wpts.getPointN(i).getY() ) );
         }
     }
 
@@ -64,10 +59,24 @@ public class RecorridoDTO implements Serializable {
         rec.setActivo( drec.isActivo() );
         rec.setLinea( drec.getLinea() );
         
-        //GeometryFactory geometryFactory = new GeometryFactory();
+        GeometryFactory geometryFactory = new GeometryFactory();
 
-        return rec;
-        
+        Coordinate[] tpoints = new Coordinate[ drec.trayectos.size() ];
+        for (int i=0; i < drec.trayectos.size() ; i++) {
+            CoordenadaDTO coo = drec.trayectos.get(i);
+            tpoints[i] = new Coordinate( coo.getLat(), coo.getLng() );
+        }
+        rec.setTrayectos( geometryFactory.createLineString( tpoints ));
+
+        Coordinate[] wpoints = new Coordinate[ drec.waypoints.size() ];
+        for (int i=0; i < drec.waypoints.size() ; i++) {
+            CoordenadaDTO coo = drec.waypoints.get(i);
+            wpoints[i] = new Coordinate( coo.getLat(), coo.getLng() );
+        }
+        rec.setWaypoints( geometryFactory.createLineString( wpoints ));
+
+    
+        return rec;    
     }
 
     private static RecorridoDTO toDTO( Recorrido recorrido ) {
@@ -77,6 +86,21 @@ public class RecorridoDTO implements Serializable {
         rd.setFechaFin( recorrido.getFechaFin() );
         rd.setActivo( recorrido.isActivo() );
         
+        LineString trays = recorrido.getTrayectos();
+        List<CoordenadaDTO> trec = new ArrayList<CoordenadaDTO>();
+        for (int i = 0; i < trays.getNumPoints(); i++) {
+            trec.add( new CoordenadaDTO( trays.getPointN(i).getX(), trays.getPointN(i).getY() ) );
+        }
+        // trays.getPointN( 5 );
+        rd.setTrayectos( trec );
+
+        LineString wpts = recorrido.getWaypoints();
+        List<CoordenadaDTO> wrec = new ArrayList<CoordenadaDTO>();
+        for (int i=0; i < wpts.getNumPoints(); i++) {
+            wrec.add( new CoordenadaDTO( wpts.getPointN(i).getX(), wpts.getPointN(i).getY() ) );
+        }
+        rd.setWaypoints( wrec );
+
         return rd;
     } 
 
@@ -87,62 +111,5 @@ public class RecorridoDTO implements Serializable {
         });
         return list;
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Calendar getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(Calendar fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public Calendar getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(Calendar fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public Linea getLinea() {
-        return linea;
-    }
-
-    public void setLinea(Linea linea) {
-        this.linea = linea;
-    }
-
-    public List<PointLS> getTrayectos() {
-        return trayectos;
-    }
-
-    public void setTrayectos(List<PointLS> trayectos) {
-        this.trayectos = trayectos;
-    }
-
-    public List<PointLS> getWaypoints() {
-        return waypoints;
-    }
-
-    public void setWaypoints(List<PointLS> waypoints) {
-        this.waypoints = waypoints;
-    }
-    
     
 }

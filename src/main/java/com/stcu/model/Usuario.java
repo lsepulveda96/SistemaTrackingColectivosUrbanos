@@ -11,9 +11,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
-@Table(name="usuarios")
+@Table(name="USUARIOS")
+@Getter @Setter @ToString
 public class Usuario {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private long id; 
@@ -65,118 +71,6 @@ public class Usuario {
     public Usuario() {
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getPasswd() {
-        return passwd;
-    }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getDni() {
-        return dni;
-    }
-
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public boolean isSuperusuario() {
-        return superusuario;
-    }
-
-    public void setSuperusuario(boolean superusuario) {
-        this.superusuario = superusuario;
-    }
-
-    public Calendar getAlta() {
-        return alta;
-    }
-
-    public void setAlta(Calendar alta) {
-        this.alta = alta;
-    }
-
-    public Calendar getBaja() {
-        return baja;
-    }
-
-    public void setBaja(Calendar baja) {
-        this.baja = baja;
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario [alta=" + alta + ", apellido=" + apellido + ", baja=" + baja + ", direccion=" + direccion
-                + ", dni=" + dni + ", email=" + email + ", estado=" + estado + ", id=" + id + ", nombre=" + nombre
-                + ", passwd=" + passwd + ", superusuario=" + superusuario + ", telefono=" + telefono + ", usuario="
-                + usuario + "]";
-    }
-
-    
+        
 
 }
