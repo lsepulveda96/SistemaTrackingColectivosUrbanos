@@ -38,9 +38,12 @@ export class RecorridoViewComponent implements OnInit {
     this.serviceLinea.getRecorridoActivo( parseInt(this.id) ) 
       .subscribe( result => {
         this.waiting = false;
-        console.log("result: ", result );
+        if (!result.error) {
+          this.recorrido = result.data;
+          this.initMap();
+        }
       });
-    this.initMap();
+    
   }
 
 
@@ -49,14 +52,11 @@ export class RecorridoViewComponent implements OnInit {
       center: [-42.775935, -65.038144],
       zoom: 14
     });
-
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       minZoom: 12,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    });
-
-    tiles.addTo( this.map );
+    }).addTo( this.map );
   }
 
   editarRecorrido() {

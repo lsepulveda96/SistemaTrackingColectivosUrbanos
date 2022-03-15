@@ -11,6 +11,10 @@ export class AuthService {
   constructor( private http: HttpClient ) { }
 
   login( usernam: string, password: string ): Observable<any> {
-    return this.http.post( HTTPCONFIG.url + '/sigin', { usernam, password });
+    return this.http.post( HTTPCONFIG.url + '/sigin', { user: usernam, passwd: password });
+  }
+
+  logout() {
+    
   }
 }

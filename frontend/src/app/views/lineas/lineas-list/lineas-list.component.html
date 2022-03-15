@@ -37,13 +37,13 @@
                     <button mat-icon-button color="primary" [routerLink]="['edit', lin.id ]" matTooltip="editar" matTooltipPosition="left">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="paradas" matTooltipPosition="left">
-                        <mat-icon>nature_people</mat-icon>
-                    </button>
                     <button mat-icon-button color="primary" matTooltip="recorrido" matTooltipPosition="right" [routerLink]="['recorrido/view',lin.id]">
                         <mat-icon>timeline</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="historial" matTooltipPosition="right">
+                    <button mat-icon-button color="primary" matTooltip="paradas" matTooltipPosition="left" [routerLink]="['paradas/view', lin.id]">
+                        <mat-icon>nature_people</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary" matTooltip="historial" matTooltipPosition="right" [routerLink]="['recorridos', lin.id]">
                         <mat-icon>history</mat-icon>
                     </button>
                 </td>

@@ -5,6 +5,8 @@ import { Linea } from 'src/app/data/linea';
 import { Recorrido } from 'src/app/data/recorrido';
 import { LineaService } from 'src/app/services/linea.service';
 
+import * as L from 'leaflet';
+
 @Component({
   selector: 'app-recorrido-edit',
   templateUrl: './recorrido-edit.component.html',
@@ -12,10 +14,11 @@ import { LineaService } from 'src/app/services/linea.service';
 })
 export class RecorridoEditComponent implements OnInit {
 
-  modoNew: boolean;
+  modeNew: boolean;
   waiting: boolean;
   linea: Linea;
   recorrido: Recorrido;
+  map: L.Map;
 
   constructor( private servicioLinea: LineaService, 
               private snackbar: MatSnackBar,
@@ -30,7 +33,7 @@ export class RecorridoEditComponent implements OnInit {
       });
       this.router.navigate(['../..']);
     } 
-    this.modoNew = (mod == 'new');
+    this.modeNew = (mod == 'new');
     const id = this.route.snapshot.paramMap.get('id');
     this.waiting = true;
     this.servicioLinea.getLinea( parseInt(id ))
@@ -38,7 +41,7 @@ export class RecorridoEditComponent implements OnInit {
         this.waiting = false;
         this.linea = result.data;
       });
-    if (this.modoNew)
+    if (this.modeNew)
       this.nuevoRecorrido();
     else  
       this.editarRecorrido( parseInt( id ));

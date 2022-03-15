@@ -1,0 +1,51 @@
+<div class="main-div">
+
+    <mat-card class="mat-elevation-z10" style="text-align: center; width: 600px; align-self: center;">
+        <mat-card-content>
+            <div class="row">
+                <span>Login</span>
+            </div>
+            <br>
+            <mat-divider></mat-divider>
+            <br>
+
+            <div class="alert alert-danger" role="alert" *ngIf="isLoginFailed">
+                Login fallo: {{ errorMessage }}
+            </div>
+
+            <div class="alert alert-success" *ngIf="isLoggedIn">
+                Login exitoso {{ roles }}.
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Usuario</mat-label>
+                        <input matInput [formControl]="usernameIC" required />
+                        <mat-error *ngIf="usernameIC.hasError('required')">usuario requerido</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <mat-form-field appearance="outline" floatLabel="always">
+                        <mat-label>Contraseña</mat-label>
+                        <input matInput [formControl]="passwIC" type="password" required />
+                        <mat-error *ngIf="passwIC.hasError('required')">contraseña requerido</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <button mat-raised-button color="primary" (click)="onSubmit()"
+                        [disabled]="usernameIC.hasError('required') || passwIC.hasError('required')">
+                        Ingresar
+                    </button>
+                </div>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>

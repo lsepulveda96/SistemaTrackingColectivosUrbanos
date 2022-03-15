@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col">
                     <span>No existe recorrido activo para la linea</span> &nbsp;
-                    <button mat-raised-button class="button-border">
+                    <button mat-raised-button class="button-border" [routerLink]="['../../new',linea?.id]">
                         Generar
                     </button> &nbsp;
                     <button mat-raised-button class="button-border">

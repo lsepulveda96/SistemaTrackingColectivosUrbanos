@@ -26,8 +26,11 @@ export const AppRoutes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import( './views/principal/principal.module').then( m=> m.PrincipalModule )
-        //loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
       },
+      {
+        path: 'auth',
+        loadChildren: () => import( './auth/auth.module').then( m => m.AuthModule )
+      }
     ]
   }
 ];

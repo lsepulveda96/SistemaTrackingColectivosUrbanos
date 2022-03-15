@@ -2,7 +2,7 @@
     <mat-card-header>
         <mat-card-title>
             <mat-icon>timeline</mat-icon>
-            {{ linea ? linea.denominacion:'' }} &nbsp {{ modoNew ? ' Definir recorrido': ' Editar recorrido'}}
+            {{ linea ? linea.denominacion:'' }} {{ modeNew ? ' :Definir recorrido': ' :Editar recorrido'}}
         </mat-card-title>
     </mat-card-header>
     
@@ -23,10 +23,10 @@
         <br>
         
         <div class="d-flex justify-content-end">
-            <button mat-stroked-button color="primary" (click)="guardarRecorrido()" class="button-border">
+            <button mat-stroked-button color="primary" (click)="guardarRecorrido()" class="button-border" *ngIf="modeNew">
                 Guardar
             </button>
-            <button mat-stroked-button color="primary" (click)="actualizarRecorrido()" class="button-border">
+            <button mat-stroked-button color="primary" (click)="actualizarRecorrido()" class="button-border" *ngIf="!modeNew">
                 Actualizar
             </button>
             <button mat-stroked-button color="primary" [routerLink]="['../../..']" class="button-border">

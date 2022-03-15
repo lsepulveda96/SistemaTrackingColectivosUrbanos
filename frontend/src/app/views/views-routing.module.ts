@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { MapComponent } from './map/map.component';
 import { ViewsComponent } from './views.component';
 
 const routes: Routes = [
@@ -14,8 +15,10 @@ const routes: Routes = [
       { path: 'monitoreo', loadChildren: () => import('./monitoreo/monitoreo.module').then(m => m.MonitoreoModule) },
       { path: 'notificaciones', loadChildren: () => import('./notificaciones/notificaciones.module').then(m => m.NotificacionesModule) },
       { path: 'principal', loadChildren: () => import('./principal/principal.module').then(m => m.PrincipalModule) },
+      { path:'map', component: MapComponent},
     ]
    },
+  
   
   
 ];

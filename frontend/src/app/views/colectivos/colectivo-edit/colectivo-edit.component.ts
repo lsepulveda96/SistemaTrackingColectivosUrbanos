@@ -74,7 +74,6 @@ export class ColectivoEditComponent implements OnInit {
         }
         else {
           this.colectivo = result.data;
-          console.log("Colectivo: ", this.colectivo )
           this.unidadIC.setValue( this.colectivo.unidad );
           this.patenteIC.setValue( this.colectivo.patente )
           this.marcaIC.setValue( this.colectivo.marca);
