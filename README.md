@@ -14,7 +14,7 @@
 ## Backend
 
 * Spring boot , hibernate ORM.
-* Base de datos PostgreSQL 12, extension PostGIS 2.5.
+* Base de datos PostgreSQL 13, extension PostGIS 3.1.
 
 ## Frontend
 
