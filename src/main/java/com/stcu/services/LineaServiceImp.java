@@ -6,7 +6,6 @@ import com.stcu.model.Linea;
 import com.stcu.model.Parada;
 import com.stcu.model.Recorrido;
 import com.stcu.repository.LineaRepository;
-import com.stcu.repository.RecorridoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

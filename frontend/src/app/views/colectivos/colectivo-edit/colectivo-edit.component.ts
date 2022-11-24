@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Colectivo } from 'src/app/data/colectivo';
 import { ColectivoService } from 'src/app/services/colectivo.service';
+import { ConfirmComponent } from '../../misc/confirm/confirm.component';
 
 @Component({
   selector: 'app-colectivo-edit',
@@ -41,6 +43,7 @@ export class ColectivoEditComponent implements OnInit {
   constructor( private router: Router, 
     private route: ActivatedRoute,
     private serviceColectivo: ColectivoService,
+    private dialog: MatDialog,
     private _snackbar: MatSnackBar ) { }
 
   ngOnInit(): void {
@@ -136,7 +139,18 @@ export class ColectivoEditComponent implements OnInit {
       estado: this.estadoIC.value,
       enCirculacion: false,
       fechaBaja: null,
-    }
-    
+    }  
+  }
+
+  bajaColectivo() {
+    const ref = this.dialog.open( ConfirmComponent, { data: {titulo: 'Baja de colectivo', mensaje:'Confirma dar de baja unidad ' + this.colectivo.unidad  + '?'}} );
+    ref.afterClosed().subscribe( aceptar => {
+      if (aceptar) {
+        this.serviceColectivo.disableColectivo( this.colectivo.id ).subscribe( result => {
+          if (!result.error && result.data)
+            this.colectivo.estado = 'BAJA';
+        });
+      }
+    });
   }
 }

@@ -61,4 +61,11 @@ public class ColectivoController {
             response = new Response<Colectivo>(true, 400, "No se pudo actualizar colectivo " + id, null );
         return Mapper.getResponseAsJson(response);
     }
+
+    @GetMapping("/colectivo/baja/{id}")
+    public String bajaColectivo( @PathVariable long id ) {
+        boolean stat = service.bajaColectivo(id);
+        Response<Boolean>resp = new Response<Boolean>(true, 200, stat ? "Unidad " + id + " de baja" : "No se pudo dar de baja unidad " + id, stat);
+        return Mapper.getResponseAsJson(resp);
+    }
 }

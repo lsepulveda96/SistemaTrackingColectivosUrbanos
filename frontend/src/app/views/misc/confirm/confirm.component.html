@@ -1,0 +1,25 @@
+
+<div class="container">
+  <div class="row">
+    <span class="h5">{{ titulo }}</span>
+  </div>
+  <div class="row">
+    <span>
+      {{ mensaje }}
+    </span>
+  </div>
+  <div class="row mt-4">
+    <div class="d-flex justify-content-around">
+      <button mat-stroked-button class="border-danger" color="warn" (click)="onAceptar()">
+        <i class="bi bi-check"></i>
+        Aceptar
+      </button>
+      <button mat-stroked-button class="border-primary" color="primary" (click)="onCancelar()">
+        <i class="bi bi-x"></i>
+        Cancelar
+      </button>
+      <!-- <button mat-flat-button color="warn" (click)="onAceptar()">Aceptar</button>
+      <button mat-flat-button color="primary" (click)="onCancelar()">Cancelar</button> -->
+    </div>
+  </div>
+</div>

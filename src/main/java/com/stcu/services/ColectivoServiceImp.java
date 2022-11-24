@@ -47,5 +47,16 @@ public class ColectivoServiceImp implements ColectivoService {
         }
         return null;
     }
+
+    @Override
+    public boolean bajaColectivo( long id ) {
+        Colectivo col = this.rep.findById(id);
+        if (col != null) {
+            col.setEstado( "BAJA");
+            this.rep.save( col );
+            return true;
+        }
+        return false;
+    }
     
 }

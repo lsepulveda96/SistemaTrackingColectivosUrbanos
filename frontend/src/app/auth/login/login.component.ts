@@ -11,7 +11,7 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 export class LoginComponent implements OnInit {
 
   usernameIC = new FormControl('', Validators.required );
-  passwIC = new FormControl('', Validators.required );
+  passwIC = new FormControl('', [Validators.required, Validators.minLength(6)]);
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';

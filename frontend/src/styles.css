@@ -3,3 +3,6 @@
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 @import "~bootstrap/dist/css/bootstrap.css";
 
+::ng-deep .mat-card {
+    border: 1px solid rgb(164, 192, 245);
+}

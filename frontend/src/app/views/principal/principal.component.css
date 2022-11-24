@@ -7,3 +7,7 @@
     right: 17px;
     top: 57px;
 }
+
+.is-focus {
+    cursor: pointer;
+}

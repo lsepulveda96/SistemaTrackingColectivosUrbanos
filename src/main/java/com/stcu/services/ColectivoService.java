@@ -14,4 +14,5 @@ public interface ColectivoService {
 
     public Colectivo updateColectivo( long id, Colectivo col );
 
+    public boolean bajaColectivo( long id );
 }
