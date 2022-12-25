@@ -10,7 +10,7 @@ export interface Menu {
 const MENUITEMS = [
   { state: 'dashboard', name: 'Dashboard', type: 'link', icon: 'av_timer' },
   { state: 'colectivos', name: 'Colectivos', type: 'link', icon: 'directions_bus'},
-  { state: 'lineas', name: 'Lineas', type: 'link', icon: 'compare_arrows'},
+  { state: 'lineas', name: 'Lineas', type: 'link', icon: 'routes'},
   { state: 'paradas', name: 'Paradas', type: 'link', icon: 'nature_people'},
   { state: 'monitoreo', name: 'Monitoreo', type: 'link', icon: 'pin_drop'},
   { state: 'notificaciones', name: 'Notificaciones', type: 'link', icon: 'notifications_active'},

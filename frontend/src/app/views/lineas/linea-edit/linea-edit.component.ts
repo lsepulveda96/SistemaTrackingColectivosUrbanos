@@ -1,6 +1,6 @@
 import { ResourceLoader } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Linea } from 'src/app/data/linea';
@@ -17,12 +17,12 @@ export class LineaEditComponent implements OnInit {
   id: any;
   linea: Linea;
 
-  denominacionIC = new FormControl('', Validators.required );
-  descripcionIC = new FormControl('');
-  estadoIC = new FormControl('');
+  denominacionIC = new UntypedFormControl('', Validators.required );
+  descripcionIC = new UntypedFormControl('');
+  estadoIC = new UntypedFormControl('');
 
   habilitado: boolean = true;
-  habilitadoIC = new FormControl( false );
+  habilitadoIC = new UntypedFormControl( false );
 
   constructor( private _snackbar: MatSnackBar, 
               private router: Router,

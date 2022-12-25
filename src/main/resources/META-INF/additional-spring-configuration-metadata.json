@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "security.jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.secret'"
+  },
+  {
+    "name": "security.jwt.issuer",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.issuer'"
+  },
+  {
+    "name": "security.jwt.ttlMillis",
+    "type": "java.lang.String",
+    "description": "A description for 'security.jwt.ttlMillis'"
+  }
+]}
