@@ -43,7 +43,7 @@ public class ColectivoController {
         
         Colectivo colectivo = service.saveColectivo(col);
         Response<Colectivo> response;
-        if (colectivo != null) 
+        if (colectivo != null)      
             response = new Response<Colectivo> (false, 200, "Nuevo Colectivo registrado", colectivo );
         else 
             response = new Response<Colectivo> (true, 400, "No se pudo registrar nuevo colectivo", null );

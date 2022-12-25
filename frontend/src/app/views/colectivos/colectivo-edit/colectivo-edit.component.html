@@ -14,7 +14,7 @@
                 <div class="col-4">
                     <mat-form-field appearance="standard" style="width:100%">
                         <mat-label>Numero de unidad</mat-label>
-                        <input matInput [formControl]="unidadIC" autocomplete="off" required />
+                        <input matInput [formControl]="unidadIC" autocomplete="off" required class="text-upper"/>
                         <mat-error *ngIf="unidadIC.hasError('required')">requerido</mat-error>
                     </mat-form-field>
                 </div>
@@ -23,14 +23,14 @@
                 <div class="col-5">
                     <mat-form-field appearance="standard" style="width: 100%;">
                         <mat-label>Marca</mat-label>
-                        <input matInput [formControl]="marcaIC" autocomplete="off" required />
+                        <input matInput [formControl]="marcaIC" autocomplete="off" class="text-upper" required />
                         <mat-error *ngIf="marcaIC.hasError('required')">requerido</mat-error>
                     </mat-form-field>
                 </div>
                 <div class="col-4">
                     <mat-form-field appearance="standard" style="width: 100%;">
                         <mat-label>Modelo</mat-label>
-                        <input matInput [formControl]="modeloIC" autocomplete="off" />
+                        <input matInput [formControl]="modeloIC" class="text-upper" autocomplete="off" />
                     </mat-form-field>
                 </div>
                 <div class="col-3">
@@ -45,7 +45,7 @@
                 <div class="col-4">
                     <mat-form-field appearance="standard" style="width:100%">
                         <mat-label>Patente</mat-label>
-                        <input matInput [formControl]="patenteIC" autocomplete="off" required />
+                        <input matInput [formControl]="patenteIC" autocomplete="off" class="text-upper" required />
                         <mat-error *ngIf="patenteIC.hasError('required')">requerido</mat-error>
                         <mat-error *ngIf="patenteIC.hasError('pattern')">patente invalida</mat-error>
                     </mat-form-field>
