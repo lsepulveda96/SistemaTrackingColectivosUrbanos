@@ -26,4 +26,8 @@ export class ColectivoService {
   updateColectivo( colectivo: Colectivo ): Observable<any> {
     return this.http.put( HTTPCONFIG.url + '/colectivo/' + colectivo.id, colectivo );
   }
+
+  disableColectivo( id: number ): Observable<any> {
+    return this.http.get( HTTPCONFIG.url + '/colectivo/baja/' + id );
+  }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 
@@ -10,8 +10,8 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 })
 export class LoginComponent implements OnInit {
 
-  usernameIC = new UntypedFormControl('', Validators.required );
-  passwIC = new UntypedFormControl('', Validators.required );
+  usernameIC = new FormControl('', Validators.required );
+  passwIC = new FormControl('', [Validators.required, Validators.minLength(6)]);
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';

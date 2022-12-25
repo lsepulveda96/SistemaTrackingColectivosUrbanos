@@ -18,9 +18,7 @@ const routes: Routes = [
       { path:'map', component: MapComponent},
     ]
    },
-  
-  
-  
+  { path: 'misc', loadChildren: () => import('./misc/misc.module').then(m => m.MiscModule) },
 ];
 
 @NgModule({

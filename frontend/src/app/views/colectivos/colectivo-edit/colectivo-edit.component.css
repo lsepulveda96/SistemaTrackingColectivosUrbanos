@@ -24,7 +24,7 @@
   background-color: rgba(0,0,0,0.3);
 }
 
-.button-border {
-    border: 1px solid;
-    margin-left: 10px;
+
+.text-upper {
+  text-transform: uppercase;
 }

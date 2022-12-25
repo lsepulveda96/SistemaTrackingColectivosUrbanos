@@ -1,18 +1,15 @@
 <mat-card class="mat-elevation-z8">
     <mat-card-header>
         <mat-card-title>
-            <div layout-align="bottom left">
-                <mat-icon>directions_bus</mat-icon>
-                &nbsp; Colectivos
-            </div>
+            <mat-icon>directions_bus</mat-icon>
+            Colectivos
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
+    <div class="loading-indicator" *ngIf="spin">
+        <mat-spinner mode="indeterminate" diameter="50"></mat-spinner>
+    </div>
     <mat-card-content>
-        <div class="loading-indicator" *ngIf="spin">  
-            <mat-spinner mode="indeterminate" [strokeWidth]="6" [diameter]="80">
-            </mat-spinner>
-          </div>
         <table mat-table [dataSource]="colectivosDS" class="mat-elevation-z10">
             <ng-container matColumnDef="unidad">
                 <th mat-header-cell *matHeaderCellDef>Unidad</th>
@@ -36,28 +33,30 @@
             </ng-container>
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef>
-                    <button mat-icon-button color="primary" [routerLink]="['new']" matTooltip="nuevo" matTooltipPosition="right"> 
+                    <button mat-icon-button color="primary" [routerLink]="['new']" matTooltip="nuevo"
+                        matTooltipPosition="right">
                         <mat-icon>add_box</mat-icon>
                     </button>
                 </th>
                 <td mat-cell *matCellDef="let col">
-                    <button mat-icon-button color="primary" [routerLink]="['view',col.id ]" matTooltip="ver" matTooltipPosition="left">
-                        <mat-icon>open_in_new</mat-icon>
+                    <button mat-icon-button color="primary" [routerLink]="['view',col.id ]" matTooltip="ver"
+                        matTooltipPosition="left">
+                        <mat-icon>open_in_browser</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" [routerLink]="['edit',col.id ]" matTooltip="editar" matTooltipPosition="left">
+                    <button mat-icon-button color="primary" [routerLink]="['edit',col.id ]" matTooltip="editar"
+                        matTooltipPosition="left">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="baja" matTooltipPosition="right">
-                        <mat-icon>highlight_off</mat-icon>
-                    </button>
-                    <button mat-icon-button color="primary" matTooltip="Historial Linea recorridos" matTooltipPosition="right">
-                        <mat-icon>gesture</mat-icon>
+                    <button mat-icon-button color="primary" matTooltip="Historial Linea recorridos"
+                        matTooltipPosition="right">
+                        <mat-icon>linear_scale</mat-icon>
                     </button>
                 </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="['unidad','patente','marca','capacidad','estado','acciones']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['unidad','patente','marca','capacidad','estado','acciones']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['unidad','patente','marca','capacidad','estado','acciones']">
+            </tr>
         </table>
     </mat-card-content>
 </mat-card>

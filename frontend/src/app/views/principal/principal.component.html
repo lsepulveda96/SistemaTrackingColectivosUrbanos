@@ -6,16 +6,17 @@
     <div class="row">
         <div class="col">
             <mat-card style="text-align: center;">
-                <mat-divider></mat-divider>
-                <mat-card-content>
+                <mat-card-content class="mat-elevation-z12"> 
                     <div class="pro-img">
-                        <img src="assets/images/stcu/unidades.jpg" width="100" alt="user" class="img-circle">
+                        <img src="assets/images/stcu/unidades.jpg" width="100" class="img-circle is-focus" 
+                        [routerLink]="['../colectivos']">
                     </div>
-                    <h3 class="m-b-0">Colectivos</h3>
-                    <h6 class="m-t-0 ">Unidades</h6>
-                    <mat-card-actions>
+                    <mat-divider></mat-divider>
+                    <h3 class="mt-2 is-focus" [routerLink]="['../colectivos']">Colectivos</h3>
+                    <h6>Unidades disponibles</h6>
+                    <!-- <mat-card-actions>
                         <button mat-stroked-button style="border: 1px solid" [routerLink]="['../colectivos']">Ver</button>
-                    </mat-card-actions>
+                    </mat-card-actions> -->
                 </mat-card-content>
             </mat-card>
         </div>
@@ -23,64 +24,54 @@
 
         <!-- column -->
         <div class="col">
-
             <mat-card style="text-align: center;">
-                <mat-divider></mat-divider>
-                <mat-card-content>
+                <mat-card-content class="mat-elevation-z12">
                     <div class="pro-img">
-                        <img src="assets/images/stcu/lineas2.jpg" width="100" alt="user" class="img-circle">
+                        <img src="assets/images/stcu/lineas2.jpg" width="100" class="img-circle is-focus"
+                            [routerLink]="['../lineas']">
                     </div>
-                    <h3 class="m-b-0">Lineas</h3>
-                    <h6 class="m-t-0 ">Lineas  paradas  y recorridos</h6>
-                    <mat-card-actions>
-                        <button mat-stroked-button style="border: 1px solid;"  [routerLink]="['../lineas']">Ver</button>
-                    </mat-card-actions>
+                    <mat-divider></mat-divider>
+                    <h3 class="mt-2 is-focus" [routerLink]="['../lineas']">Lineas</h3>
+                    <h6>Lineas activas, recorridos y paradas</h6>
+                    <!-- <mat-card-actions>
+                        <button mat-stroked-button style="border: 1px solid;">Ver</button>
+                    </mat-card-actions> -->
                 </mat-card-content>
             </mat-card>
 
         </div>
         <!-- column -->
     </div>
-</div>
-
-<!-- ============================================================== -->
-<!-- Image Card row-->
-<!-- ============================================================== -->
-<div class="container">
-    <!-- Card column -->
     <div class="row">
-
         <div class="col">
             <mat-card style="text-align: center;">
-                <mat-divider></mat-divider>
-                <mat-card-content>
+                <mat-card-content class="mat-elevation-z12">
                     <div class="pro-img">
-                        <img src="assets/images/stcu/carteles2.jpg" width="100" alt="user" class="img-circle">
+                        <img src="assets/images/stcu/carteles2.jpg" width="100" class="img-circle is-focus"
+                            [routerLink]="['../paradas']">
                     </div>
-                    <h3 class="m-b-0">Paradas</h3>
-                    <h6 class="m-t-0 ">Paradas</h6>
-                    <mat-card-actions>
-                        <button mat-stroked-button style="border: 1px solid"  [routerLink]="['../paradas']">Ver</button>
-                    </mat-card-actions>
+                    <mat-divider></mat-divider>
+                    <h3 class="mt-2 is-focus"  [routerLink]="['../paradas']">Paradas</h3>
+                    <h6>Paradas de todas las lineas</h6>
+                    <!-- <mat-card-actions>
+                        <button mat-stroked-button style="border: 1px solid">Ver</button>
+                    </mat-card-actions> -->
                 </mat-card-content>
             </mat-card>
-
         </div>
-        <!-- Card column -->
-        <!-- Card column -->
         <div class="col">
-
             <mat-card style="text-align: center;">
-                <mat-divider></mat-divider>
-                <mat-card-content>
+                <mat-card-content class="mat-elevation-z12">
                     <div class="pro-img">
-                        <img src="assets/images/stcu/monitor.jpg" width="100" alt="user" class="img-circle">
+                        <img src="assets/images/stcu/monitor.jpg" width="100" class="img-circle is-focus"
+                            [routerLink]="['../monitoreo']">
                     </div>
-                    <h3 class="m-b-0">Monitoreo</h3>
-                    <h6 class="m-t-0 ">Seguimiento unidades</h6>
-                    <mat-card-actions>
-                        <button mat-stroked-button style="border: 1px solid;"  [routerLink]="['../monitoreo']">Ver</button>
-                    </mat-card-actions>
+                    <mat-divider></mat-divider>
+                    <h3 class="mt-2 is-focus"  [routerLink]="['../monitoreo']">Monitoreo</h3>
+                    <h6>Seguimiento unidades</h6>
+                    <!-- <mat-card-actions>
+                        <button mat-stroked-button style="border: 1px solid;">Ver</button>
+                    </mat-card-actions> -->
                 </mat-card-content>
             </mat-card>
 
@@ -88,24 +79,22 @@
     </div>
 </div>
 
-
 <div class="container">
     <div class="row">
         <div class="col">
             <mat-card style="text-align: center;">
-                <mat-divider></mat-divider>
-                <mat-card-content>
+                <mat-card-content class="mat-elevation-z12" [routerLink]="['map']">
                     <div class="pro-img">
-                        <img src="assets/images/stcu/monitor.jpg" width="100" alt="user" class="img-circle">
+                        <img src="assets/images/stcu/monitor.jpg" width="100" alt="user" class="img-circle is-focus">
                     </div>
-                    <h3 class="m-b-0">Mapa</h3>
-                    <h6 class="m-t-0 ">Test maps</h6>
-                    <mat-card-actions>
-                        <button mat-stroked-button style="border: 1px solid;"  [routerLink]="['map']">Mapa</button>
-                    </mat-card-actions>
+                    <mat-divider></mat-divider>
+                    <h3 class="mt-2">Mapa</h3>
+                    <h6>Test maps</h6>
+                    <!-- <mat-card-actions>
+                        <button mat-stroked-button style="border: 1px solid;">Mapa</button>
+                    </mat-card-actions> -->
                 </mat-card-content>
             </mat-card>
-
         </div>
     </div>
 </div>
