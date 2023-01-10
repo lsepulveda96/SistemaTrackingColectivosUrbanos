@@ -61,6 +61,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
+              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -110,6 +111,18 @@
               "src/favicon.ico"
             ]
           }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "tsconfig.app.json",
+              "tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
         }
       }
     },
@@ -124,10 +137,22 @@
             "protractorConfig": "./protractor.conf.js",
             "devServerTarget": "material:serve"
           }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "e2e/tsconfig.e2e.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
         }
       }
     }
   },
+  "defaultProject": "material",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

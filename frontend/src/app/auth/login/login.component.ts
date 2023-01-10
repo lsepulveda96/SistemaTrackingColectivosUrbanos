@@ -11,7 +11,11 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 export class LoginComponent implements OnInit {
 
   usernameIC = new FormControl('', Validators.required );
+<<<<<<< HEAD
   passwIC = new FormControl('', [Validators.required, Validators.minLength(6)]);
+=======
+  passwIC = new FormControl('', Validators.required );
+>>>>>>> parent of c5fe1a0... add jwt
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';

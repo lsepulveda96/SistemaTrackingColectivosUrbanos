@@ -1,6 +1,6 @@
 import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, UntypedFormControl, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -30,15 +30,15 @@ export class ColectivoEditComponent implements OnInit {
   id: any;
   colectivo: Colectivo | undefined;
 
-  unidadIC = new FormControl('', Validators.required);
-  patenteIC = new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z]{2}[0-9]{3}[a-zA-Z]{2}$|^[a-zA-Z]{3}[0-9]{3}$')]);
-  marcaIC = new FormControl('', Validators.required);
+  unidadIC = new FormControl('',Validators.required );
+  patenteIC = new FormControl('',[Validators.required, Validators.pattern('^[A-Z]{2}[0-9]{3}[A-Z]{2}$|^[A-Z]{3}[0-9]{3}$')] );
+  marcaIC = new FormControl('', Validators.required );
   modeloIC = new FormControl('');
-  anioIC = new FormControl('', Validators.pattern('^[12]{1}[09]{1}[0-9]{2}$')); // 19xx o 20xx
-  capacidadIC = new FormControl('', Validators.pattern('^[1-9][0-9]?$')); // numero entre 1 y 100
+  anioIC = new FormControl('', Validators.pattern('^[12]{1}[09]{1}[0-9]{2}$') ); // 19xx o 20xx
+  capacidadIC = new FormControl('', Validators.pattern('^[1-9][0-9]?$') ); // numero entre 1 y 100
   compraIC = new FormControl('');
 
-  estados: string[] = ['HABILITADO', 'NO HABILITADO'];
+  estados: string[] = ['HABILITADO','NO HABILITADO'];
   estadoIC = new FormControl('');
 
   constructor(private router: Router,

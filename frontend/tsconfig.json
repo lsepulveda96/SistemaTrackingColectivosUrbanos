@@ -15,7 +15,7 @@
     "declaration": false,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "target": "es2020",
+    "target": "es2015",
     "strict": false,
     "typeRoots": [
       "node_modules/@types"

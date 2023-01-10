@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -25,8 +25,8 @@ export class ParadaEditComponent implements OnInit {
   codigo: string;
   parada: Parada;
 
-  direccionIC = new UntypedFormControl('', Validators.required);
-  descripcionIC = new UntypedFormControl('');
+  direccionIC = new FormControl('', Validators.required);
+  descripcionIC = new FormControl('');
 
   map: any;
   marker: any;
