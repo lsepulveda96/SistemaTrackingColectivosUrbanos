@@ -1,4 +1,3 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -34,9 +33,9 @@ export class ColectivoEditComponent implements OnInit {
   patenteIC = new FormControl('',[Validators.required, Validators.pattern('^[A-Z]{2}[0-9]{3}[A-Z]{2}$|^[A-Z]{3}[0-9]{3}$')] );
   marcaIC = new FormControl('', Validators.required );
   modeloIC = new FormControl('');
-  anioIC = new FormControl('', Validators.pattern('^[12]{1}[09]{1}[0-9]{2}$') ); // 19xx o 20xx
-  capacidadIC = new FormControl('', Validators.pattern('^[1-9][0-9]?$') ); // numero entre 1 y 100
-  compraIC = new FormControl('');
+  anioIC = new FormControl(null, Validators.pattern('^[12]{1}[09]{1}[0-9]{2}$') ); // 19xx o 20xx
+  capacidadIC = new FormControl(null, Validators.pattern('^[1-9][0-9]?$') ); // numero entre 1 y 100
+  compraIC = new FormControl(null);
 
   estados: string[] = ['HABILITADO','NO HABILITADO'];
   estadoIC = new FormControl('');
@@ -61,9 +60,9 @@ export class ColectivoEditComponent implements OnInit {
     this.patenteIC.setValue('')
     this.marcaIC.setValue('');
     this.modeloIC.setValue('')
-    this.anioIC.setValue('')
+    this.anioIC.setValue(null)
     this.capacidadIC.setValue(null);
-    this.compraIC.setValue(null);
+    this.compraIC.setValue( null);
     this.estadoIC.setValue(this.estados[0]);
     this.spin = false;
   }
