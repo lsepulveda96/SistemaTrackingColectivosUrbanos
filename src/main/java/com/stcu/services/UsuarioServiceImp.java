@@ -1,6 +1,7 @@
 package com.stcu.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.stcu.model.Usuario;
 import com.stcu.repository.UsuarioRepository;
@@ -25,7 +26,7 @@ public class UsuarioServiceImp implements UsuarioService {
         return this.rep.findById(id);
     }
 
-    public Usuario getUsuario( String usr ) {
+    public Optional<Usuario> getUsuario( String usr ) {
         return this.rep.findByUsuario( usr );
     }
 
@@ -57,7 +58,7 @@ public class UsuarioServiceImp implements UsuarioService {
     @Override
     public boolean validateUsuario( String username, String pwd ) {
 
-        Usuario usuario = this.rep.findByUsuario(username);
+        Usuario usuario = this.rep.findByUsuario(username).get();
         if (usuario != null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             return encoder.matches( pwd, usuario.getPasswd() );
