@@ -2,7 +2,7 @@
 
 # Sistema de Tracking de colectivos urbanos. Version 2
 
-## Administracion web: 
+### Aplicacion web: 
 
 + Colectivos.
 + Lineas -> Paradas, Recorridos.
@@ -11,21 +11,25 @@
 + Notificaciones.
 + Usuarios.
 
-## Backend
-
-* Spring boot , hibernate ORM.
-* Base de datos PostgreSQL 13, extension PostGIS 3.1.
-
-## Frontend
-
-* Angular 12.
-* Angular Material 12, Bootstrap 5.
-* Leaflet 1.7, Esri leaflet 3.0.
-
-* 17/01/2023 -> update to Angular 14, Angular Material 14.
-
-## Movil
-* Ionic 
+### App movil
 + Buscar paradas cercanas.
 + Escanear QR parada.
 + Recuperar tiempo de llegada.
+
+
+## Stack 
+
+### Backend
+* OpenJdk SE17 
+* Spring boot 2.7, hibernate ORM.
+* Base de datos PostgreSQL 13, extension PostGIS 3.1.
+
+### Frontend
+* Angular 14. (**) 
+* Angular Material 14 (**), Bootstrap 5.
+* Leaflet 1.7, Esri leaflet 3.0.
+
+** update 17/01/2023 from angular 12 
+
+### Movil
+* Ionic framework
