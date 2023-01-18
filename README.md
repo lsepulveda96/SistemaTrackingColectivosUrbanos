@@ -1,6 +1,5 @@
 # stcu2
-
-# Sistema de Tracking de colectivos urbanos. Version 2
+ Sistema de Tracking de colectivos urbanos. Version 2
 
 ### Aplicacion web: 
 
