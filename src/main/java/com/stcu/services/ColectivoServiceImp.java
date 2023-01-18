@@ -5,7 +5,6 @@ import java.util.List;
 import com.stcu.model.Colectivo;
 import com.stcu.repository.ColectivoRepository;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

@@ -15,7 +15,7 @@ const MENUITEMS = [
   { state: 'monitoreo', name: 'Monitoreo', type: 'link', icon: 'pin_drop'},
   { state: 'notificaciones', name: 'Notificaciones', type: 'link', icon: 'notifications_active'},
   { state: 'usuarios', name: 'Usuarios', type: 'link', icon: 'supervisor_account'},
-  { state: 'auth', name: 'Login', type: 'link', icon: 'supervisor_account'},
+  /* { state: 'auth', name: 'Login', type: 'link', icon: 'supervisor_account'}, */
   /*
   { state: 'button', type: 'link', name: 'Buttons', icon: 'crop_7_5' },
   { state: 'grid', type: 'link', name: 'Grid List', icon: 'view_comfy' },

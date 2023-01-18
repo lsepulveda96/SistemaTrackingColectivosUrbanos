@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Usuario } from 'src/app/data/usuario';
@@ -16,16 +16,16 @@ export class UsuarioEditComponent implements OnInit {
   id: number;
   usuario: Usuario;
 
-  usuarioIC = new FormControl('',[Validators.required, Validators.pattern('^[a-zA-Z0-9]*$'),Validators.minLength(5)] );
-  passwdIC = new FormControl('',[Validators.required, Validators.minLength(8), Validators.maxLength(15)]);
-  passwd2IC = new FormControl('',[Validators.required, Validators.minLength(8), Validators.maxLength(15)] );
-  nombreIC = new FormControl( '',Validators.required );
-  apellidoIC = new FormControl( '',Validators.required );
-  dniIC = new FormControl('');
-  direccionIC = new FormControl('');
-  telefonoIC = new FormControl('') ;
-  emailIC = new FormControl('', Validators.email );
-  superusrIC = new FormControl(false);
+  usuarioIC = new UntypedFormControl('',[Validators.required, Validators.pattern('^[a-zA-Z0-9]*$'),Validators.minLength(5)] );
+  passwdIC = new UntypedFormControl('',[Validators.required, Validators.minLength(8), Validators.maxLength(15)]);
+  passwd2IC = new UntypedFormControl('',[Validators.required, Validators.minLength(8), Validators.maxLength(15)] );
+  nombreIC = new UntypedFormControl( '',Validators.required );
+  apellidoIC = new UntypedFormControl( '',Validators.required );
+  dniIC = new UntypedFormControl('');
+  direccionIC = new UntypedFormControl('');
+  telefonoIC = new UntypedFormControl('') ;
+  emailIC = new UntypedFormControl('', Validators.email );
+  superusrIC = new UntypedFormControl(false);
 
   constructor( private servicioUsuario: UsuarioService,
               private _snackbar: MatSnackBar,

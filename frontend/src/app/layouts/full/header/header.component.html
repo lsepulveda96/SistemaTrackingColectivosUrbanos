@@ -1,4 +1,3 @@
-        
 <!-- ============================================================== -->
 <!-- Profile - style you can find in header.scss -->
 <!-- ============================================================== -->
@@ -6,18 +5,28 @@
 <!--
 <a href="https://wrappixel.com/templates/materialpro-angular-dashboard/" class=" m-r-20 hidden-sm-up" mat-raised-button color="warn">Upgrade To Pro</a>
 -->
-
-<button [matMenuTriggerFor]="profile" mat-icon-button class="m-r-5"> <img src="assets/images/users/usr_stcu.jpg" alt="user" class="profile-pic"> </button>
+<span *ngIf="username" style="font-size: small;">{{ username }}</span> &nbsp;
+<button [matMenuTriggerFor]="profile" mat-icon-button class="m-r-5">
+    <img src="assets/images/users/usr_stcu.jpg" alt="user" class="profile-pic">    
+</button>
 <mat-menu #profile="matMenu" class="mymegamenu">
-    <button mat-menu-item>
-        <mat-icon>settings</mat-icon>Configuracion</button>
-    <button mat-menu-item>
-        <mat-icon>account_box</mat-icon> Perfil</button>
-    <!--
-    <button mat-menu-item>
-        <mat-icon>notifications_off</mat-icon> Disable notifications </button>
-    -->
-    <button mat-menu-item>
-        <mat-icon>exit_to_app</mat-icon> Sign Out </button>
+    <button mat-menu-item *ngIf="isLoggedIn">
+        <!-- <mat-icon>settings</mat-icon> -->
+        <i class="bi bi-gear"></i>
+        Configuracion
+    </button>
+    <button mat-menu-item *ngIf="isLoggedIn">
+        <!-- <mat-icon>account_box</mat-icon> -->
+        <i class="bi bi-person-bounding-box"></i>
+        Perfil
+    </button>
+    <button mat-menu-item *ngIf="isLoggedIn" (click)="cerrarSesion()">
+        <!-- <mat-icon>exit_to_app</mat-icon> -->
+        <i class="bi bi-door-closed"></i>
+        Cerrar sesion
+    </button>
+    <button mat-menu-item *ngIf="!isLoggedIn" (click)="iniciarSesion()"> 
+        <i class="bi bi-door-open"></i>
+        Iniciar sesion  
+    </button>
 </mat-menu>
-

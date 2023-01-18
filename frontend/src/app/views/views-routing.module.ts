@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../helpers/auth.guard';
 import { MapComponent } from './map/map.component';
 import { ViewsComponent } from './views.component';
 
@@ -8,14 +9,43 @@ const routes: Routes = [
     path: '', 
     component: ViewsComponent,
     children: [
-      { path: 'usuarios', loadChildren: () => import('./usuarios/usuarios.module').then(m => m.UsuariosModule) },
-      { path: 'colectivos', loadChildren: () => import('./colectivos/colectivos.module').then(m => m.ColectivosModule) },
-      { path: 'paradas', loadChildren: () => import('./paradas/paradas.module').then(m => m.ParadasModule) },
-      { path: 'lineas', loadChildren: () => import('./lineas/lineas.module').then(m => m.LineasModule) },
-      { path: 'monitoreo', loadChildren: () => import('./monitoreo/monitoreo.module').then(m => m.MonitoreoModule) },
-      { path: 'notificaciones', loadChildren: () => import('./notificaciones/notificaciones.module').then(m => m.NotificacionesModule) },
-      { path: 'principal', loadChildren: () => import('./principal/principal.module').then(m => m.PrincipalModule) },
-      { path:'map', component: MapComponent},
+      { 
+        path: 'usuarios', 
+        loadChildren: () => import('./usuarios/usuarios.module').then(m => m.UsuariosModule),
+        canActivate: [AuthGuard] 
+      },
+      { 
+        path: 'colectivos', 
+        loadChildren: () => import('./colectivos/colectivos.module').then(m => m.ColectivosModule),
+        canActivate: [AuthGuard] 
+      },
+      { 
+        path: 'paradas', 
+        loadChildren: () => import('./paradas/paradas.module').then(m => m.ParadasModule),
+        canActivate: [AuthGuard] 
+      },
+      { 
+        path: 'lineas', 
+        loadChildren: () => import('./lineas/lineas.module').then(m => m.LineasModule),
+        canActivate: [AuthGuard] 
+      },
+      { 
+        path: 'monitoreo', 
+        loadChildren: () => import('./monitoreo/monitoreo.module').then(m => m.MonitoreoModule),
+        canActivate: [AuthGuard] 
+      },
+      { 
+        path: 'notificaciones', 
+        loadChildren: () => import('./notificaciones/notificaciones.module').then(m => m.NotificacionesModule),
+        canActivate: [AuthGuard] 
+      },
+      { 
+        path: 'principal', 
+        loadChildren: () => import('./principal/principal.module').then(m => m.PrincipalModule) 
+      },
+      { 
+        path:'map', component: MapComponent
+      },
     ]
    },
   { path: 'misc', loadChildren: () => import('./misc/misc.module').then(m => m.MiscModule) },

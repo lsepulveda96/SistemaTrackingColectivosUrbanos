@@ -1,12 +1,18 @@
 package com.stcu.model;
 
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -62,15 +68,19 @@ public class Usuario {
     @Temporal( TemporalType.DATE )
     private Calendar baja;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="usuario_rol", 
+            joinColumns = @JoinColumn(name="usuario_id"), 
+            inverseJoinColumns = @JoinColumn(name="rol_id"))
+    private Set<Rol> roles = new HashSet<>();
+    
 
     public Usuario( String usr, String passwd ) {
         this.usuario = usr;
         this.passwd = passwd;
+        this.estado = "ACTIVO";
     }
 
     public Usuario() {
     }
-
-        
-
 }

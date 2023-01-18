@@ -48,7 +48,7 @@ public class UsuarioController {
     public String saveUsuario( @RequestBody Usuario usr ) {
         Response<UsuarioDTO> response;
 
-        Usuario usuario = service.getUsuario(usr.getUsuario() );
+        Usuario usuario = service.getUsuario(usr.getUsuario() ).get();
         
         if (usuario != null) {
             response = new Response<UsuarioDTO>( true, 400, "El nombre de usuario ya se encuentra registrado", null );
