@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { HTTPCONFIG  } from './httpconfig';
 
@@ -17,12 +17,12 @@ export class AuthService {
 
   constructor( private http: HttpClient ) { }
 
+
   login( user: string, passwd: string ): Observable<any> {
     return this.http.post( HTTPCONFIG.url + AUTH_API + '/signin', { username: user, password: passwd }, httpOptions );
   }
 
   logout() {
-    
   }
 
   register( username: string, email: string, pass: string ): Observable<any> {
