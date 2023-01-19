@@ -76,7 +76,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
-        System.out.println("***************** AuthController signup: " + signupRequest.getUsername() + ", passw; " +signupRequest.getPassword() );
         if (usuarioRepository.existsByUsuario(signupRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -92,7 +91,7 @@ public class AuthController {
             roles.add(rol);
         } else {
             strRoles.forEach(rol -> {
-                if (rol == "admin") {
+                if (rol.compareTo("admin") == 0) {
                     Rol adminRol = rolRepository.findByRol(ERole.ROLE_ADMIN)
                             .orElseThrow(() -> new RuntimeException("Error: rol no encontrado"));
                     roles.add(adminRol);

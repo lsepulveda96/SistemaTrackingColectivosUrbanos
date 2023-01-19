@@ -30,12 +30,14 @@
             </ng-container>
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef width="20%">
-                    <button mat-icon-button color="primary" [routerLink]="['new']" matTooltip="nuevo" matTooltipPosition="right">
+                    <button mat-icon-button color="primary" [routerLink]="['new']" [disabled]="!isadmin"
+                        matTooltip="nuevo" matTooltipPosition="right">
                         <mat-icon>add_box</mat-icon>
                     </button>
                 </th>
                 <td mat-cell *matCellDef="let lin">
-                    <button mat-icon-button color="primary" [routerLink]="['edit', lin.id ]" matTooltip="editar" matTooltipPosition="left">
+                    <button mat-icon-button color="primary" [routerLink]="['edit', lin.id ]" [disabled]="!isadmin"
+                        matTooltip="editar" matTooltipPosition="left">
                         <mat-icon>edit</mat-icon>
                     </button>
                     <button mat-icon-button color="primary" matTooltip="recorrido" matTooltipPosition="right" [routerLink]="['recorrido/view',lin.id]">

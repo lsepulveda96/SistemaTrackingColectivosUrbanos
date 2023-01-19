@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Colectivo } from 'src/app/data/colectivo';
 import { ColectivoService } from 'src/app/services/colectivo.service';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 @Component({
   selector: 'app-colectivos-list',
@@ -15,7 +16,13 @@ export class ColectivosListComponent implements OnInit {
   colectivos: Colectivo[] = [];
   colectivosDS: MatTableDataSource<Colectivo> = new MatTableDataSource<Colectivo>([]);
 
-  constructor( private serviceColectivo: ColectivoService ) { }
+  isadmin: boolean = false;
+
+  constructor( 
+    private serviceColectivo: ColectivoService,
+    private tokenService: TokenStorageService ) { 
+      this.isadmin = tokenService.isUserAdmin();
+  }
 
   ngOnInit(): void {
     this.getColectivos();

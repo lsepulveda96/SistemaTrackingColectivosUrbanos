@@ -33,7 +33,7 @@
             </ng-container>
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef>
-                    <button mat-icon-button color="primary" [routerLink]="['new']" matTooltip="nuevo"
+                    <button mat-icon-button color="primary" [routerLink]="['new']" matTooltip="nuevo" [disabled]="!isadmin"
                         matTooltipPosition="right">
                         <mat-icon>add_box</mat-icon>
                     </button>
@@ -44,7 +44,7 @@
                         <mat-icon>open_in_browser</mat-icon>
                     </button>
                     <button mat-icon-button color="primary" [routerLink]="['edit',col.id ]" matTooltip="editar"
-                        matTooltipPosition="left">
+                        matTooltipPosition="left" [disabled]="!isadmin">
                         <mat-icon>edit</mat-icon>
                     </button>
                     <button mat-icon-button color="primary" matTooltip="Historial Linea recorridos"
