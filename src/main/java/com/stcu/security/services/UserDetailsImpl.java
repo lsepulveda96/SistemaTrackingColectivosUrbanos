@@ -18,16 +18,18 @@ public class UserDetailsImpl implements UserDetails {
     private long id;
     private String username;
     private String email;
+    private String estado;
     @JsonIgnore
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(long id, String username, String email, String password,
+    public UserDetailsImpl(long id, String username, String email, String password, String estado,
             Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.estado = estado;
         this.authorities = authorities;
     }
 
@@ -36,7 +38,7 @@ public class UserDetailsImpl implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getRol().name()))
                 .collect(Collectors.toList());
 
-        return new UserDetailsImpl(usuario.getId(), usuario.getUsuario(), usuario.getEmail(), usuario.getPasswd(),
+        return new UserDetailsImpl(usuario.getId(), usuario.getUsuario(), usuario.getEmail(), usuario.getPasswd(), usuario.getEstado(),
                 authorities);
     }
 
@@ -70,7 +72,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.estado.compareTo("ACTIVO") == 0;
     }
 
     @Override

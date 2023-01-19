@@ -17,7 +17,6 @@ export class TokenStorageService {
   
   constructor() { }
 
-
   signOut() {
     window.sessionStorage.clear();
     this.authStatusListener.next( false );
@@ -44,5 +43,10 @@ export class TokenStorageService {
       return JSON.parse(user);
     }
     return {};
+  }
+
+  public isUserAdmin(): boolean {
+    const usr = this.getUser();
+    return (usr && usr.roles) ? !!usr.roles.find( (r:string) => r =='ROLE_ADMIN'): false;
   }
 }
