@@ -1,3 +1,3 @@
 export const HTTPCONFIG = {
-    url: 'http://localhost:4567'
+    url: 'http://localhost:50000'
 }

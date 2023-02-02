@@ -29,8 +29,8 @@
                             <BR>
                             <div class="row d-flex align-items-center">
                                 <div class="col-1">
-                                    <mat-icon *ngIf="usuario && usuario.superusuario" style="color: blue;">check_circle_outline</mat-icon>
-                                    <mat-icon *ngIf="usuario && !usuario.superusuario" style="color: red;">cancel</mat-icon>
+                                    <mat-icon *ngIf="issuper" style="color: blue;">check_circle_outline</mat-icon>
+                                    <mat-icon *ngIf="!issuper" style="color: red;">cancel</mat-icon>
                                 </div>
                                 <div class="col">
                                     <span>Superusuario</span>

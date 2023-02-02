@@ -13,6 +13,7 @@ export class UsuarioViewComponent implements OnInit {
 
   waiting: boolean;
   usuario: Usuario;
+  issuper: boolean;
 
   constructor( private servicioUsuario: UsuarioService,
               private _snackbar: MatSnackBar,
@@ -39,7 +40,7 @@ export class UsuarioViewComponent implements OnInit {
           this.router.navigate( ['../..'],{ relativeTo: this.route });
         }
         this.usuario = result.data;
-        console.log("Usuario: ", this.usuario );
+        this.issuper = result.data.roles?.find( (r: string) => r == 'ROLE_ADMIN');
       });
   }
 

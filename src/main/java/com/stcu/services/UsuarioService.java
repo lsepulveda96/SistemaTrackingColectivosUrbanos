@@ -17,5 +17,7 @@ public interface UsuarioService {
     public boolean validateUsuario( String username, String pwd );
 
     public boolean changePass( long id, String pass, String newpass );
+
+    public boolean deactivateUsuario( long id );
     
 }

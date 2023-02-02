@@ -46,7 +46,8 @@
                         <button mat-icon-button color="primary" [routerLink]="['edit',usr.id]" matTooltip="editar" matTooltipPosition="left">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button color="primary" matTooltip="Baja" matTooltipPosition="right">
+                        <button mat-icon-button color="primary" matTooltip="Baja" matTooltipPosition="right"
+                            (click)="bajaUsuario(usr.id, usr.usuario)">
                             <mat-icon>highlight_off</mat-icon>
                         </button>
                     </td>

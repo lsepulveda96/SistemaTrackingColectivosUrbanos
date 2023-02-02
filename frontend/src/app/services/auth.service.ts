@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { HTTPCONFIG  } from './httpconfig';
@@ -25,7 +26,14 @@ export class AuthService {
   logout() {
   }
 
-  register( username: string, email: string, pass: string ): Observable<any> {
-    return this.http.post( HTTPCONFIG.url + AUTH_API + '/signup', { username: username, password: pass, email: email }, httpOptions );
+  register( username: string, pass: string, isSuper: boolean,
+    apellido: string, nombre: string, email: string, 
+    dni: string, direccion: string, telefono: string ): Observable<any> {
+    const roles = isSuper ? ['admin','usr']: ['usr'];
+    const payload = { username: username, password: pass, email: email, 
+      apellido: apellido, nombre: nombre, dni: dni, direccion: direccion, telefono: telefono,
+      roles: roles };
+    return this.http.post( HTTPCONFIG.url + AUTH_API + '/signup', 
+      payload , httpOptions );
   }
 }

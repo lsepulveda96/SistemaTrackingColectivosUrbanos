@@ -8,7 +8,7 @@
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
-    <div class="loading-indicator" *ngIf="waiting"> 
+    <div class="loading-indicator" *ngIf="waiting">
         <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
     </div>
     <mat-card-content>
@@ -22,10 +22,13 @@
                                 <div class="col-12">
                                     <mat-form-field appearance="standard" style="width: 100%;">
                                         <mat-label>Nombre de usuario</mat-label>
-                                        <input matInput [formControl]="usuarioIC" autocomplete="off" required [readonly]="usuario"/>
+                                        <input matInput [formControl]="usuarioIC" autocomplete="off" required
+                                            [readonly]="usuario" />
                                         <mat-error *ngIf="usuarioIC.hasError('required')">requerido</mat-error>
-                                        <mat-error *ngIf="usuarioIC.hasError('minlength')">al menos 5 caracteres</mat-error>
-                                        <mat-error *ngIf="usuarioIC.hasError('pattern')">caracteres no permitidos</mat-error>
+                                        <mat-error *ngIf="usuarioIC.hasError('minlength')">al menos 5
+                                            caracteres</mat-error>
+                                        <mat-error *ngIf="usuarioIC.hasError('pattern')">caracteres no
+                                            permitidos</mat-error>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -33,9 +36,12 @@
                                 <div class="col-12">
                                     <mat-form-field appearance="standard" style="width: 100%;">
                                         <mat-label>Contraseña</mat-label>
-                                        <input matInput type="password" [formControl]="passwdIC" autocomplete="off" required/>
+                                        <input matInput type="password" [formControl]="passwdIC" autocomplete="off"
+                                            required />
                                         <mat-error *ngIf="passwdIC.hasError('required')">requerido</mat-error>
-                                        <mat-error *ngIf="passwdIC.hasError('minlength') || passwdIC.hasError('maxlength')">entre 8 y 15 caracteres</mat-error>
+                                        <mat-error
+                                            *ngIf="passwdIC.hasError('minlength') || passwdIC.hasError('maxlength')">entre
+                                            8 y 15 caracteres</mat-error>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -43,9 +49,12 @@
                                 <div class="col-12">
                                     <mat-form-field appearance="standard" style="width: 100%;">
                                         <mat-label>Repetir contraseña</mat-label>
-                                        <input matInput type="password" [formControl]="passwd2IC" autocomplete="off" required/>
+                                        <input matInput type="password" [formControl]="passwd2IC" autocomplete="off"
+                                            required />
                                         <mat-error *ngIf="passwd2IC.hasError('required')">requerido</mat-error>
-                                        <mat-error *ngIf="passwd2IC.hasError('minlength') || passwd2IC.hasError('maxlength')">entre 8 y 15 caracteres</mat-error>
+                                        <mat-error
+                                            *ngIf="passwd2IC.hasError('minlength') || passwd2IC.hasError('maxlength')">entre
+                                            8 y 15 caracteres</mat-error>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -66,15 +75,24 @@
                                 <div class="col-6">
                                     <mat-form-field appearance="standard" style="width: 100%;">
                                         <mat-label>Nombre</mat-label>
-                                        <input matInput [formControl]="nombreIC" autocomplete="off" required/>
+                                        <input matInput [formControl]="nombreIC" autocomplete="off" required />
                                         <mat-error *ngIf="nombreIC.hasError('required')">requerido</mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-6">
                                     <mat-form-field appearance="standard" style="width: 100%;">
                                         <mat-label>apellido</mat-label>
-                                        <input matInput [formControl]="apellidoIC" autocomplete="off" required/>
+                                        <input matInput [formControl]="apellidoIC" autocomplete="off" required />
                                         <mat-error *ngIf="apellidoIC.hasError('required')">requerido</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <mat-form-field appearance="standard" style="width: 100%;">
+                                        <mat-label>Email</mat-label>
+                                        <input matInput [formControl]="emailIC" autocomplete="off"/>
+                                        <mat-error *ngIf="emailIC.hasError('email')">email incorrecto</mat-error>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -97,41 +115,34 @@
                             <div class="row">
                                 <div class="col-12">
                                     <mat-form-field appearance="standard" style="width: 100%;">
-                                        <mat-label>Email</mat-label>
-                                        <input matInput [formControl]="emailIC" autocomplete="off" />
-                                        <mat-error *ngIf="emailIC.hasError('email')">valor invalido</mat-error>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <mat-form-field appearance="standard" style="width: 100%;">
                                         <mat-label>Telefono</mat-label>
                                         <input matInput [formControl]="telefonoIC" autocomplete="off" />
                                     </mat-form-field>
                                 </div>
-                            </div>                
+                            </div>
                         </mat-card-content>
                     </mat-card>
                 </div>
             </div>
-            
+
             <mat-divider></mat-divider>
             <br>
             <div class="d-flex justify-content-end">
-                <button mat-stroked-button color="primary" (click)="guardarUsuario()" *ngIf="!id" class="button-border"
-                        [disabled]="usuarioIC.invalid || passwdIC.invalid || passwd2IC.invalid ||nombreIC.invalid || apellidoIC.invalid"> 
-                        Guardar
+                <button mat-stroked-button color="primary" (click)="registrarUsuario()" *ngIf="!id"
+                    class="button-border"
+                    [disabled]="usuarioIC.invalid || passwdIC.invalid || passwd2IC.invalid 
+                        || emailIC.invalid ||nombreIC.invalid || apellidoIC.invalid">
+                    Guardar
                 </button>
-                <button mat-stroked-button color="primary" (click)="actualizarUsuario()" *ngIf="id" class="button-border"
-                        [disabled]="usuarioIC.invalid || nombreIC.invalid || apellidoIC.invalid"> 
-                        Actualizar
+                <button mat-stroked-button color="primary" (click)="actualizarUsuario()" *ngIf="id"
+                    class="button-border" [disabled]="emailIC.invalid || nombreIC.invalid || apellidoIC.invalid">
+                    Actualizar
                 </button>
                 <button mat-stroked-button [routerLink]="id ? ['../..']:['../']" color="primary" class="button-border">
-                        Cancelar
+                    Cancelar
                 </button>
             </div>
         </div>
-        
+
     </mat-card-content>
 </mat-card>

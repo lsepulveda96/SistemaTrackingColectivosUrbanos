@@ -1,5 +1,6 @@
 package com.stcu.services;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +43,6 @@ public class UsuarioServiceImp implements UsuarioService {
     @Override
     public Usuario updateUsuario(long id, Usuario usuario) {
         Usuario usr = this.rep.findById(id);
-        usr.setUsuario(usuario.getUsuario());
         usr.setNombre(usuario.getNombre());
         usr.setApellido(usuario.getApellido());
         usr.setDni(usuario.getDni());
@@ -50,6 +50,7 @@ public class UsuarioServiceImp implements UsuarioService {
         usr.setEmail(usuario.getEmail());
         usr.setSuperusuario(usuario.isSuperusuario());
         usr.setTelefono(usuario.getTelefono());
+        usr.setRoles( usuario.getRoles() );
 
         return this.rep.save(usr);
     }
@@ -79,6 +80,16 @@ public class UsuarioServiceImp implements UsuarioService {
         return false;
     }
 
-    
+    @Override
+    public boolean deactivateUsuario( long id ) {
+        Usuario usuario = this.rep.findById(id);
+        if (usuario != null) {
+            usuario.setEstado("NO_ACTIVO");
+            usuario.setBaja( Calendar.getInstance());
+            this.rep.save(usuario);
+            return true;
+        }
+        return false;
+    }    
     
 }

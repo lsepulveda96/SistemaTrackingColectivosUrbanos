@@ -1,5 +1,6 @@
 package com.stcu.controllers;
 
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,10 +80,18 @@ public class AuthController {
         if (usuarioRepository.existsByUsuario(signupRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: username ya esta en uso"));
+                    .body(new MessageResponse("Nombre de usuario ya esta en uso"));
         }
         // Crea nuevo usuario.
         Usuario usuario = new Usuario(signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()));
+        usuario.setEmail(signupRequest.getEmail());
+        usuario.setApellido(signupRequest.getApellido());
+        usuario.setNombre(signupRequest.getNombre());
+        usuario.setDni(signupRequest.getDni());
+        usuario.setDireccion(signupRequest.getDireccion());
+        usuario.setTelefono(signupRequest.getTelefono());
+        usuario.setAlta( Calendar.getInstance() );
+
         Set<String> strRoles = signupRequest.getRoles();
         Set<Rol> roles = new HashSet<>();
         if (strRoles == null) {

@@ -2,7 +2,9 @@ package com.stcu.controllers.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.stcu.model.ERole;
 import com.stcu.model.Usuario;
 
 import lombok.Getter;
@@ -31,6 +33,8 @@ public class UsuarioDTO {
 
     private String estado;
 
+    private List<ERole> roles;
+
     public UsuarioDTO() {}  
     
     public UsuarioDTO( Usuario usr ) {
@@ -44,6 +48,7 @@ public class UsuarioDTO {
         email = usr.getEmail();
         superusuario = usr.isSuperusuario();
         estado = usr.getEstado();
+        roles = usr.getRoles().stream().map( item -> item.getRol() ).collect( Collectors.toList() );
     }
 
     
