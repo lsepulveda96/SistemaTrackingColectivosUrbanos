@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Linea } from 'src/app/data/linea';
 import { LineaService } from 'src/app/services/linea.service';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-linea-edit',
@@ -16,56 +17,50 @@ export class LineaEditComponent implements OnInit {
   id: any;
   linea: Linea;
 
-  denominacionIC = new UntypedFormControl('', Validators.required );
+  denominacionIC = new UntypedFormControl('', Validators.required);
   descripcionIC = new UntypedFormControl('');
   estadoIC = new UntypedFormControl('');
 
   habilitado: boolean = true;
-  habilitadoIC = new UntypedFormControl( false );
+  habilitadoIC = new UntypedFormControl(false);
 
-  constructor( private _snackbar: MatSnackBar, 
-              private router: Router,
-              private route: ActivatedRoute,
-              private servicioLinea: LineaService ) { }
+  constructor(private _msg: MessageService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private servicioLinea: LineaService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get("id");
     if (!this.id)
       this.nuevaLinea();
     else
-      this.editarLinea( parseInt( this.id ) );
+      this.editarLinea(parseInt(this.id));
   }
 
   nuevaLinea() {
     this.descripcionIC.setValue('');
     this.denominacionIC.setValue('');
     this.estadoIC.setValue('');
-    this.habilitadoIC.setValue( true );
+    this.habilitadoIC.setValue(true);
   }
 
-  editarLinea( id: number ) {
+  editarLinea(id: number) {
     this.spin = true;
-    this.servicioLinea.getLinea( id )
-      .subscribe( result => {
-        if (!result.error) {
-          this.linea = result.data;
-          this.denominacionIC.setValue( this.linea.denominacion );
-          this.descripcionIC.setValue( this.linea.descripcion );
-          this.habilitado = true;
-          this.habilitadoIC.setValue( this.linea.estado == 'ACTIVA' );
-          this.estadoIC.setValue( this.linea.estado );
-        }
-        else {
-          this._snackbar.open( result.mensaje,'', {
-            duration: 4500,
-            horizontalPosition: 'end',
-            verticalPosition: 'top',
-            panelClass: ['red-snackbar']
-          });
-          this.router.navigate( ['../..'], { relativeTo: this.route });
-        }
-        this.spin = false;
-      })
+    this.servicioLinea.getLinea(id).subscribe(result => {
+      this.spin = false;
+      if (!result.error) {
+        this.linea = result.data;
+        this.denominacionIC.setValue(this.linea.denominacion);
+        this.descripcionIC.setValue(this.linea.descripcion);
+        this.habilitado = true;
+        this.habilitadoIC.setValue(this.linea.estado == 'ACTIVA');
+        this.estadoIC.setValue(this.linea.estado);
+      }
+      else {
+        this._msg.showMessage(result.mensaje, 'ERROR');
+        this.router.navigate(['../..'], { relativeTo: this.route });
+      }
+    })
   }
 
   guardarLinea() {
@@ -74,43 +69,26 @@ export class LineaEditComponent implements OnInit {
       denominacion: this.denominacionIC.value,
       descripcion: this.descripcionIC.value,
       enServicio: false,
-      estado: this.habilitado ? 'ACTIVA':'NO ACTIVA'
+      estado: this.habilitado ? 'ACTIVA' : 'NO ACTIVA'
     }
     this.spin = true;
-    this.servicioLinea.saveLinea( this.linea )
-      .subscribe( result => {
-        this._snackbar.open( result.mensaje,'', {
-          duration: 4500,
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          panelClass: result.error ? ['red-snackbar']:['blue-snackbar']
-        });
-        if (!result.error) {
-          this.router.navigate( ['../'], {relativeTo : this.route});
-        }
-      });
+    this.servicioLinea.saveLinea(this.linea).subscribe(result => {
+      this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
+      if (!result.error)
+        this.router.navigate(['../'], { relativeTo: this.route });
+    });
   }
 
   actualizarLinea() {
     this.linea.denominacion = this.denominacionIC.value;
     this.linea.descripcion = this.descripcionIC.value;
-    this.linea.estado = this.habilitadoIC.value ? 'ACTIVA':'NO ACTIVA';
+    this.linea.estado = this.habilitadoIC.value ? 'ACTIVA' : 'NO ACTIVA';
     this.spin = true;
-    console.log("+++ ACTUALIZAR LINEA: ", this.linea );
-    console.log("+++ ACTUALIZAR LINEA habilitado: ", this.habilitado );
-    this.servicioLinea.updateLinea( this.linea )
-      .subscribe( result => {
-        this._snackbar.open( result.mensaje, '', {
-          duration: 4000,
-          horizontalPosition: 'end',
-          verticalPosition:'top',
-          panelClass: result.error ? ['red-snackbar']:['blue-snackbar']
-          
-        });
-        if (!result.error) {
-          this.router.navigate( ['../..'], { relativeTo: this.route });
-        }
-      })
+    this.servicioLinea.updateLinea(this.linea).subscribe(result => {
+      this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
+      if (!result.error)
+        this.router.navigate(['../..'], { relativeTo: this.route });
+    });
   }
 
 }

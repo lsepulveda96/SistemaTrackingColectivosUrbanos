@@ -93,31 +93,12 @@ export class ParadaEditComponent implements OnInit {
       center: [-42.775935, -65.038144],
       zoom: 14
     });
-    // this.map.setView( [-42.775935, -65.038144],14 );
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       minZoom: 12,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
-
-    // const basemapEnum = "ArcGIS:Topographic"
-    // const layer = esri.BasemapLayer(basemapEnum, { apiKey: ESRI_PARAMS.apiKey });
-    // layer.addTo(this.map);
-
-    // const searchControl = new ELG.Geosearch( {
-    //   providers: [ELG.arcgisOnlineProvider( { apiKey: ESRI_PARAMS.apiKey })]
-    // });
-
-    // const results = new L.LayerGroup().addTo( this.map );
-
-    // searchControl.on("results", (data) => {
-    //   console.log( "On evnet: ", data );
-    //     results.clearLayers();
-    //     for(let i = data.results.length -1 ; i >=0; i--) {
-    //       results.addLayer( L.marker( data.results[i].latlng, { icon: this.iconParada, draggable: false } ));
-    //     }
-    // }).addTo( this.map );
 
     this.geocodeService = ELG.geocodeService({
       apiKey: ESRI_PARAMS.apiKey,
@@ -131,6 +112,7 @@ export class ParadaEditComponent implements OnInit {
       this.spin = true;
       this.geocodeService.reverse().latlng(e.latlng).run((error, result) => {
         console.log("reverse error: ", error);
+        console.log("reverse result: ", result );
         this.spin = false;
         if (error) {
           this._snackbar.open('No se pudo obtener direccion, ingrese manualmente', '', {

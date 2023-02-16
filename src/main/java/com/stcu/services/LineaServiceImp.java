@@ -38,6 +38,7 @@ public class LineaServiceImp implements LineaService {
         Linea updLinea = repo.findById(id);
         if (updLinea != null) {
             updLinea.setDenominacion( linea.getDenominacion() );
+            updLinea.setDescripcion( linea.getDescripcion() );
             updLinea.setEnServicio( linea.isEnServicio());
             updLinea.setEstado(linea.getEstado());
             repo.save(updLinea);

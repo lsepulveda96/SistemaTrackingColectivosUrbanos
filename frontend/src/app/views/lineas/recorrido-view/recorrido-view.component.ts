@@ -6,6 +6,7 @@ import { Recorrido } from 'src/app/data/recorrido';
 import { LineaService } from 'src/app/services/linea.service';
 
 import * as L from 'leaflet';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-recorrido-view',
@@ -21,34 +22,30 @@ export class RecorridoViewComponent implements OnInit {
   map: any;
   marker: any;
 
-  constructor( private serviceLinea: LineaService,
-              private _matsnack: MatSnackBar,
-              private router: Router,
-              private route: ActivatedRoute ) { }
+  constructor(private serviceLinea: LineaService,
+    private _msg: MessageService,
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    
     this.id = this.route.snapshot.paramMap.get("id");
     this.waiting = true;
-    this.serviceLinea.getLinea( parseInt(this.id ))
-      .subscribe( result => {
-        if (!result.error)
-          this.linea = result.data;
-      });
-    this.serviceLinea.getRecorridoActivo( parseInt(this.id) ) 
-      .subscribe( result => {
-        this.waiting = false;
-        if (!result.error) {
-          this.recorrido = result.data;
-          this.initMap();
-        }
-      });
-    
+    this.serviceLinea.getLinea(parseInt(this.id)).subscribe(result => {
+      if (!result.error)
+        this.linea = result.data;
+    });
+    this.serviceLinea.getRecorridoActivo(parseInt(this.id)).subscribe(result => {
+      this.waiting = false;
+      if (!result.error) {
+        this.recorrido = result.data;
+        this.initMap();
+      }
+    });
   }
 
 
   initMap() {
-    this.map = L.map( 'map', {
+    this.map = L.map('map', {
       center: [-42.775935, -65.038144],
       zoom: 14
     });
@@ -56,11 +53,18 @@ export class RecorridoViewComponent implements OnInit {
       maxZoom: 19,
       minZoom: 12,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo( this.map );
+    }).addTo(this.map);
   }
 
   editarRecorrido() {
     console.log("Editar recorrido: ");
   }
 
+  definirRecorrido() {
+
+  }
+
+  historialRecorridos() {
+    
+  }
 }

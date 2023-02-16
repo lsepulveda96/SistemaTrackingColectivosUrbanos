@@ -6,6 +6,7 @@ import { Recorrido } from 'src/app/data/recorrido';
 import { LineaService } from 'src/app/services/linea.service';
 
 import * as L from 'leaflet';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-recorrido-edit',
@@ -20,45 +21,42 @@ export class RecorridoEditComponent implements OnInit {
   recorrido: Recorrido;
   map: L.Map;
 
-  constructor( private servicioLinea: LineaService, 
-              private snackbar: MatSnackBar,
-              private route: ActivatedRoute,
-              private router: Router ) { }
+  constructor(private servicioLinea: LineaService,
+    private _msg: MessageService,
+    private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit(): void {
     const mod = this.route.snapshot.paramMap.get("modo");
     if (!mod) {
-      this.snackbar.open( 'Error no se indico modo nuevo o edicion','', {
-        duration: 3500,
-      });
+      this._msg.showMessage('No se indico modo (nuevo o edicion)', 'ERROR');
       this.router.navigate(['../..']);
-    } 
+    }
     this.modeNew = (mod == 'new');
     const id = this.route.snapshot.paramMap.get('id');
     this.waiting = true;
-    this.servicioLinea.getLinea( parseInt(id ))
-      .subscribe( result => {
-        this.waiting = false;
-        this.linea = result.data;
-      });
+    this.servicioLinea.getLinea(parseInt(id)).subscribe(result => {
+      this.waiting = false;
+      this.linea = result.data;
+    });
+
     if (this.modeNew)
       this.nuevoRecorrido();
-    else  
-      this.editarRecorrido( parseInt( id ));
+    else
+      this.editarRecorrido(parseInt(id));
   }
 
   nuevoRecorrido() {
 
   }
 
-  editarRecorrido( id: number) {
+  editarRecorrido(id: number) {
     this.waiting = true;
-    this.servicioLinea.getRecorrido( id )
-      .subscribe( result => {
-        this.waiting = false;
-        if (!result.error)
-          this.recorrido = result.data;
-      });
+    this.servicioLinea.getRecorrido(id).subscribe(result => {
+      this.waiting = false;
+      if (!result.error)
+        this.recorrido = result.data;
+    });
   }
 
 
@@ -67,6 +65,6 @@ export class RecorridoEditComponent implements OnInit {
   }
 
   actualizarRecorrido() {
-    
+
   }
 }

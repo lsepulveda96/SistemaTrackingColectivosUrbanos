@@ -16,10 +16,12 @@
             <div class="row">
                 <div class="col">
                     <span>No existe recorrido activo para la linea</span> &nbsp;
-                    <button mat-raised-button class="button-border" [routerLink]="['../../new',linea?.id]">
-                        Generar
+                    <button mat-stroked-button color="primary" class="button-border"
+                        [routerLink]="['../../new',linea?.id]">
+                        <mat-icon>add</mat-icon>
+                        Definir
                     </button> &nbsp;
-                    <button mat-raised-button class="button-border">
+                    <button mat-stroked-button color="primary" class="button-border">
                         <mat-icon>history</mat-icon>
                         Historial
                     </button>

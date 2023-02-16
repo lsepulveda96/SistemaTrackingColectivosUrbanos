@@ -40,13 +40,15 @@
                         </button>
                     </th>
                     <td mat-cell *matCellDef="let usr">
-                        <button mat-icon-button color="primary" [routerLink]="['view',usr.id]" matTooltip="ver" matTooltipPosition="left">
-                            <mat-icon>open_in_new</mat-icon>
+                        <button mat-icon-button color="primary" [routerLink]="['view',usr.id]" 
+                            matTooltip="ver" matTooltipPosition="before">
+                            <mat-icon>pageview</mat-icon>
                         </button>
-                        <button mat-icon-button color="primary" [routerLink]="['edit',usr.id]" matTooltip="editar" matTooltipPosition="left">
+                        <button mat-icon-button color="primary" [routerLink]="['edit',usr.id]" 
+                            matTooltip="editar" matTooltipPosition="after">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button color="primary" matTooltip="Baja" matTooltipPosition="right"
+                        <button mat-icon-button color="primary" matTooltip="Baja" matTooltipPosition="after"
                             (click)="bajaUsuario(usr.id, usr.usuario)">
                             <mat-icon>highlight_off</mat-icon>
                         </button>
