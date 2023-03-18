@@ -8,8 +8,10 @@
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
+    <div class="loading-indicator" *ngIf="spin">
+        <mat-spinner mode="indeterminate" diameter="50"></mat-spinner>
+    </div>
     <mat-card-content>
-        <mat-spinner *ngIf="spin"></mat-spinner>
         <table mat-table [dataSource]="paradasDS" class="mat-elevation-z10">
 
             <ng-container matColumnDef="codigo">
