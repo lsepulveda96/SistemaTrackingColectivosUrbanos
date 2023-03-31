@@ -11,6 +11,7 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 })
 export class LoginComponent implements OnInit {
 
+  waiting: boolean;
   usernameIC = new UntypedFormControl('', Validators.required); // nombre de usuario
   passwIC = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]); // password de usuario
   isLoggedIn = false;   // si existe usuario logueado
@@ -18,8 +19,8 @@ export class LoginComponent implements OnInit {
   errorMessage = '';    // mensaje de error si isLogginFailed=false
 
   constructor(private authService: AuthService,
-    private tokenService: TokenStorageService, 
-    private router: Router ) { }
+    private tokenService: TokenStorageService,
+    private router: Router) { }
 
   ngOnInit(): void {
     if (this.tokenService.getToken()) {
@@ -32,6 +33,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.waiting = true;
     this.authService.login(this.usernameIC.value, this.passwIC.value)
       .subscribe(data => {
         this.tokenService.saveToken(data.token);
@@ -40,15 +42,26 @@ export class LoginComponent implements OnInit {
         this.isLoggedIn = true;
         this.goToPrincipal();
       }, err => {
-        this.errorMessage = 'Usuario y/o contraseña incorrecta';
-        this.isLoginFailed = true;
+        setTimeout(() => {
+          this.errorMessage = 'Usuario y/o contraseña incorrecta';
+          this.isLoginFailed = true;
+          this.waiting = false;
+        }, 2000);
       });
   }
 
   goToPrincipal() {
-    //window.location.reload();
-    this.router.navigate(['dashboard']);
+    setTimeout(() => {
+      this.waiting = false;
+      this.router.navigate(['dashboard']);
+    }, 2000);
   }
 
 
+  onKeyup() {
+    if (this.isLoginFailed) {
+      this.isLoginFailed = false;
+      this.errorMessage = "";
+    }
+  }
 }
