@@ -8,9 +8,7 @@ import { ParadaService } from 'src/app/services/parada.service';
 
 import { ESRI_PARAMS } from 'src/app/services/esriConfig';
 
-
 import * as L from 'leaflet';
-import * as esri from 'esri-leaflet';
 import * as ELG from 'esri-leaflet-geocoder';
 
 

@@ -42,5 +42,20 @@ public class ParadaServiceImp implements ParadaService {
         return par;
     }
 
+    @Override
+    public Parada disableParada(long codigo) {
+        Parada par = repo.findByCodigo(codigo);
+        if (par != null) {
+            par.setEstado("NO_ACTIVA");
+            repo.save( par );
+        }
+        return par;
+    }
+
+    @Override
+    public List<Parada> getAllParadasActivas() {
+        List<Parada> paradas = repo.findAllActivas();
+        return paradas;
+    }
 
 }

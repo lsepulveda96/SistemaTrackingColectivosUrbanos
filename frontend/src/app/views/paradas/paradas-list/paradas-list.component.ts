@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Parada } from 'src/app/data/parada';
 import { ParadaService } from 'src/app/services/parada.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { ConfirmComponent } from '../../misc/confirm/confirm.component';
 
 @Component({
   selector: 'app-paradas-list',
@@ -19,8 +22,10 @@ export class ParadasListComponent implements OnInit {
 
   constructor( 
     private serviceParada: ParadaService,
-    private tokenService: TokenStorageService ) { 
-      this.isadmin = tokenService.isUserAdmin();
+    private tokenService: TokenStorageService,
+    private _snackbar: MatSnackBar,
+    private dialog: MatDialog, ) { 
+      this.isadmin = this.tokenService.isUserAdmin();
   }
 
   ngOnInit(): void {
@@ -31,9 +36,34 @@ export class ParadasListComponent implements OnInit {
     this.spin = true;
     this.serviceParada.getParadas()
       .subscribe( result => {
+        this.spin = false;
         this.paradas = result.data;
         this.paradasDS.data = this.paradas;
-        this.spin = false;
       });
+  }
+
+  bajaParada(parada: Parada) {
+    if (parada.codigo) {
+      const ref = this.dialog.open(ConfirmComponent, { data: 
+        { titulo: 'Parada', mensaje: 'Confirma dar de baja parada ' + parada.codigo + ' ' + parada.direccion + '?' } 
+      });
+      ref.afterClosed().subscribe(aceptar => {
+        if (aceptar) {
+          this.spin = true;
+          this.serviceParada.disableParada( parada.codigo ).subscribe(result => {
+            this.spin = false;
+            this._snackbar.open( result.mensaje,'',
+              {
+                duration: 4500,
+                verticalPosition: 'top', // 'top' | 'bottom'
+                horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
+                panelClass: result.error ? ['red-snackbar']:['blue-snackbar']
+              });
+            if (!result.error)
+              this.getParadas();
+          });
+        }
+      });
+    }
   }
 }

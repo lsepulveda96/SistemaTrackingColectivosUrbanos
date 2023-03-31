@@ -1,5 +1,6 @@
 package com.stcu.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.stcu.controllers.dto.ParadaDTO;
@@ -7,6 +8,7 @@ import com.stcu.model.Parada;
 import com.stcu.services.ParadaServiceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +27,14 @@ public class ParadaController {
         List<Parada> paradas = service.getAllParadas();
         
         Response<List<ParadaDTO>> response = new Response<List<ParadaDTO>>( false,200,"Listado de paradas", ParadaDTO.toListParadaDTO(paradas) );
+        return Mapper.getResponseAsJson(response);
+    }
+
+    @GetMapping("/paradas/activas")
+    public String findAllParadasActivas() {
+        List<Parada> paradasActivas = service.getAllParadasActivas();
+        
+        Response<List<ParadaDTO>> response = new Response<List<ParadaDTO>>( false,200,"Listado de paradas", ParadaDTO.toListParadaDTO(paradasActivas) );
         return Mapper.getResponseAsJson(response);
     }
 
@@ -58,6 +68,17 @@ public class ParadaController {
             response = new Response<ParadaDTO>( false, 200,"Parada " + codigo + " actualizada", new ParadaDTO(parada) );
         else    
             response = new Response<ParadaDTO>( true, 400, "No se puedo actualizar parada " + codigo, null );
+        return Mapper.getResponseAsJson(response);
+    }
+
+    @DeleteMapping("/parada/desactivar/{codigo}")
+    public String disableParada( @PathVariable long codigo ) {
+        Parada parada = service.disableParada(codigo);
+        Response<ParadaDTO> response;
+        if (parada != null)
+            response = new Response<ParadaDTO>( false, 200,"Parada " + codigo + " deshabilitada", null );
+        else    
+            response = new Response<ParadaDTO>( true, 400, "No se puedo deshabilitar parada " + codigo, null );
         return Mapper.getResponseAsJson(response);
     }
 }

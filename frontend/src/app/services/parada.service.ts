@@ -16,6 +16,10 @@ export class ParadaService {
     return this.http.get( HTTPCONFIG.url + '/paradas' );
   }
 
+  getParadasActivas(): Observable<any> {
+    return this.http.get( HTTPCONFIG.url + '/paradas/activas/' );
+  }
+
   getParada( codigo: number ): Observable<any> {
     return this.http.get( HTTPCONFIG.url + '/parada/' + codigo );
   }
@@ -26,5 +30,9 @@ export class ParadaService {
 
   updateParada( parada: Parada ): Observable<any> {
     return this.http.put( HTTPCONFIG.url + '/parada/' + parada.codigo, parada );
+  }
+
+  disableParada( codigo: number ): Observable<any> {
+    return this.http.delete( HTTPCONFIG.url + '/parada/desactivar/' + codigo );
   }
 }
