@@ -31,4 +31,8 @@ export class UsuarioService {
   deactivateUsuario( id: number ): Observable<any> {
     return this.http.delete( HTTPCONFIG.url + '/usuario/' + id );
   }
+
+  activateUsuario( id: number ): Observable<any> {
+    return this.http.get( HTTPCONFIG.url + '/usuario/activate/' + id );
+  }
 }

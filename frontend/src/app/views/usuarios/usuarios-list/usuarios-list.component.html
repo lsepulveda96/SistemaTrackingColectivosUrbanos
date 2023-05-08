@@ -48,9 +48,13 @@
                             matTooltip="editar" matTooltipPosition="after">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button color="primary" matTooltip="Baja" matTooltipPosition="after"
-                            (click)="bajaUsuario(usr.id, usr.usuario)">
+                        <button mat-icon-button color="warn" matTooltip="Baja" matTooltipPosition="after"
+                            (click)="bajaUsuario(usr.id, usr.usuario)" *ngIf="usr.estado=='ACTIVO'">
                             <mat-icon>highlight_off</mat-icon>
+                        </button>
+                        <button mat-icon-button color="primary" matTooltip="Activar" matTooltipPosition="after"
+                            (click)="activarUsuario(usr.id, usr.usuario)" *ngIf="usr.estado=='NO_ACTIVO'">
+                            <mat-icon>check_circle_outline</mat-icon>
                         </button>
                     </td>
                 </ng-container>

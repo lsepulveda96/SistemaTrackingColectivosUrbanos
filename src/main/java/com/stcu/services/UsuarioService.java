@@ -20,4 +20,5 @@ public interface UsuarioService {
 
     public boolean deactivateUsuario( long id );
     
+    public boolean activateUsuario( long id );
 }

@@ -91,5 +91,16 @@ public class UsuarioServiceImp implements UsuarioService {
         }
         return false;
     }    
+
+    @Override 
+    public boolean activateUsuario( long id ) {
+        Usuario usuario = this.rep.findById(id);
+        if (usuario != null) {
+            usuario.setEstado("ACTIVO");
+            this.rep.save(usuario);
+            return true;
+        }
+        return false;
+    }
     
 }

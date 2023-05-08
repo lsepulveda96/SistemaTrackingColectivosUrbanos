@@ -22,6 +22,8 @@ import { RecorridosListComponent } from './recorridos-list/recorridos-list.compo
 import { RecorridoEditComponent } from './recorrido-edit/recorrido-edit.component';
 import { ParadasEditComponent } from './paradas-edit/paradas-edit.component';
 import { ParadasViewComponent } from './paradas-view/paradas-view.component';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -49,7 +51,9 @@ import { ParadasViewComponent } from './paradas-view/paradas-view.component';
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatListModule,
+    MatSelectModule
   ]
 })
 export class LineasModule { }

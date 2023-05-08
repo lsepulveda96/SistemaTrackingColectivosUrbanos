@@ -62,4 +62,24 @@ export class UsuariosListComponent implements OnInit {
     });
   }
 
+  activarUsuario(id: number, usr: String) {
+    const data = { titulo: 'Activacion usuario', mensaje: 'Confirma activar usuario ' + usr + '?' };
+    const dialog = this.dialog.open(ConfirmComponent, { data: data });
+    dialog.afterClosed().subscribe(response => {
+      if (response) {
+        this.waiting = true;
+        this.serviceUsuario.activateUsuario(id).subscribe(result => {
+          console.log("usuario activado: ", result );
+          this.serviceMsg.showMessage(result.message, 'OK');
+          this.getUsuarios();
+        }, err => {
+          console.log("ERROR activando usuario : ", err );
+          this.serviceMsg.showMessage(err.error.message, 'ERROR');
+        }, () => {
+          this.waiting = false;
+        });
+
+      }
+    })
+  }
 }

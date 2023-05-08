@@ -98,4 +98,14 @@ public class UsuarioController {
         return ResponseEntity.badRequest()
                              .body(new MessageResponse("No se pudo desactivar usuario"));
     }
+
+    @GetMapping("/usuario/activate/{id}")
+    public ResponseEntity<?> activateUsuario( @PathVariable long id ){
+        boolean stat = this.service.activateUsuario(id);
+        if (stat)
+            return ResponseEntity.ok( new MessageResponse("Usuario activado"));
+        else
+        return ResponseEntity.badRequest()
+                             .body(new MessageResponse("No se pudo activar usuario"));
+    }
 }

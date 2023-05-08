@@ -39,7 +39,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     tiles.addTo(this.map);
 
-    const argisOnline = ELG.arcgisOnlineProvider( {
+    /* const argisOnline = ELG.arcgisOnlineProvider( {
       apiKey: ESRI_PARAMS.apiKey
     });
     const searchControl = new ELG.Geosearch( {
@@ -48,11 +48,11 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     const geocodeService = ELG.geocodeService({
       token: ESRI_PARAMS.token
-    });
+    }); */
     
     const results = new L.LayerGroup().addTo( this.map );
 
-    searchControl.on("results", (data) => {
+    /* searchControl.on("results", (data) => {
       console.log( "On evnet: ", data );
         results.clearLayers();
         for(let i = data.results.length -1 ; i >=0; i--) {
@@ -73,7 +73,7 @@ export class MapComponent implements OnInit, AfterViewInit {
           .bindPopup( result.address.Match_addr )
           .openPopup();
       });
-    });
+    }); */
   }
   
 

@@ -9,8 +9,10 @@ import { ParadaService } from 'src/app/services/parada.service';
 import { ESRI_PARAMS } from 'src/app/services/esriConfig';
 
 import * as L from 'leaflet';
-import * as ELG from 'esri-leaflet-geocoder';
 
+import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
+import 'esri-leaflet-geocoder';
+import * as ELG from 'esri-leaflet-geocoder';
 
 @Component({
   selector: 'app-parada-edit',
@@ -52,41 +54,46 @@ export class ParadaEditComponent implements OnInit {
     }
   }
 
-
+  /**
+   * Inicializa y prepara pantalla para registrar nueva parada.
+   */
   nuevaParada() {
     this.spin = true;
     this.direccionIC.setValue('');
     this.descripcionIC.setValue('');
   }
 
+  /**
+   * Recupera los datos de la parada, inicializa los campos y habilita pantalla para edicion.
+   * @param codigo 
+   */
   editarParada(codigo: number) {
     this.spin = true;
-    this.serviceParada.getParada(codigo)
-      .subscribe(result => {
-        if (result.error) {
-          this._snackbar.open(result.mensaje, '', {
-            duration: 4500,
-            verticalPosition: 'top', // 'top' | 'bottom'
-            horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
-            panelClass: ['red-snackbar'],
-          });
-          this.router.navigate(['../..'], { relativeTo: this.route });
-          this.spin = false;
-        }
-        this.parada = result.data;
-        this.descripcionIC.setValue(this.parada.descripcion);
-        this.direccionIC.setValue(this.parada.direccion);
-
-        this.marker = L.marker([this.parada.coordenada.lat, this.parada.coordenada.lng], { icon: this.iconParada })
-          .addTo(this.map)
-          .bindPopup(this.parada.direccion)
-          .openPopup();
-
-      });
+    this.serviceParada.getParada(codigo).subscribe(result => {
+      this.spin = false;
+      if (result.error) {
+        this._snackbar.open(result.mensaje, '', {
+          duration: 4500,
+          verticalPosition: 'top', // 'top' | 'bottom'
+          horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
+          panelClass: ['red-snackbar'],
+        });
+        this.router.navigate(['../..'], { relativeTo: this.route });
+      }
+      this.parada = result.data;
+      this.descripcionIC.setValue(this.parada.descripcion);
+      this.direccionIC.setValue(this.parada.direccion);
+      this.marker = L.marker([this.parada.coordenada.lat, this.parada.coordenada.lng], { icon: this.iconParada })
+        .addTo(this.map)
+        .bindPopup(this.parada.direccion)
+        .openPopup();
+    });
   }
 
+  /**
+   * Inicializa div con mapa de la ciudad y habilita para indicar parada mediante click.
+   */
   private initMap() {
-
     this.map = L.map('map', {
       center: [-42.775935, -65.038144],
       zoom: 14
@@ -103,27 +110,23 @@ export class ParadaEditComponent implements OnInit {
       token: ESRI_PARAMS.token
     });
 
-    this.map.on('click', (e) => {
-      if (this.marker && this.map.hasLayer(this.marker))
+    this.map.on('click', (e: any) => {
+      if (this.marker && this.map.hasLayer(this.marker)) // Si ya esta la parada en el mapa se elimina.
         this.map.removeLayer(this.marker);
-      this.marker = L.marker(e.latlng, { icon: this.iconParada }).addTo(this.map);
       this.spin = true;
-      this.geocodeService.reverse().latlng(e.latlng).run((error, result) => {
-        console.log("reverse error: ", error);
-        console.log("reverse result: ", result );
+      this.geocodeService.reverse().latlng(e.latlng).run((error: any, result: any) => { // Ajusta direccion a calle.
         this.spin = false;
-        if (error) {
+        if (error) {  // Si hay error muestra el mensaje.
+          console.log("reverse error: ", error);
           this._snackbar.open('No se pudo obtener direccion, ingrese manualmente', '', {
-            duration: 4000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center',
+            duration: 4000, verticalPosition: 'bottom', horizontalPosition: 'center',
             panelClass: ['yellow-snackbar']
           });
+          this.marker = L.marker(e.latlng, { icon: this.iconParada })
+            .addTo(this.map); // Se registra el marker donde se ingreso click
           this.direccionIC.setValue('');
         }
-        else {
-          if (this.marker && this.map.hasLayer(this.marker))
-            this.map.removeLayer(this.marker);
+        else { // Si hay resultado se carga la parada en la direccion ajustada.
           this.marker = L.marker(result.latlng, { icon: this.iconParada })
             .addTo(this.map)
             .bindPopup(result.address.Address)
@@ -133,8 +136,6 @@ export class ParadaEditComponent implements OnInit {
       });
     });
   }
-
-
 
   guardarParada() {
     if (!this.marker)
@@ -149,20 +150,18 @@ export class ParadaEditComponent implements OnInit {
         lng: this.marker.getLatLng().lng
       }
     }
-
     this.spin = true;
-    this.serviceParada.saveParada(this.parada)
-      .subscribe(result => {
-        this._snackbar.open(result.mensaje, '', {
-          duration: 4500,
-          verticalPosition: 'top', // 'top' | 'bottom'
-          horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
-          panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar'],
-        });
-        if (!result.error)
-          this.router.navigate(['../'], { relativeTo: this.route });
-        this.spin = false;
+    this.serviceParada.saveParada(this.parada).subscribe(result => {
+      this.spin = false;
+      this._snackbar.open(result.mensaje, '', {
+        duration: 4500,
+        verticalPosition: 'top', // 'top' | 'bottom'
+        horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
+        panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar'],
       });
+      if (!result.error)
+        this.router.navigate(['../'], { relativeTo: this.route });
+    });
 
   }
 
@@ -173,22 +172,18 @@ export class ParadaEditComponent implements OnInit {
       lat: this.marker.getLatLng().lat,
       lng: this.marker.getLatLng().lng
     }
-
-
-    console.log("Actualizar Parada ", this.parada);
     this.spin = true;
-    this.serviceParada.updateParada(this.parada)
-      .subscribe(result => {
-        this._snackbar.open(result.mensaje, '', {
-          duration: 4500,
-          verticalPosition: 'top', // 'top' | 'bottom'
-          horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
-          panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar'],
-        });
-        if (!result.error)
-          this.router.navigate(['../..'], { relativeTo: this.route });
-        this.spin = false;
+    this.serviceParada.updateParada(this.parada).subscribe(result => {
+      this.spin = false;
+      this._snackbar.open(result.mensaje, '', {
+        duration: 4500,
+        verticalPosition: 'top', // 'top' | 'bottom'
+        horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
+        panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar'],
       });
+      if (!result.error)
+        this.router.navigate(['../..'], { relativeTo: this.route });
+    });
   }
 }
 
