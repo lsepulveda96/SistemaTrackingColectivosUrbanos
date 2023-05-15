@@ -33,6 +33,8 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.isLoggedIn = false;
+    this.isLoginFailed = false;
     this.waiting = true;
     this.authService.login(this.usernameIC.value, this.passwIC.value)
       .subscribe(data => {

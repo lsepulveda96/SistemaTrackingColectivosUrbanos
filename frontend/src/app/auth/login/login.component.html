@@ -6,13 +6,20 @@
             <span class="d-flex justify-content-center" style="font-weight: bold;">Inicio sesion</span>
         </div>
         <!-- <mat-divider></mat-divider> -->
-        <div class="border-top my-1 mt-2"></div>
+        <div class="border-top my-3"></div>
+
+        <div class="alert alert-primary" *ngIf="waiting && !isLoggedIn">
+            <i class="bi bi-info-circle"></i>
+            Validando usuario...
+        </div>
 
         <div class="alert alert-danger" role="alert" *ngIf="isLoginFailed">
+            <i class="bi bi-x-octagon"></i>
             Login fallo: {{ errorMessage }}
         </div>
 
         <div class="alert alert-success" *ngIf="isLoggedIn">
+            <i class="bi bi-check-circle"></i>
             Login exitoso. Redireccionando a pagina principal...
         </div>
 
