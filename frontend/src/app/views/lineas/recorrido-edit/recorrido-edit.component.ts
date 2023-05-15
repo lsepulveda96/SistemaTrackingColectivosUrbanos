@@ -191,10 +191,12 @@ export class RecorridoEditComponent implements OnInit {
         console.log("map click point adjust: ", pointAdjust);
 
         console.log("pinicial value: ", this.pInicialIC.value);
+        const pinicial = new L.LatLng( this.pInicialIC.value.coordenada.lat, this.pInicialIC.value.coordenada.lng );
+        console.log("pinicial: ", pinicial );
         //this.control = ELG.Routing.control({
         this.control = L.Routing.control({
-          waypoints: [this.pInicialIC.value.getLatLng(), pointAdjust],
-          plan: L.Routing.plan([this.pInicialIC.value.getLatLng(), pointAdjust], {
+          waypoints: [pinicial, pointAdjust],
+          plan: L.Routing.plan([pinicial, pointAdjust], {
             createMarker: function (i, wp) {
               const marker = L.marker(wp.latLng, { icon: this.iconDiv, draggable: true });
               return marker;
