@@ -16,5 +16,5 @@ public interface ParadaService {
 
     public Parada updateParada( long codigo, Parada parada );
     
-    public Parada disableParada( long codigo );
+    public Parada enableDisableParada( long codigo, boolean disable );
 }

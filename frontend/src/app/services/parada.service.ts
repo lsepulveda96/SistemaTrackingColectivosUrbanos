@@ -32,7 +32,7 @@ export class ParadaService {
     return this.http.put( HTTPCONFIG.url + '/parada/' + parada.codigo, parada );
   }
 
-  disableParada( codigo: number ): Observable<any> {
-    return this.http.delete( HTTPCONFIG.url + '/parada/desactivar/' + codigo );
+  enableDisableParada( codigo: number, disabled: boolean ): Observable<any> {
+    return this.http.delete( HTTPCONFIG.url + '/parada/activardesactivar/' + disabled + '/' + codigo );
   }
 }

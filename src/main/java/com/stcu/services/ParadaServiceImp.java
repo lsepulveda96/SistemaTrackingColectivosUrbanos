@@ -6,6 +6,7 @@ import com.stcu.model.Parada;
 import com.stcu.repository.ParadaRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +17,7 @@ public class ParadaServiceImp implements ParadaService {
 
     @Override
     public List<Parada> getAllParadas() {
-        List<Parada> paradas = repo.findAll();
+        List<Parada> paradas = repo.findAll( Sort.by(Sort.Direction.ASC,"codigo"));
         return paradas;
     }
 
@@ -43,10 +44,11 @@ public class ParadaServiceImp implements ParadaService {
     }
 
     @Override
-    public Parada disableParada(long codigo) {
+    public Parada enableDisableParada(long codigo, boolean disabled ) {
         Parada par = repo.findByCodigo(codigo);
         if (par != null) {
-            par.setEstado("NO_ACTIVA");
+            String stat = disabled ? "NO_ACTIVA":"HABILITADA";
+            par.setEstado(stat);
             repo.save( par );
         }
         return par;

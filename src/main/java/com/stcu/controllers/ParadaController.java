@@ -71,14 +71,18 @@ public class ParadaController {
         return Mapper.getResponseAsJson(response);
     }
 
-    @DeleteMapping("/parada/desactivar/{codigo}")
-    public String disableParada( @PathVariable long codigo ) {
-        Parada parada = service.disableParada(codigo);
+    @DeleteMapping("/parada/activardesactivar/{disable}/{codigo}")
+    public String disableParada( @PathVariable boolean disable, @PathVariable long codigo ) {
+        Parada parada = service.enableDisableParada(codigo, disable);
         Response<ParadaDTO> response;
-        if (parada != null)
-            response = new Response<ParadaDTO>( false, 200,"Parada " + codigo + " deshabilitada", null );
-        else    
-            response = new Response<ParadaDTO>( true, 400, "No se puedo deshabilitar parada " + codigo, null );
+        if (parada != null) {
+            String msg = disable ? ("Parada " + codigo + " deshabilitada"): ("Parada " + codigo + " habilitada");
+            response = new Response<ParadaDTO>( false, 200, msg, null );
+        }
+        else {
+            String msg = disable ? ("No se pudo deshabilitar Parada " + codigo): ("No se pudo habilitar Parada " + codigo);
+            response = new Response<ParadaDTO>( true, 400, msg, null );
+        }
         return Mapper.getResponseAsJson(response);
     }
 }

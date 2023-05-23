@@ -50,7 +50,7 @@ export class ParadasListComponent implements OnInit {
       ref.afterClosed().subscribe(aceptar => {
         if (aceptar) {
           this.spin = true;
-          this.serviceParada.disableParada( parada.codigo ).subscribe(result => {
+          this.serviceParada.enableDisableParada( parada.codigo, true ).subscribe(result => {
             this.spin = false;
             this._snackbar.open( result.mensaje,'',
               {
@@ -63,6 +63,22 @@ export class ParadasListComponent implements OnInit {
               this.getParadas();
           });
         }
+      });
+    }
+  }
+
+  activarParada( parada: Parada ) {
+    if (parada.codigo) {
+      this.spin = true;
+      this.serviceParada.enableDisableParada( parada.codigo, false ).subscribe( result => {
+        this.spin = false;
+        this._snackbar.open( result.mensaje, '', {
+          duration: 4500, 
+          verticalPosition: 'top', horizontalPosition:'end',
+          panelClass: result.error ? ['red-snackbar']:['blue-snackbar']
+        });
+        if (!result.error) 
+          this.getParadas();
       });
     }
   }

@@ -42,10 +42,15 @@
                         matTooltip="editar" matTooltipPosition="right">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="baja" [disabled]="!isadmin"
+                    <button mat-icon-button color="warn" matTooltip="baja" [disabled]="!isadmin"
                         matTooltip="baja" matTooltipPosition="right" (click)="bajaParada(parada)"
                         *ngIf="parada.estado=='HABILITADA'"> 
                         <mat-icon>highlight_off</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary" matTooltip="baja" [disabled]="!isadmin"
+                        matTooltip="activar" matTooltipPosition="right" (click)="activarParada(parada)"
+                        *ngIf="parada.estado=='NO_ACTIVA'"> 
+                        <mat-icon>check_circle_outline</mat-icon>
                     </button>
                 </td>
             </ng-container>

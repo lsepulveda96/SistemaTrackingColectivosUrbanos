@@ -13,6 +13,7 @@ import 'leaflet-routing-machine';
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 import 'esri-leaflet-geocoder';
 import * as ELG from 'esri-leaflet-geocoder';
+import { Parada } from 'src/app/data/parada';
 
 @Component({
   selector: 'app-recorrido-edit',
@@ -28,13 +29,16 @@ export class RecorridoEditComponent implements OnInit {
   paradas: any[];
 
   paradaInicial: any;
-  paradasRecorrido: any[] = [];
   trayectos: any[] = [];
   waypoints: any[] = [];
 
-  map: L.Map;
-  actualCoord: any;
-  ultimaCoord: any;
+  map: L.Map; // Mapa en pantalla.
+  actualCoord: any; // coordenada actual.
+  ultimaCoord: any; // ultima coordenada.
+
+  paradasDisponibles: Parada[]; // lista de paradas disponibles para agregar al recorrido.
+  paradasRecorrido: Parada[]; // lista de paradas en el recorrido.
+  paradaIC = new FormControl(null); // Parada seleccionada de la lista de disponibles.
 
   iconParada = L.icon({
     iconUrl: 'assets/images/stopbus.png',
@@ -64,8 +68,6 @@ export class RecorridoEditComponent implements OnInit {
     popupAnchor: [-15, -30],
     className: 'myDivIcon'
   });
-
-  pInicialIC = new FormControl(null);
 
   constructor(
     private servicioLinea: LineaService,
@@ -106,6 +108,7 @@ export class RecorridoEditComponent implements OnInit {
       this.waiting = false;
       if (!result.error) {
         this.paradas = result.data;
+        this.paradasDisponibles = result.data;
         this.loadParadasToMap();
       }
     });
@@ -120,23 +123,6 @@ export class RecorridoEditComponent implements OnInit {
     });
   }
 
-  seleccionInicial() {
-    this.clearParadas().
-      then(result => {
-        this.loadParadasToMap();
-        
-      },
-        error => {
-          console.log("Error eliminando paradas")
-        });
-  }
-
-  async clearParadas() {
-    this.map.eachLayer((layer: any) => {
-      if (layer._url != 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-        this.map.removeLayer(layer);
-    });
-  }
 
   guardarRecorrido() {
 
@@ -164,6 +150,7 @@ export class RecorridoEditComponent implements OnInit {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
 
+    /* 
     this.map.on('click', (ev: any) => {
       if (!this.pInicialIC.value) {
         this._msg.showMessage('Debe seleccionar una parada de inicio para comenzar a marcar el recorrido', 'ERROR');
@@ -179,21 +166,13 @@ export class RecorridoEditComponent implements OnInit {
         apiKey: ESRI_PARAMS.apiKey,
         token: ESRI_PARAMS.token
       });
-      console.log("map click point original: ", ev.latlng);
-      /*       geocodeService.reverse().latlng(ev.latlng).run(function (error, result) { */
+      
       geocodeService.reverse().latlng(ev.latlng).run((error:any, result:any) => {
         if (error) {
-          console.log("geocode service reverse error: ", error);
           return;
         }
-        console.log("geocode service reverse result: ", result);
         const pointAdjust = result.latlng;
-        console.log("map click point adjust: ", pointAdjust);
-
-        console.log("pinicial value: ", this.pInicialIC.value);
         const pinicial = new L.LatLng( this.pInicialIC.value.coordenada.lat, this.pInicialIC.value.coordenada.lng );
-        console.log("pinicial: ", pinicial );
-        //this.control = ELG.Routing.control({
         this.control = L.Routing.control({
           waypoints: [pinicial, pointAdjust],
           plan: L.Routing.plan([pinicial, pointAdjust], {
@@ -208,25 +187,87 @@ export class RecorridoEditComponent implements OnInit {
         }).addTo(this.map);
       });
 
-    });
+    });*/
   }
 
   loadParadasToMap() {
-    for (let parada of this.paradas) {
-      let icon = this.iconDiv;
-      if ((this.pInicialIC.value && this.pInicialIC.value.codigo == parada.codigo) ||
-        this.paradasRecorrido.find(par => par.codigo == parada.codigo))
-        icon = this.iconDivIn;
+    const ultimaParada = this.paradasRecorrido[this.paradasRecorrido.length-1];
+    this.paradas.forEach((parada: any, index: number) => {
+      let paradaIn = false;
+      if (this.paradasRecorrido && this.paradasRecorrido.find(par => par.codigo == parada.codigo))
+        paradaIn = true;
 
+      const icon = paradaIn ? this.iconDivIn : this.iconDiv;
       const marker = L.marker([parada.coordenada.lat, parada.coordenada.lng], { icon: icon });
-      marker.bindPopup(parada.codigo + ':' + parada.direccion,
+      marker.bindPopup(parada.codigo + ': ' + parada.direccion,
         { closeOnClick: false, autoClose: false });
       marker.addTo(this.map);
 
-      if (!this.pInicialIC.value) // si no hay parada inicial se muestra el popup de todas las paradas.
+      // Se muestran popup solo si no hay paradas en recorrido o si es la ultima parada del recorrido.
+      if (!this.paradasRecorrido || this.paradasRecorrido.length == 0 || (ultimaParada && ultimaParada.codigo == parada.codigo))
         marker.openPopup();
-      else if (this.pInicialIC.value.codigo == parada.codigo) // Si hay parada inicial solo se muestra el popup de esta.
-        marker.openPopup();
+    });
+  }
+
+  agregarParada() {
+    if (!this.paradaIC.value) // Si no se seleccion parada no hace nada.
+      return;
+    if (!this.paradasRecorrido) // Si el arreglo de parada es null se inicializa.
+      this.paradasRecorrido = [];
+    // Se agrega la parada al arreglo de paradas.
+    this.paradasRecorrido.push(this.paradaIC.value);
+    // se elimina la parada de la lista de paradas disponibles
+    this.paradasDisponibles = this.paradasDisponibles.filter(par => par.codigo != this.paradaIC.value.codigo);
+
+    this.paradaIC.setValue(null);
+    this.markParadaToMap();
+  }
+
+  /**
+   * Marca la ultima parada en el mapa como una parada del recorrido, y traza un recorrido automatico entre las dos ultimas. 
+   */
+  markParadaToMap() {
+    this.clearParadas().
+      then(result => {
+        this.loadParadasToMap();
+        this.traceRecorridoUltimasParadas();
+      }, error => {
+        console.log("Error eliminando paradas")
+      });
+  }
+
+  async clearParadas() {
+    this.map.eachLayer((layer: any) => {
+      if (layer._url != 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        this.map.removeLayer(layer);
+    });
+  }
+
+  quitarUltimaParada() {
+    const paradaRemove = this.paradasRecorrido.pop();
+    this.paradasDisponibles.push( paradaRemove );
+    this.markParadaToMap();
+  }
+
+  traceRecorridoUltimasParadas() {
+    const len = this.paradasRecorrido.length;
+    if (len >= 2) {
+      const ultimaParada = this.paradasRecorrido[len-1];
+      const anteultimaParada = this.paradasRecorrido[len-2];
+      const ultima = new L.LatLng( ultimaParada.coordenada.lat, ultimaParada.coordenada.lng);
+      const anteultima = new L.LatLng( anteultimaParada.coordenada.lat, anteultimaParada.coordenada.lng);
+      this.control = L.Routing.control({
+        waypoints: [anteultima, ultima],
+        plan: L.Routing.plan([anteultima, ultima], { addWaypoints:true, draggableWaypoints: true, language: 'es' } /*, {
+          createMarker: function (i, wp) {
+            const marker = L.marker(wp.latLng, { icon: this.iconParadaIn, draggable: true });
+            return marker;
+          }
+        } */),
+        showAlternatives: false, 
+        /* language: 'es', */
+        autoRoute: true
+      }).addTo(this.map);
     }
   }
 
