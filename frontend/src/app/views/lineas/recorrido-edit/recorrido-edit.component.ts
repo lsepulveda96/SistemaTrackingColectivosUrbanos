@@ -6,13 +6,12 @@ import { Recorrido } from 'src/app/data/recorrido';
 import { LineaService } from 'src/app/services/linea.service';
 import { ParadaService } from 'src/app/services/parada.service';
 import { MessageService } from 'src/app/services/message.service';
-import { ESRI_PARAMS } from 'src/app/services/esriConfig';
 
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 import 'esri-leaflet-geocoder';
-import * as ELG from 'esri-leaflet-geocoder';
+
 import { Parada } from 'src/app/data/parada';
 
 @Component({
@@ -191,7 +190,7 @@ export class RecorridoEditComponent implements OnInit {
   }
 
   loadParadasToMap() {
-    const ultimaParada = this.paradasRecorrido[this.paradasRecorrido.length-1];
+    const ultimaParada = this.paradasRecorrido[this.paradasRecorrido.length - 1];
     this.paradas.forEach((parada: any, index: number) => {
       let paradaIn = false;
       if (this.paradasRecorrido && this.paradasRecorrido.find(par => par.codigo == parada.codigo))
@@ -245,29 +244,46 @@ export class RecorridoEditComponent implements OnInit {
 
   quitarUltimaParada() {
     const paradaRemove = this.paradasRecorrido.pop();
-    this.paradasDisponibles.push( paradaRemove );
+    this.paradasDisponibles.push(paradaRemove);
     this.markParadaToMap();
   }
 
   traceRecorridoUltimasParadas() {
     const len = this.paradasRecorrido.length;
     if (len >= 2) {
-      const ultimaParada = this.paradasRecorrido[len-1];
-      const anteultimaParada = this.paradasRecorrido[len-2];
-      const ultima = new L.LatLng( ultimaParada.coordenada.lat, ultimaParada.coordenada.lng);
-      const anteultima = new L.LatLng( anteultimaParada.coordenada.lat, anteultimaParada.coordenada.lng);
+      const ultimaParada = this.paradasRecorrido[len - 1];
+      const anteultimaParada = this.paradasRecorrido[len - 2];
+      const ultima = new L.LatLng(ultimaParada.coordenada.lat, ultimaParada.coordenada.lng);
+      const anteultima = new L.LatLng(anteultimaParada.coordenada.lat, anteultimaParada.coordenada.lng);
       this.control = L.Routing.control({
         waypoints: [anteultima, ultima],
-        plan: L.Routing.plan([anteultima, ultima], { addWaypoints:true, draggableWaypoints: true, language: 'es' } /*, {
-          createMarker: function (i, wp) {
-            const marker = L.marker(wp.latLng, { icon: this.iconParadaIn, draggable: true });
+        show: false,
+        plan: L.Routing.plan([anteultima, ultima], {
+          addWaypoints: true, draggableWaypoints: true, 
+          createMarker: (i, wp, n) => {
+            let marker: L.Marker;
+            if(i == 0 ||  i == n-1)
+              marker = L.marker(wp.latLng, { icon: this.iconDivIn, draggable: false });
             return marker;
           }
-        } */),
-        showAlternatives: false, 
-        /* language: 'es', */
-        autoRoute: true
+        }),
+        //autoRoute: true,
       }).addTo(this.map);
+
+      const routingControlContainer = this.control.getContainer();
+      const controlContainerParent = routingControlContainer.parentNode;
+      controlContainerParent.removeChild(routingControlContainer);
+
+      this.control.on('routeselected', (e: any) => {
+        const rutas = e.route;
+        // Do something with the route here
+        console.log('Route: control.on rutas: ', rutas);
+        var coors = rutas.coordinates;
+        for (var i in coors)
+          console.log(' lat: ' + coors[i].lat + ', lng: ' + coors[i].lng);
+
+        console.log("Control after select route: ", this.control );
+      });
     }
   }
 
