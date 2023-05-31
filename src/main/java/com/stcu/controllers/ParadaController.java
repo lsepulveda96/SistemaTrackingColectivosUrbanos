@@ -1,6 +1,5 @@
 package com.stcu.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.stcu.controllers.dto.ParadaDTO;

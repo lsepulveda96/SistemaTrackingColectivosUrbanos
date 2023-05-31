@@ -13,6 +13,8 @@ import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 import 'esri-leaflet-geocoder';
 
 import { Parada } from 'src/app/data/parada';
+import { E } from '@angular/cdk/keycodes';
+import { last } from 'rxjs-compat/operator/last';
 
 @Component({
   selector: 'app-recorrido-edit',
@@ -97,6 +99,9 @@ export class RecorridoEditComponent implements OnInit {
       this.editarRecorrido(parseInt(id));
   }
 
+  /**
+   * Configura para generar nuevo recorrido y habilita edicion.
+   */
   nuevoRecorrido() {
     // cargar todas las paradas.
     this.paradasRecorrido = [];
@@ -113,6 +118,10 @@ export class RecorridoEditComponent implements OnInit {
     });
   }
 
+  /**
+   * Carga el recorrido y lo habilita para edicion.
+   * @param id 
+   */
   editarRecorrido(id: number) {
     this.waiting = true;
     this.servicioLinea.getRecorrido(id).subscribe(result => {
@@ -137,6 +146,9 @@ export class RecorridoEditComponent implements OnInit {
 
   control: any;
 
+  /**
+   * Inicializa el view mapa.
+   */
   inicializarMapa() {
     this.map = L.map('map', {
       center: [-42.775935, -65.038144],
@@ -148,47 +160,11 @@ export class RecorridoEditComponent implements OnInit {
       minZoom: 12,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
-
-    /* 
-    this.map.on('click', (ev: any) => {
-      if (!this.pInicialIC.value) {
-        this._msg.showMessage('Debe seleccionar una parada de inicio para comenzar a marcar el recorrido', 'ERROR');
-        return;
-      }
-      if (this.trayectos.length == 0) {
-        const puntoInicio = new L.LatLng(this.pInicialIC.value.coordenada.lat, this.pInicialIC.value.coordenada.lng);
-        const puntoFin = new L.LatLng(ev.latlng.lat, ev.latlng.lng);
-      }
-
-      //var geocodeService = L.esri.Geocoding.geocodeService();
-      const geocodeService = ELG.geocodeService({
-        apiKey: ESRI_PARAMS.apiKey,
-        token: ESRI_PARAMS.token
-      });
-      
-      geocodeService.reverse().latlng(ev.latlng).run((error:any, result:any) => {
-        if (error) {
-          return;
-        }
-        const pointAdjust = result.latlng;
-        const pinicial = new L.LatLng( this.pInicialIC.value.coordenada.lat, this.pInicialIC.value.coordenada.lng );
-        this.control = L.Routing.control({
-          waypoints: [pinicial, pointAdjust],
-          plan: L.Routing.plan([pinicial, pointAdjust], {
-            createMarker: function (i, wp) {
-              const marker = L.marker(wp.latLng, { icon: this.iconDiv, draggable: true });
-              return marker;
-            }
-          }),
-          showAlternatives: false,
-          // language: 'es',
-          autoRoute: true
-        }).addTo(this.map);
-      });
-
-    });*/
   }
 
+  /**
+   * Carga todas las paradas habilitadas en el mapa.
+   */
   loadParadasToMap() {
     const ultimaParada = this.paradasRecorrido[this.paradasRecorrido.length - 1];
     this.paradas.forEach((parada: any, index: number) => {
@@ -208,6 +184,10 @@ export class RecorridoEditComponent implements OnInit {
     });
   }
 
+  /**
+   * Agrega una parada al recorrido y el mapa, y la quita de las paradas disponibles.
+   * @returns 
+   */
   agregarParada() {
     if (!this.paradaIC.value) // Si no se seleccion parada no hace nada.
       return;
@@ -235,6 +215,9 @@ export class RecorridoEditComponent implements OnInit {
       });
   }
 
+  /**
+   * Elimima todos los marcadores de paradas
+   */
   async clearParadas() {
     this.map.eachLayer((layer: any) => {
       if (layer._url != 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
@@ -242,49 +225,91 @@ export class RecorridoEditComponent implements OnInit {
     });
   }
 
+  /**
+   * Elimina la ultima parada del recorrido de la lista y del mapa.
+   */
   quitarUltimaParada() {
-    const paradaRemove = this.paradasRecorrido.pop();
-    this.paradasDisponibles.push(paradaRemove);
-    this.markParadaToMap();
+    const len = this.paradasRecorrido.length;
+    if (this.control && len > 0) {
+      if (len == 1) {
+        const paradaRemove = this.paradasRecorrido.pop();
+        this.paradasDisponibles.push(paradaRemove);
+        console.log("paradas recorrido: ", this.paradasRecorrido );
+        console.log("paradas disponibles: ", this.paradasDisponibles );
+        //this.control.setWaypoints([]);
+      }
+      else { // if (len > 2) 
+        const wps = this.control.getWaypoints();
+        const anteultimaParada = this.paradasRecorrido[len - 2];
+        console.log("Coordenada ultima parada: ", anteultimaParada);
+        let lastwp = wps.pop();
+        do {
+          if (lastwp.latLng.lat != anteultimaParada.coordenada.lat && lastwp.latLng.lng != anteultimaParada.coordenada.lng) {
+            lastwp = wps.pop();
+            console.log("remove waypoint: ", lastwp);
+          }
+          else {
+            wps.push(lastwp);
+            lastwp = null;
+          }
+        }
+        while (lastwp != null);
+        const paradaRemove = this.paradasRecorrido.pop();
+        this.paradasDisponibles.push(paradaRemove);
+        this.control.setWaypoints(wps);
+      }
+      console.log("waypoints after remove: ", this.control.getWaypoints());
+    }
   }
 
+  /**
+   * Construye recorrido automatico entre las ultimas dos paradas del recoorido.
+   */
   traceRecorridoUltimasParadas() {
     const len = this.paradasRecorrido.length;
-    if (len >= 2) {
-      const ultimaParada = this.paradasRecorrido[len - 1];
-      const anteultimaParada = this.paradasRecorrido[len - 2];
-      const ultima = new L.LatLng(ultimaParada.coordenada.lat, ultimaParada.coordenada.lng);
-      const anteultima = new L.LatLng(anteultimaParada.coordenada.lat, anteultimaParada.coordenada.lng);
-      this.control = L.Routing.control({
-        waypoints: [anteultima, ultima],
-        show: false,
-        plan: L.Routing.plan([anteultima, ultima], {
-          addWaypoints: true, draggableWaypoints: true, 
-          createMarker: (i, wp, n) => {
-            let marker: L.Marker;
-            if(i == 0 ||  i == n-1)
-              marker = L.marker(wp.latLng, { icon: this.iconDivIn, draggable: false });
-            return marker;
-          }
-        }),
-        //autoRoute: true,
-      }).addTo(this.map);
-
-      const routingControlContainer = this.control.getContainer();
-      const controlContainerParent = routingControlContainer.parentNode;
-      controlContainerParent.removeChild(routingControlContainer);
-
-      this.control.on('routeselected', (e: any) => {
-        const rutas = e.route;
-        // Do something with the route here
-        console.log('Route: control.on rutas: ', rutas);
-        var coors = rutas.coordinates;
-        for (var i in coors)
-          console.log(' lat: ' + coors[i].lat + ', lng: ' + coors[i].lng);
-
-        console.log("Control after select route: ", this.control );
-      });
+    if (!this.control) {
+      if (len >= 2) {
+        const ultimaParada = this.paradasRecorrido[len - 1];
+        const anteultimaParada = this.paradasRecorrido[len - 2];
+        const ultima = new L.LatLng(ultimaParada.coordenada.lat, ultimaParada.coordenada.lng);
+        const anteultima = new L.LatLng(anteultimaParada.coordenada.lat, anteultimaParada.coordenada.lng);
+        this.control = L.Routing.control({
+          waypoints: [anteultima, ultima],
+          show: false,
+          autoRoute: true,
+          plan: L.Routing.plan([anteultima, ultima], {
+            addWaypoints: true, draggableWaypoints: true,
+            createMarker: (i, wp, n) => {
+              let marker: L.Marker;
+              if (i == 0 || i == n - 1)
+                marker = L.marker(wp.latLng, { icon: this.iconDivIn, draggable: false });
+              return marker;
+            }
+          })
+        }).addTo(this.map);
+        // Oculta el itinerario
+        const routingControlContainer = this.control.getContainer();
+        const controlContainerParent = routingControlContainer.parentNode;
+        controlContainerParent.removeChild(routingControlContainer);
+        console.log("Waypoints after add: ", this.control.getWaypoints());
+      }
     }
+    else {
+      if (len >= 1) {
+        const ultimaParada = this.paradasRecorrido[len - 1];
+        const ultima = new L.LatLng(ultimaParada.coordenada.lat, ultimaParada.coordenada.lng);
+        const wps = this.control.getWaypoints();
+        wps.push(ultima);
+        this.control.setWaypoints(wps);
+        this.control.addTo(this.map);
+        // Oculta el itinerario
+        const routingControlContainer = this.control.getContainer();
+        const controlContainerParent = routingControlContainer.parentNode;
+        controlContainerParent.removeChild(routingControlContainer);
+        console.log("Waypoints after add: ", this.control.getWaypoints());
+      }
+    }
+
   }
 
   getRecorrido() {

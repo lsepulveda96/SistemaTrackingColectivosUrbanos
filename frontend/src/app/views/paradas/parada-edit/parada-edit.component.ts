@@ -111,32 +111,50 @@ export class ParadaEditComponent implements OnInit {
     });
 
     this.map.on('click', (e: any) => {
-      if (this.marker && this.map.hasLayer(this.marker)) // Si ya esta la parada en el mapa se elimina.
-        this.map.removeLayer(this.marker);
-      this.spin = true;
-      this.geocodeService.reverse().latlng(e.latlng).run((error: any, result: any) => { // Ajusta direccion a calle.
-        this.spin = false;
-        if (error) {  // Si hay error muestra el mensaje.
-          console.log("reverse error: ", error);
-          this._snackbar.open('No se pudo obtener direccion, ingrese manualmente', '', {
-            duration: 4000, verticalPosition: 'bottom', horizontalPosition: 'center',
-            panelClass: ['yellow-snackbar']
-          });
-          this.marker = L.marker(e.latlng, { icon: this.iconParada })
-            .addTo(this.map); // Se registra el marker donde se ingreso click
-          this.direccionIC.setValue('');
-        }
-        else { // Si hay resultado se carga la parada en la direccion ajustada.
-          this.marker = L.marker(result.latlng, { icon: this.iconParada })
-            .addTo(this.map)
-            .bindPopup(result.address.Address)
-            .openPopup();
-          this.direccionIC.setValue(result.address.Address);
-        }
-      });
+      this.streetMarker(e);
     });
   }
 
+  /**
+   * Ajusta las coordenadas a la calle.
+   * @param point 
+   */
+  streetMarker(point: any) {
+    this.geocodeService.reverse().latlng(point.latlng).run((error: any, result: any) => { // Ajusta direccion a calle.
+      if (error) {  // Si hay error muestra el mensaje.
+        this._snackbar.open('No se pudo obtener direccion, ingrese manualmente', '', {
+          duration: 4000, verticalPosition: 'bottom', horizontalPosition: 'center',
+          panelClass: ['yellow-snackbar']
+        });
+        this.addMarker( point );
+      }
+      else // Si hay resultado se carga la parada en la direccion ajustada.
+        this.addMarker( result );
+    });
+  }
+
+  /**
+   * Agrega marcador de parada en el mapa en la coordenada indicada.
+   * @param coord 
+   */
+  addMarker(coord: any) {
+    if (this.marker && this.map.hasLayer(this.marker)) // Si ya esta la parada en el mapa se elimina.
+        this.map.removeLayer(this.marker);
+        
+    this.marker = L.marker(coord.latlng , { icon: this.iconParada }).addTo(this.map);
+    fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&langCode=ES&featureTypes=StreetAddress&locationType=street&location=${coord.latlng.lng},${coord.latlng.lat}`)
+      .then(res => res.json())
+      .then(myJson => {
+        this.marker.bindPopup(myJson.address.Address).openPopup();
+        this.direccionIC.setValue( myJson.address.Address );
+      })
+      .catch(err => console.log("ERROR: ", err));
+  }
+
+  /**
+   * Registra la parada
+   * @returns 
+   */
   guardarParada() {
     if (!this.marker)
       return;
@@ -165,6 +183,9 @@ export class ParadaEditComponent implements OnInit {
 
   }
 
+  /**
+   * Actualiza los datos de una parada
+   */
   actualizarParada() {
     this.parada.direccion = this.direccionIC.value;
     this.parada.descripcion = this.descripcionIC.value;
