@@ -36,6 +36,9 @@ public class Recorrido {
     @Column(name="id")
     private long id;
 
+    @Column(name="denominacion", nullable = false)
+    private String denominacion;
+
     @Column(name ="fecha_inicio")
     @Temporal(TemporalType.DATE)    
     private Calendar fechaInicio;

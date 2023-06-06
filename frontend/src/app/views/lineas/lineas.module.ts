@@ -24,6 +24,7 @@ import { ParadasEditComponent } from './paradas-edit/paradas-edit.component';
 import { ParadasViewComponent } from './paradas-view/paradas-view.component';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatInputModule,
     MatTooltipModule,
     MatListModule,
-    MatSelectModule
+    MatSelectModule,
+    ScrollingModule
   ]
 })
 export class LineasModule { }

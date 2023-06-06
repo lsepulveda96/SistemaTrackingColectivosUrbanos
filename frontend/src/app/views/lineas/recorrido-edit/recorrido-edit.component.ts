@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Linea } from 'src/app/data/linea';
 import { Recorrido } from 'src/app/data/recorrido';
@@ -13,8 +13,8 @@ import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 import 'esri-leaflet-geocoder';
 
 import { Parada } from 'src/app/data/parada';
-import { E } from '@angular/cdk/keycodes';
-import { last } from 'rxjs-compat/operator/last';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { filter, map, pairwise, throttleTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recorrido-edit',
@@ -25,36 +25,22 @@ export class RecorridoEditComponent implements OnInit {
 
   modeNew: boolean;
   waiting: boolean;
-  linea: Linea;
-  recorrido: Recorrido;
-  paradas: any[];
+  linea: Linea; // Linea actual
+  recorrido: Recorrido; // Recorrido actual de la linea.
+  paradas: Parada[]; // lista de paradas activas.
 
-  paradaInicial: any;
-  trayectos: any[] = [];
-  waypoints: any[] = [];
+  trayectos: any[] = []; // trayectos del recorrido.
+  waypoints: any[] = []; // waypoints del recorrido.
 
   map: L.Map; // Mapa en pantalla.
-  actualCoord: any; // coordenada actual.
-  ultimaCoord: any; // ultima coordenada.
+  control: any; // Control de ruta en el mapa.
 
   paradasDisponibles: Parada[]; // lista de paradas disponibles para agregar al recorrido.
   paradasRecorrido: Parada[]; // lista de paradas en el recorrido.
   paradaIC = new FormControl(null); // Parada seleccionada de la lista de disponibles.
+  denominacionIC = new FormControl('', Validators.required );
 
-  iconParada = L.icon({
-    iconUrl: 'assets/images/stopbus.png',
-    iconSize: [45, 50],
-    iconAnchor: [45, 50],
-    popupAnchor: [-8, -37]
-  });
-
-  iconParadaIn = L.icon({
-    iconUrl: 'assets/images/stopbusin.png',
-    iconSize: [45, 50],
-    iconAnchor: [45, 50],
-    popupAnchor: [-8, -37]
-  });
-
+  // Icono de parada general.
   iconDiv = L.divIcon({
     html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:black"></i>',
     iconSize: [35, 40],
@@ -62,6 +48,7 @@ export class RecorridoEditComponent implements OnInit {
     popupAnchor: [-15, -30],
     className: 'myDivIcon'
   });
+  // Icono de parada que pertenece al recorrido.
   iconDivIn = L.divIcon({
     html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:blue"></i>',
     iconSize: [35, 40],
@@ -70,6 +57,8 @@ export class RecorridoEditComponent implements OnInit {
     className: 'myDivIcon'
   });
 
+  @ViewChild('scroller') scroller: CdkVirtualScrollViewport;
+  
   constructor(
     private servicioLinea: LineaService,
     private servicioParada: ParadaService,
@@ -129,22 +118,7 @@ export class RecorridoEditComponent implements OnInit {
       if (!result.error)
         this.recorrido = result.data;
     });
-  }
-
-
-  guardarRecorrido() {
-
-  }
-
-  actualizarRecorrido() {
-
-  }
-
-  showMap() {
-
-  }
-
-  control: any;
+  }  
 
   /**
    * Inicializa el view mapa.
@@ -226,39 +200,36 @@ export class RecorridoEditComponent implements OnInit {
   }
 
   /**
-   * Elimina la ultima parada del recorrido de la lista y del mapa.
+   * Elimina la ultima parada del recorrido de la lista y del mapa y el recorrido entre la ultima y anteultima parada.
    */
   quitarUltimaParada() {
     const len = this.paradasRecorrido.length;
-    if (this.control && len > 0) {
-      if (len == 1) {
-        const paradaRemove = this.paradasRecorrido.pop();
-        this.paradasDisponibles.push(paradaRemove);
-        console.log("paradas recorrido: ", this.paradasRecorrido );
-        console.log("paradas disponibles: ", this.paradasDisponibles );
-        //this.control.setWaypoints([]);
+    if (len <= 2) {
+      const paradaRemove = this.paradasRecorrido.pop();
+      this.addParadaToDisponibles( paradaRemove );
+      if (this.control) {
+        this.control.setWaypoints([]);
+        this.control.remove();
+        this.control = null;
       }
-      else { // if (len > 2) 
-        const wps = this.control.getWaypoints();
-        const anteultimaParada = this.paradasRecorrido[len - 2];
-        console.log("Coordenada ultima parada: ", anteultimaParada);
-        let lastwp = wps.pop();
-        do {
-          if (lastwp.latLng.lat != anteultimaParada.coordenada.lat && lastwp.latLng.lng != anteultimaParada.coordenada.lng) {
-            lastwp = wps.pop();
-            console.log("remove waypoint: ", lastwp);
-          }
-          else {
-            wps.push(lastwp);
-            lastwp = null;
-          }
+    }
+    else { // if (len > 2) 
+      const wps = this.control.getWaypoints();
+      const anteultimaParada = this.paradasRecorrido[len - 2];
+      let lastwp = wps.pop();
+      do {
+        if (lastwp.latLng.lat != anteultimaParada.coordenada.lat && lastwp.latLng.lng != anteultimaParada.coordenada.lng) {
+          lastwp = wps.pop();
         }
-        while (lastwp != null);
-        const paradaRemove = this.paradasRecorrido.pop();
-        this.paradasDisponibles.push(paradaRemove);
-        this.control.setWaypoints(wps);
+        else {
+          wps.push(lastwp);
+          lastwp = null;
+        }
       }
-      console.log("waypoints after remove: ", this.control.getWaypoints());
+      while (lastwp != null);
+      const paradaRemove = this.paradasRecorrido.pop();
+      this.addParadaToDisponibles( paradaRemove );
+      this.control.setWaypoints(wps);
     }
   }
 
@@ -275,23 +246,22 @@ export class RecorridoEditComponent implements OnInit {
         const anteultima = new L.LatLng(anteultimaParada.coordenada.lat, anteultimaParada.coordenada.lng);
         this.control = L.Routing.control({
           waypoints: [anteultima, ultima],
-          show: false,
-          autoRoute: true,
+          show: false, autoRoute: true, collapsible: true, 
           plan: L.Routing.plan([anteultima, ultima], {
-            addWaypoints: true, draggableWaypoints: true,
+            addWaypoints: true, draggableWaypoints: true, 
             createMarker: (i, wp, n) => {
               let marker: L.Marker;
               if (i == 0 || i == n - 1)
                 marker = L.marker(wp.latLng, { icon: this.iconDivIn, draggable: false });
               return marker;
             }
-          })
+          }),
+          lineOptions: { styles: [ { color: 'red', weight: 5 }], extendToWaypoints: false, missingRouteTolerance: 5 }
         }).addTo(this.map);
         // Oculta el itinerario
         const routingControlContainer = this.control.getContainer();
         const controlContainerParent = routingControlContainer.parentNode;
         controlContainerParent.removeChild(routingControlContainer);
-        console.log("Waypoints after add: ", this.control.getWaypoints());
       }
     }
     else {
@@ -306,26 +276,51 @@ export class RecorridoEditComponent implements OnInit {
         const routingControlContainer = this.control.getContainer();
         const controlContainerParent = routingControlContainer.parentNode;
         controlContainerParent.removeChild(routingControlContainer);
-        console.log("Waypoints after add: ", this.control.getWaypoints());
       }
     }
+  }
 
+  /**
+   * Agrega una parada a la lista de disponibles y ordena la lista por codigo.
+   * @param parada 
+   */
+  addParadaToDisponibles( parada: any ) {
+    this.paradasDisponibles.push( parada );
+    this.paradasDisponibles.sort( (p1: Parada, p2:Parada ) => {
+      if (p1.codigo < p2.codigo) return -1;
+      else if (p1.codigo > p2.codigo) return 1;
+      return 0;
+    });
   }
 
   getRecorrido() {
-
+    console.log("Recuperar recorrido del linea " + this.linea.denominacion );
   }
 
   getParadasRecorrido() {
-
+    console.log("Recuperar listado de paradas de un recorrido de linea " + this.linea.denominacion );
   }
 
-  borrarUltimoTramo() {
-
+  guardarRecorrido() {
+    if (!this.control || this.control.getWaypoints().length ==0) {
+      this._msg.showMessage( 'No se definio recorrido','ERROR');
+      return;
+    }
+    this.waypoints = this.control.getWaypoints().map( (wp:any) => {
+      return { lat: wp.latLng.lat, lng: wp.latLng.lng }
+    });
+    this.recorrido = { id: null, activo: true, fechaInicio: new Date(), fechaFin: null, 
+      Linea: this.linea, 
+      trayectos: null,
+      waypoints: this.waypoints
+    }
+    console.log("Guardar recorrido: ");
+    console.log("recorrido: ", this.recorrido );
+    console.log("waypoints: ", this.waypoints );
+    console.log("paradas: ", this.paradasRecorrido );
   }
 
-  borrarTodosTramos() {
-
+  actualizarRecorrido() {
+    console.log("Actualizar recorrido: ");
   }
-
 }

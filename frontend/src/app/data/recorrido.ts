@@ -1,3 +1,4 @@
+import { Coordenada } from "./coordenada";
 import { Linea } from "./linea";
 
 export interface Recorrido {
@@ -7,4 +8,7 @@ export interface Recorrido {
     fechaFin: Date;
     activo: boolean;
     Linea: Linea;
+
+    trayectos: Coordenada[];
+    waypoints: Coordenada[];
 }
