@@ -9,7 +9,7 @@ public interface RecorridoService {
 
     public Recorrido getRecorrido( long id );
 
-    public Recorrido getRecorridoActivo( long idlinea );
+    public List<Recorrido> getRecorridosActivos( long idlinea );
 
     public Recorrido saveRecorrido( Recorrido recorrido );
 

@@ -25,8 +25,8 @@ public class RecorridoServiceImp implements RecorridoService {
     }
 
     @Override
-    public Recorrido getRecorridoActivo( long idlinea ) {
-        return this.recorridoRepo.findActivo(idlinea);
+    public List<Recorrido> getRecorridosActivos( long idlinea ) {
+        return this.recorridoRepo.findActivos(idlinea);
     }
 
     @Override
@@ -38,6 +38,7 @@ public class RecorridoServiceImp implements RecorridoService {
     public Recorrido updateRecorrido(long id, Recorrido recorrido) {
         Recorrido rec = this.recorridoRepo.findById(id);
         if (rec != null) {
+            rec.setDenominacion( recorrido.getDenominacion());
             rec.setFechaInicio( recorrido.getFechaInicio());
             rec.setFechaFin(recorrido.getFechaFin());
             rec.setActivo( recorrido.isActivo());
@@ -48,7 +49,4 @@ public class RecorridoServiceImp implements RecorridoService {
         }
         return null;
     }
-
-
-    
 }

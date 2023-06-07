@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { HtmlParser } from '@angular/compiler';
 import { RecorridoViewComponent } from '../views/lineas/recorrido-view/recorrido-view.component';
 import { Recorrido } from '../data/recorrido';
+import { Parada } from '../data/parada';
 
 @Injectable({
   providedIn: 'root'
@@ -34,27 +35,30 @@ export class LineaService {
   // -----------------  RECORRIDOS -----------------------------------------------------
 
   getRecorrido( idRecorrido: number ): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/linea/recorrido/' + idRecorrido );
+    return this.http.get( HTTPCONFIG.url + '/recorrido/' + idRecorrido );
   }
-  getRecorridoActivo( idlinea: number  ): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/linea/recorrido/activo/' + idlinea );
+  
+  getRecorridosActivos( idlinea: number  ): Observable<any> {
+    return this.http.get( HTTPCONFIG.url + '/recorridos/activo/' + idlinea );
   }
 
-  getRecorridosLinea( idlinea: number ): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/linea/recorridos/' + idlinea );
+  getRecorridosNoActivos( idlinea: number ): Observable<any> {
+    return this.http.get( HTTPCONFIG.url + '/recorridos/noactivo/' + idlinea );
   }
 
   saveRecorrido( recorrido: Recorrido ): Observable<any>  {
-    return this.http.post( HTTPCONFIG.url + '/linea/recorrido' , recorrido );
+    return this.http.post( HTTPCONFIG.url + '/recorridos' , recorrido );
   }
 
-  updateRecorrido( recorrido: Recorrido ): Observable<any> {
-    return this.http.put( HTTPCONFIG.url + '/linea/recorrido/' + recorrido.id, recorrido  );
+  updateRecorrido( idrec: number, recorrido: Recorrido ): Observable<any> {
+    return this.http.put( HTTPCONFIG.url + '/recorrido/' + idrec, recorrido  );
   }
 
   getParadasRecorrido( idrecorrido: number ): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/linea/paradas/' + idrecorrido );
+    return this.http.get( HTTPCONFIG.url + '/recorrido/paradas/' + idrecorrido );
   }
 
-  
+  saveParadasRecorrido( idrecorrido: number, paradas: Parada[]): Observable<any> {
+    return this.http.post( HTTPCONFIG.url + '/recorrido/paradas/' + idrecorrido, paradas );
+  }  
 }

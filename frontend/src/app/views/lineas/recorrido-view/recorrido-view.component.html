@@ -2,7 +2,7 @@
     <mat-card-header>
         <mat-card-title>
             <mat-icon>timeline</mat-icon>
-            {{ (linea ? linea.denominacion:'')  + ': Recorrido actual '  }}
+            {{ (linea ? linea.denominacion:'')  + ': Recorridos actuales '  }}
         </mat-card-title>
     </mat-card-header>
     
@@ -28,7 +28,6 @@
                 </div>
             </div>
         </div>
-
         <div class="container" *ngIf="recorrido">
             <div class="map-container">
                 <div class="map-frame">
@@ -36,14 +35,13 @@
                 </div>
             </div>
             <mat-divider></mat-divider>
-            <br>
+            <!-- <br>
             <div class="d-flex justify-content-end">
                 <button mat-stroked-button color="primary" (click)="editarRecorrido()" class="button-border">
                     Editar
                 </button>
-            </div>
+            </div> -->
         </div>
-
         <div class="d-flex justify-content-end">
             <button mat-stroked-button color="primary" [routerLink]="['../../..']" class="button-border">
                 Cerrar

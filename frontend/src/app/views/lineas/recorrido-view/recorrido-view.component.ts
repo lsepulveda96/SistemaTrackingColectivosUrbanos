@@ -18,9 +18,8 @@ export class RecorridoViewComponent implements OnInit {
   waiting: boolean;
   id: any;
   linea: Linea;
-  recorrido: Recorrido;
+  recorridos: Recorrido[]; // recorridos activos
   map: any;
-  marker: any;
 
   constructor(private serviceLinea: LineaService,
     private _msg: MessageService,
@@ -34,21 +33,24 @@ export class RecorridoViewComponent implements OnInit {
       if (!result.error)
         this.linea = result.data;
     });
-    this.serviceLinea.getRecorridoActivo(parseInt(this.id)).subscribe(result => {
+    this.serviceLinea.getRecorridosActivos(parseInt(this.id)).subscribe(result => {
       this.waiting = false;
       if (!result.error) {
-        this.recorrido = result.data;
-        this.initMap();
+        this.recorridos = result.data;
+        this.inicializarMapa();
       }
     });
   }
 
-
-  initMap() {
+  /**
+   * Inicializa el view mapa.
+   */
+  inicializarMapa() {
     this.map = L.map('map', {
       center: [-42.775935, -65.038144],
       zoom: 14
     });
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       minZoom: 12,
@@ -61,10 +63,10 @@ export class RecorridoViewComponent implements OnInit {
   }
 
   definirRecorrido() {
-
+    console.log("Definir recorrido");
   }
 
   historialRecorridos() {
-    
+    console.log("Historial recorrido")
   }
 }

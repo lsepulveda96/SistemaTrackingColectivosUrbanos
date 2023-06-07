@@ -14,7 +14,6 @@ import 'esri-leaflet-geocoder';
 
 import { Parada } from 'src/app/data/parada';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { filter, map, pairwise, throttleTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recorrido-edit',
@@ -31,6 +30,7 @@ export class RecorridoEditComponent implements OnInit {
 
   trayectos: any[] = []; // trayectos del recorrido.
   waypoints: any[] = []; // waypoints del recorrido.
+  rutas: any;
 
   map: L.Map; // Mapa en pantalla.
   control: any; // Control de ruta en el mapa.
@@ -38,7 +38,7 @@ export class RecorridoEditComponent implements OnInit {
   paradasDisponibles: Parada[]; // lista de paradas disponibles para agregar al recorrido.
   paradasRecorrido: Parada[]; // lista de paradas en el recorrido.
   paradaIC = new FormControl(null); // Parada seleccionada de la lista de disponibles.
-  denominacionIC = new FormControl('', Validators.required );
+  denominacionIC = new FormControl('', Validators.required);
 
   // Icono de parada general.
   iconDiv = L.divIcon({
@@ -58,7 +58,7 @@ export class RecorridoEditComponent implements OnInit {
   });
 
   @ViewChild('scroller') scroller: CdkVirtualScrollViewport;
-  
+
   constructor(
     private servicioLinea: LineaService,
     private servicioParada: ParadaService,
@@ -118,7 +118,7 @@ export class RecorridoEditComponent implements OnInit {
       if (!result.error)
         this.recorrido = result.data;
     });
-  }  
+  }
 
   /**
    * Inicializa el view mapa.
@@ -206,7 +206,7 @@ export class RecorridoEditComponent implements OnInit {
     const len = this.paradasRecorrido.length;
     if (len <= 2) {
       const paradaRemove = this.paradasRecorrido.pop();
-      this.addParadaToDisponibles( paradaRemove );
+      this.addParadaToDisponibles(paradaRemove);
       if (this.control) {
         this.control.setWaypoints([]);
         this.control.remove();
@@ -228,7 +228,7 @@ export class RecorridoEditComponent implements OnInit {
       }
       while (lastwp != null);
       const paradaRemove = this.paradasRecorrido.pop();
-      this.addParadaToDisponibles( paradaRemove );
+      this.addParadaToDisponibles(paradaRemove);
       this.control.setWaypoints(wps);
     }
   }
@@ -246,9 +246,9 @@ export class RecorridoEditComponent implements OnInit {
         const anteultima = new L.LatLng(anteultimaParada.coordenada.lat, anteultimaParada.coordenada.lng);
         this.control = L.Routing.control({
           waypoints: [anteultima, ultima],
-          show: false, autoRoute: true, collapsible: true, 
+          show: false, autoRoute: true, collapsible: true,
           plan: L.Routing.plan([anteultima, ultima], {
-            addWaypoints: true, draggableWaypoints: true, 
+            addWaypoints: true, draggableWaypoints: true,
             createMarker: (i, wp, n) => {
               let marker: L.Marker;
               if (i == 0 || i == n - 1)
@@ -256,12 +256,17 @@ export class RecorridoEditComponent implements OnInit {
               return marker;
             }
           }),
-          lineOptions: { styles: [ { color: 'red', weight: 5 }], extendToWaypoints: false, missingRouteTolerance: 5 }
+          lineOptions: { styles: [{ color: 'red', weight: 5 }], extendToWaypoints: false, missingRouteTolerance: 5 }
         }).addTo(this.map);
         // Oculta el itinerario
         const routingControlContainer = this.control.getContainer();
         const controlContainerParent = routingControlContainer.parentNode;
         controlContainerParent.removeChild(routingControlContainer);
+
+        this.control.on('routeselected', (e:any) => {
+          console.log("ruta seleccionada: ", e );
+          this.rutas = e.route;
+        });
       }
     }
     else {
@@ -284,9 +289,9 @@ export class RecorridoEditComponent implements OnInit {
    * Agrega una parada a la lista de disponibles y ordena la lista por codigo.
    * @param parada 
    */
-  addParadaToDisponibles( parada: any ) {
-    this.paradasDisponibles.push( parada );
-    this.paradasDisponibles.sort( (p1: Parada, p2:Parada ) => {
+  addParadaToDisponibles(parada: any) {
+    this.paradasDisponibles.push(parada);
+    this.paradasDisponibles.sort((p1: Parada, p2: Parada) => {
       if (p1.codigo < p2.codigo) return -1;
       else if (p1.codigo > p2.codigo) return 1;
       return 0;
@@ -294,30 +299,39 @@ export class RecorridoEditComponent implements OnInit {
   }
 
   getRecorrido() {
-    console.log("Recuperar recorrido del linea " + this.linea.denominacion );
+    console.log("Recuperar recorrido del linea " + this.linea.denominacion);
   }
 
   getParadasRecorrido() {
-    console.log("Recuperar listado de paradas de un recorrido de linea " + this.linea.denominacion );
+    console.log("Recuperar listado de paradas de un recorrido de linea " + this.linea.denominacion);
   }
 
   guardarRecorrido() {
-    if (!this.control || this.control.getWaypoints().length ==0) {
-      this._msg.showMessage( 'No se definio recorrido','ERROR');
+    if (!this.control || this.control.getWaypoints().length == 0) {
+      this._msg.showMessage('No se definio recorrido', 'ERROR');
       return;
     }
-    this.waypoints = this.control.getWaypoints().map( (wp:any) => {
+    this.waypoints = this.control.getWaypoints().map((wp: any) => {
       return { lat: wp.latLng.lat, lng: wp.latLng.lng }
     });
-    this.recorrido = { id: null, activo: true, fechaInicio: new Date(), fechaFin: null, 
-      Linea: this.linea, 
-      trayectos: null,
+    this.trayectos = this.rutas.coordinates.map( (coord: any) => {
+      return { lat: coord.lat, lng: coord.lng };
+    });
+    this.recorrido = {
+      id: null, activo: true, fechaInicio: new Date(), fechaFin: null,
+      denominacion: this.denominacionIC.value.toUpperCase(),
+      linea: this.linea,
+      trayectos: this.trayectos,
       waypoints: this.waypoints
     }
-    console.log("Guardar recorrido: ");
-    console.log("recorrido: ", this.recorrido );
-    console.log("waypoints: ", this.waypoints );
-    console.log("paradas: ", this.paradasRecorrido );
+    console.log("Guardar recorrido: ", this.recorrido );
+    console.log("paradas: ", this.paradasRecorrido);
+
+    this.waiting = true;
+    this.servicioLinea.saveRecorrido( this.recorrido ).subscribe( result => {
+      this.waiting = false;
+      console.log("save recorrido result : ", result );
+    });
   }
 
   actualizarRecorrido() {

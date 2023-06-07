@@ -23,25 +23,28 @@
                     </div>
                 </div>
                 <div class="card px-0">
-                    <div class="card-header p-1">
-                        <strong>Paradas</strong>
-                        <mat-form-field appearance="legacy" style="width:85%">
-                            <mat-select [formControl]="paradaIC">
-                                <mat-option *ngFor="let parada of paradasDisponibles" [value]="parada">
-                                    {{ parada.codigo + ':' + parada.direccion }}
-                                </mat-option>
-                            </mat-select>
-                            <i class="bi bi-geo-fill" matPrefix></i>
-                        </mat-form-field>
-                        <button mat-icon-button color="primary" style="width:15%"
-                            matTooltip="agregar parada a recorrido" (click)="agregarParada()">
-                            <mat-icon>add_box</mat-icon>
-                        </button>
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-12">
+                                <mat-form-field appearance="legacy" style="width:85%">
+                                    <mat-label>Paradas</mat-label>
+                                    <mat-select [formControl]="paradaIC" placeholder="seleccione parada a agregar">
+                                        <mat-option *ngFor="let parada of paradasDisponibles" [value]="parada">
+                                            {{ parada.codigo + ':' + parada.direccion }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <i class="bi bi-geo-fill" matPrefix></i>
+                                </mat-form-field>
+                                <button mat-icon-button color="primary" matTooltip="agregar parada a recorrido"
+                                    (click)="agregarParada()">
+                                    <mat-icon>add_box</mat-icon>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body p-0">
                         <cdk-virtual-scroll-viewport itemSize="10" class="scroll-viewport" #scroller>
                             <mat-list dense>
-
                                 <mat-list-item *ngFor="let parada of paradasRecorrido; let i=index">
                                     <mat-icon matListIcon>
                                         <i class="bi bi-geo-fill" style="color:blue;"></i>
@@ -53,7 +56,6 @@
                                     </button>
                                     <mat-divider></mat-divider>
                                 </mat-list-item>
-
                             </mat-list>
                         </cdk-virtual-scroll-viewport>
                     </div>
@@ -67,14 +69,11 @@
                 </div>
             </div>
         </div>
-
         <mat-divider></mat-divider>
         <br>
-
         <div class="d-flex justify-content-end">
             <button mat-stroked-button color="primary" (click)="guardarRecorrido()" class="button-border"
-                *ngIf="modeNew"
-                [disabled]="denominacionIC.hasError('required')">
+                *ngIf="modeNew" [disabled]="denominacionIC.hasError('required')">
                 Guardar
             </button>
             <button mat-stroked-button color="primary" (click)="actualizarRecorrido()" class="button-border"

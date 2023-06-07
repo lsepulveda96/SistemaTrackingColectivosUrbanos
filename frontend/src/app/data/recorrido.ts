@@ -4,10 +4,11 @@ import { Linea } from "./linea";
 export interface Recorrido {
 
     id: number;
+    denominacion: String;
     fechaInicio: Date;
     fechaFin: Date;
     activo: boolean;
-    Linea: Linea;
+    linea: Linea;
 
     trayectos: Coordenada[];
     waypoints: Coordenada[];
