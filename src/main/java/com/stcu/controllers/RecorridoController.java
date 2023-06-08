@@ -38,14 +38,6 @@ public class RecorridoController {
 
     @PostMapping("/recorridos")
     public String saveRecorrido( @RequestBody RecorridoDTO drec ) {
-        System.out.println("save Recorrido controller: " );
-        System.out.println(" DTO Recorrido linea id: " + drec.getLinea().getId());
-        System.out.println(" DTO Recorrido id: " + drec.getId());
-        System.out.println(" DTO Recorrido denominacion: " + drec.getDenominacion());
-        System.out.println(" DTO Recorrido fecha inicio: " + drec.getFechaInicio());
-        System.out.println(" DTO Recorrido fecha fin: " + drec.getFechaFin());
-        System.out.println(" DTO Recorrido es activo: " + drec.isActivo());
-        
         for (CoordenadaDTO wp: drec.getWaypoints())
             System.out.println(" waypoint: lat " + wp.getLat() + " lng " + wp.getLng() );
 

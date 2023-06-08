@@ -12,7 +12,7 @@
     </div>
 
     <mat-card-content>
-        <div class="container" *ngIf="!recorrido">
+        <div class="container" *ngIf="!recorridos || recorridos.length==0">
             <div class="row">
                 <div class="col">
                     <span>No existe recorrido activo para la linea</span> &nbsp;
@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <div class="container" *ngIf="recorrido">
+        <div class="container" *ngIf="recorridos && recorridos.length > 0">
             <div class="map-container">
                 <div class="map-frame">
                     <div id="map"></div>

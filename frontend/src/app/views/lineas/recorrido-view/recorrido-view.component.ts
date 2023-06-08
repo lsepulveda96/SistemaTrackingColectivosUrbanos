@@ -35,6 +35,7 @@ export class RecorridoViewComponent implements OnInit {
     });
     this.serviceLinea.getRecorridosActivos(parseInt(this.id)).subscribe(result => {
       this.waiting = false;
+      console.log("Recorrido activos de linea " + this.id, result );
       if (!result.error) {
         this.recorridos = result.data;
         this.inicializarMapa();

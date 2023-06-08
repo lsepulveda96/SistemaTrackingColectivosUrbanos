@@ -33,7 +33,7 @@ export class ParadasViewComponent implements OnInit {
         this.waiting = false;
         this.linea = result.data;
       });
-    this.servicioLinea.getRecorridoActivo( parseInt(id))
+    this.servicioLinea.getRecorridosActivos( parseInt(id))
       .subscribe( result => {
         
       });

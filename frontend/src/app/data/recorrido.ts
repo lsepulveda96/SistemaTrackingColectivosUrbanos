@@ -9,7 +9,7 @@ export interface Recorrido {
     fechaFin: Date;
     activo: boolean;
     linea: Linea;
-
-    trayectos: Coordenada[];
-    waypoints: Coordenada[];
+    
+    trayectos: Coordenada[]; // Trayectos del recorrido creados por el router.
+    waypoints: Coordenada[]; // waypoints del router entre paradas.
 }

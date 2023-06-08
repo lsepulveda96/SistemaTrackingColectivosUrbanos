@@ -36,7 +36,7 @@ export class RecorridoEditComponent implements OnInit {
   control: any; // Control de ruta en el mapa.
 
   paradasDisponibles: Parada[]; // lista de paradas disponibles para agregar al recorrido.
-  paradasRecorrido: Parada[]; // lista de paradas en el recorrido.
+  paradasRecorrido: any[]; // lista de paradas en el recorrido.
   paradaIC = new FormControl(null); // Parada seleccionada de la lista de disponibles.
   denominacionIC = new FormControl('', Validators.required);
 
@@ -143,7 +143,7 @@ export class RecorridoEditComponent implements OnInit {
     const ultimaParada = this.paradasRecorrido[this.paradasRecorrido.length - 1];
     this.paradas.forEach((parada: any, index: number) => {
       let paradaIn = false;
-      if (this.paradasRecorrido && this.paradasRecorrido.find(par => par.codigo == parada.codigo))
+      if (this.paradasRecorrido && this.paradasRecorrido.find(par => par.Parada.codigo == parada.codigo))
         paradaIn = true;
 
       const icon = paradaIn ? this.iconDivIn : this.iconDiv;
@@ -153,7 +153,7 @@ export class RecorridoEditComponent implements OnInit {
       marker.addTo(this.map);
 
       // Se muestran popup solo si no hay paradas en recorrido o si es la ultima parada del recorrido.
-      if (!this.paradasRecorrido || this.paradasRecorrido.length == 0 || (ultimaParada && ultimaParada.codigo == parada.codigo))
+      if (!this.paradasRecorrido || this.paradasRecorrido.length == 0 || (ultimaParada && ultimaParada.Parada.codigo == parada.codigo))
         marker.openPopup();
     });
   }
@@ -168,7 +168,11 @@ export class RecorridoEditComponent implements OnInit {
     if (!this.paradasRecorrido) // Si el arreglo de parada es null se inicializa.
       this.paradasRecorrido = [];
     // Se agrega la parada al arreglo de paradas.
-    this.paradasRecorrido.push(this.paradaIC.value);
+    this.paradasRecorrido.push( { 
+      Parada: this.paradaIC.value,
+      orden: this.paradasRecorrido.length,
+      distancia: null, tiempo: null 
+    });
     // se elimina la parada de la lista de paradas disponibles
     this.paradasDisponibles = this.paradasDisponibles.filter(par => par.codigo != this.paradaIC.value.codigo);
 
@@ -206,7 +210,7 @@ export class RecorridoEditComponent implements OnInit {
     const len = this.paradasRecorrido.length;
     if (len <= 2) {
       const paradaRemove = this.paradasRecorrido.pop();
-      this.addParadaToDisponibles(paradaRemove);
+      this.addParadaToDisponibles(paradaRemove.Parada );
       if (this.control) {
         this.control.setWaypoints([]);
         this.control.remove();
@@ -242,8 +246,8 @@ export class RecorridoEditComponent implements OnInit {
       if (len >= 2) {
         const ultimaParada = this.paradasRecorrido[len - 1];
         const anteultimaParada = this.paradasRecorrido[len - 2];
-        const ultima = new L.LatLng(ultimaParada.coordenada.lat, ultimaParada.coordenada.lng);
-        const anteultima = new L.LatLng(anteultimaParada.coordenada.lat, anteultimaParada.coordenada.lng);
+        const ultima = new L.LatLng(ultimaParada.Parada.coordenada.lat, ultimaParada.Parada.coordenada.lng);
+        const anteultima = new L.LatLng(anteultimaParada.Parada.coordenada.lat, anteultimaParada.Parada.coordenada.lng);
         this.control = L.Routing.control({
           waypoints: [anteultima, ultima],
           show: false, autoRoute: true, collapsible: true,
@@ -263,8 +267,8 @@ export class RecorridoEditComponent implements OnInit {
         const controlContainerParent = routingControlContainer.parentNode;
         controlContainerParent.removeChild(routingControlContainer);
 
-        this.control.on('routeselected', (e:any) => {
-          console.log("ruta seleccionada: ", e );
+        this.control.on('routeselected', (e: any) => {
+          console.log("ruta seleccionada: ", e);
           this.rutas = e.route;
         });
       }
@@ -272,7 +276,7 @@ export class RecorridoEditComponent implements OnInit {
     else {
       if (len >= 1) {
         const ultimaParada = this.paradasRecorrido[len - 1];
-        const ultima = new L.LatLng(ultimaParada.coordenada.lat, ultimaParada.coordenada.lng);
+        const ultima = new L.LatLng(ultimaParada.Parada.coordenada.lat, ultimaParada.Parada.coordenada.lng);
         const wps = this.control.getWaypoints();
         wps.push(ultima);
         this.control.setWaypoints(wps);
@@ -314,7 +318,7 @@ export class RecorridoEditComponent implements OnInit {
     this.waypoints = this.control.getWaypoints().map((wp: any) => {
       return { lat: wp.latLng.lat, lng: wp.latLng.lng }
     });
-    this.trayectos = this.rutas.coordinates.map( (coord: any) => {
+    this.trayectos = this.rutas.coordinates.map((coord: any) => {
       return { lat: coord.lat, lng: coord.lng };
     });
     this.recorrido = {
@@ -324,13 +328,14 @@ export class RecorridoEditComponent implements OnInit {
       trayectos: this.trayectos,
       waypoints: this.waypoints
     }
-    console.log("Guardar recorrido: ", this.recorrido );
+    
+    console.log("Guardar recorrido: ", this.recorrido);
     console.log("paradas: ", this.paradasRecorrido);
 
     this.waiting = true;
-    this.servicioLinea.saveRecorrido( this.recorrido ).subscribe( result => {
+    this.servicioLinea.saveRecorrido(this.recorrido).subscribe(result => {
       this.waiting = false;
-      console.log("save recorrido result : ", result );
+      console.log("save recorrido result : ", result);
     });
   }
 
