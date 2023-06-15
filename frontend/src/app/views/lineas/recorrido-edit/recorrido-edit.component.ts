@@ -222,7 +222,7 @@ export class RecorridoEditComponent implements OnInit {
       const anteultimaParada = this.paradasRecorrido[len - 2];
       let lastwp = wps.pop();
       do {
-        if (lastwp.latLng.lat != anteultimaParada.coordenada.lat && lastwp.latLng.lng != anteultimaParada.coordenada.lng) {
+        if (lastwp.latLng.lat != anteultimaParada.Parada.coordenada.lat && lastwp.latLng.lng != anteultimaParada.Parada.coordenada.lng) {
           lastwp = wps.pop();
         }
         else {
@@ -232,9 +232,10 @@ export class RecorridoEditComponent implements OnInit {
       }
       while (lastwp != null);
       const paradaRemove = this.paradasRecorrido.pop();
-      this.addParadaToDisponibles(paradaRemove);
+      this.addParadaToDisponibles(paradaRemove.Parada);
       this.control.setWaypoints(wps);
     }
+    this.markParadaToMap();
   }
 
   /**
@@ -321,12 +322,19 @@ export class RecorridoEditComponent implements OnInit {
     this.trayectos = this.rutas.coordinates.map((coord: any) => {
       return { lat: coord.lat, lng: coord.lng };
     });
+    const paradasRec = this.paradasRecorrido.map( (pr: any, index: number) => {
+      return { 
+        id: null, paradaCodigo: pr.Parada.codigo, 
+        orden: index, distancia: null, tiempo: null
+      }
+    });
     this.recorrido = {
       id: null, activo: true, fechaInicio: new Date(), fechaFin: null,
       denominacion: this.denominacionIC.value.toUpperCase(),
       linea: this.linea,
       trayectos: this.trayectos,
-      waypoints: this.waypoints
+      waypoints: this.waypoints,
+      paradas: paradasRec
     }
     
     console.log("Guardar recorrido: ", this.recorrido);

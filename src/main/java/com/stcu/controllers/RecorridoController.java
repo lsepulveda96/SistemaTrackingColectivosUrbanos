@@ -3,7 +3,9 @@ package com.stcu.controllers;
 import java.util.List;
 
 import com.stcu.controllers.dto.CoordenadaDTO;
+import com.stcu.controllers.dto.ParadaRecorridoDTO;
 import com.stcu.controllers.dto.RecorridoDTO;
+import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
 import com.stcu.services.RecorridoServiceImp;
 
@@ -38,12 +40,6 @@ public class RecorridoController {
 
     @PostMapping("/recorridos")
     public String saveRecorrido( @RequestBody RecorridoDTO drec ) {
-        for (CoordenadaDTO wp: drec.getWaypoints())
-            System.out.println(" waypoint: lat " + wp.getLat() + " lng " + wp.getLng() );
-
-        for (CoordenadaDTO wp: drec.getTrayectos())
-            System.out.println(" trayecto: lat " + wp.getLat() + " lng " + wp.getLng() );
-
         Recorrido newRec = service.saveRecorrido( drec.toRecorrido() );
         Response<RecorridoDTO> response;
         if (newRec != null)

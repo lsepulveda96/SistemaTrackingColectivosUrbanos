@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.stcu.model.Linea;
+import com.stcu.model.Parada;
+import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -30,6 +32,8 @@ public class RecorridoDTO implements Serializable {
     private List<CoordenadaDTO> trayectos;
     private List<CoordenadaDTO> waypoints;
 
+    private List<ParadaRecorridoDTO> paradas;
+
     public RecorridoDTO() {
     }
 
@@ -40,6 +44,13 @@ public class RecorridoDTO implements Serializable {
         this.fechaFin = rec.getFechaFin();
         this.activo = rec.isActivo();
         this.linea = rec.getLinea();
+
+        this.paradas = new ArrayList<ParadaRecorridoDTO>();
+        if (rec.getParadas() != null)
+            for (ParadaRecorrido pr : rec.getParadas()) {
+                ParadaRecorridoDTO prd = new ParadaRecorridoDTO(pr);
+                this.paradas.add(prd);
+            }
 
         LineString trays = rec.getTrayectos();
         trayectos = new ArrayList<CoordenadaDTO>();
@@ -56,12 +67,12 @@ public class RecorridoDTO implements Serializable {
 
     public Recorrido toRecorrido() {
         Recorrido rec = new Recorrido();
-        rec.setId( id );
+        rec.setId(id);
         rec.setDenominacion(denominacion);
-        rec.setFechaInicio( fechaInicio );
-        rec.setFechaFin( fechaFin);
+        rec.setFechaInicio(fechaInicio);
+        rec.setFechaFin(fechaFin);
         rec.setActivo(activo);
-        rec.setLinea( linea );
+        rec.setLinea(linea);
 
         GeometryFactory geometryFactory = new GeometryFactory();
 
@@ -79,13 +90,21 @@ public class RecorridoDTO implements Serializable {
         }
         rec.setWaypoints(geometryFactory.createLineString(wpoints));
 
+        List<ParadaRecorrido> paradasRecorrido = new ArrayList<ParadaRecorrido>();
+        for (ParadaRecorridoDTO prd: paradas) {
+            ParadaRecorrido newpr = new ParadaRecorrido( new Parada( prd.getParadaCodigo(),null, null), null );
+            newpr.setOrden(prd.getOrden());
+            paradasRecorrido.add( newpr );
+        }
+        rec.setParadas(paradasRecorrido);
+
         return rec;
     }
 
     public Recorrido toRecorrido(RecorridoDTO drec) {
         Recorrido rec = new Recorrido();
         rec.setId(drec.getId());
-        rec.setDenominacion( drec.getDenominacion());
+        rec.setDenominacion(drec.getDenominacion());
         rec.setFechaInicio(drec.getFechaInicio());
         rec.setFechaFin(drec.getFechaFin());
         rec.setActivo(drec.isActivo());

@@ -1,11 +1,16 @@
 package com.stcu.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import com.stcu.model.Parada;
+import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
+import com.stcu.repository.ParadaRecorridoRepository;
+import com.stcu.repository.ParadaRepository;
 import com.stcu.repository.RecorridoRepository;
 
 @Service
@@ -13,7 +18,11 @@ public class RecorridoServiceImp implements RecorridoService {
     
     @Autowired
     private RecorridoRepository recorridoRepo;
-
+    @Autowired
+    private ParadaRecorridoRepository paradaRecRepo;
+    @Autowired
+    private ParadaRepository paradaRepo;
+    
     @Override
     public Recorrido getRecorrido(long id) {
         return this.recorridoRepo.findById(id);
@@ -29,9 +38,23 @@ public class RecorridoServiceImp implements RecorridoService {
         return this.recorridoRepo.findActivos(idlinea);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Recorrido saveRecorrido(Recorrido recorrido) {
-        return this.recorridoRepo.save( recorrido );
+        try {
+            Recorrido newRec = this.recorridoRepo.save( recorrido );
+            for (ParadaRecorrido pr: recorrido.getParadas()) {
+                Parada par = this.paradaRepo.findByCodigo( pr.getParada().getCodigo() );
+                ParadaRecorrido newPR = new ParadaRecorrido( par, newRec );
+                newPR.setOrden( pr.getOrden());
+                this.paradaRecRepo.save( newPR );
+            }
+            return newRec;
+        }
+        catch( Exception ex ) {
+            return null;
+        }
+        
     }
 
     @Override
@@ -49,4 +72,5 @@ public class RecorridoServiceImp implements RecorridoService {
         }
         return null;
     }
+
 }
