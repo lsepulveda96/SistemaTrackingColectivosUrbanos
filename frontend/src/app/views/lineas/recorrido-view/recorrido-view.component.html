@@ -2,24 +2,25 @@
     <mat-card-header>
         <mat-card-title>
             <mat-icon>timeline</mat-icon>
-            {{ (linea ? linea.denominacion:'')  + ': Recorridos actuales '  }}
+            {{ (linea ? linea.denominacion:'') + ': Recorridos actuales ' }}
         </mat-card-title>
     </mat-card-header>
-    
     <mat-divider></mat-divider>
-    <div class="loading-indicator" *ngIf="waiting"> 
+    <div class="loading-indicator" *ngIf="waiting">
         <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
     </div>
-
     <mat-card-content>
-        <div class="container" *ngIf="!recorridos || recorridos.length==0">
+        <div class="container">
             <div class="row">
-                <div class="col">
-                    <span>No existe recorrido activo para la linea</span> &nbsp;
-                    <button mat-stroked-button color="primary" class="button-border"
+                <div class="col d-flex justify-content-start">
+                    <span *ngIf="!recorridos || recorridos.length ==0">No se definieron recorridos para esta
+                        linea</span>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <button mat-stroked-button color="primary" class="button-border" (click)="close()"
                         [routerLink]="['../../new',linea?.id]">
-                        <mat-icon>add</mat-icon>
-                        Definir
+                        <mat-icon>add_box</mat-icon>
+                        Nuevo
                     </button> &nbsp;
                     <button mat-stroked-button color="primary" class="button-border">
                         <mat-icon>history</mat-icon>
@@ -27,26 +28,21 @@
                     </button>
                 </div>
             </div>
-        </div>
-        <div class="container" *ngIf="recorridos && recorridos.length > 0">
-            <div class="map-container">
-                <div class="map-frame">
-                    <div id="map"></div>
+            <div class="row mt-2">
+                <div class="map-container">
+                    <div class="map-frame">
+                        <div id="map"></div>
+                    </div>
                 </div>
             </div>
-            <mat-divider></mat-divider>
-            <!-- <br>
-            <div class="d-flex justify-content-end">
-                <button mat-stroked-button color="primary" (click)="editarRecorrido()" class="button-border">
-                    Editar
-                </button>
-            </div> -->
         </div>
-        <div class="d-flex justify-content-end">
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-actions align="end">
+        <div class="mx-4 my-2">
             <button mat-stroked-button color="primary" [routerLink]="['../../..']" class="button-border">
                 Cerrar
             </button>
         </div>
-    </mat-card-content>
-    
+    </mat-card-actions>
 </mat-card>

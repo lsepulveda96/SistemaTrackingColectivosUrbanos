@@ -92,7 +92,7 @@ public class RecorridoDTO implements Serializable {
 
         List<ParadaRecorrido> paradasRecorrido = new ArrayList<ParadaRecorrido>();
         for (ParadaRecorridoDTO prd: paradas) {
-            ParadaRecorrido newpr = new ParadaRecorrido( new Parada( prd.getParadaCodigo(),null, null), null );
+            ParadaRecorrido newpr = new ParadaRecorrido( new Parada( prd.getParada().getCodigo(),null, null), null );
             newpr.setOrden(prd.getOrden());
             paradasRecorrido.add( newpr );
         }

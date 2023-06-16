@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Linea } from 'src/app/data/linea';
@@ -19,15 +19,17 @@ export class RecorridoViewComponent implements OnInit {
   id: any;
   linea: Linea;
   recorridos: Recorrido[]; // recorridos activos
-  map: any;
+  map: L.Map;
 
-  constructor(private serviceLinea: LineaService,
+  constructor(
+    private serviceLinea: LineaService,
     private _msg: MessageService,
     private router: Router,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get("id");
+    this.inicializarMapa();
     this.waiting = true;
     this.serviceLinea.getLinea(parseInt(this.id)).subscribe(result => {
       if (!result.error)
@@ -35,12 +37,17 @@ export class RecorridoViewComponent implements OnInit {
     });
     this.serviceLinea.getRecorridosActivos(parseInt(this.id)).subscribe(result => {
       this.waiting = false;
-      console.log("Recorrido activos de linea " + this.id, result );
+      console.log("Recorrido activos de linea " + this.id, result);
       if (!result.error) {
         this.recorridos = result.data;
-        this.inicializarMapa();
       }
     });
+  }
+
+
+  close() {
+    this.map.off();
+    //this.map.remove();
   }
 
   /**
@@ -59,15 +66,4 @@ export class RecorridoViewComponent implements OnInit {
     }).addTo(this.map);
   }
 
-  editarRecorrido() {
-    console.log("Editar recorrido: ");
-  }
-
-  definirRecorrido() {
-    console.log("Definir recorrido");
-  }
-
-  historialRecorridos() {
-    console.log("Historial recorrido")
-  }
 }

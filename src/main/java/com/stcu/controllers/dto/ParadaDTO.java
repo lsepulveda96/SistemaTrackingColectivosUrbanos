@@ -35,7 +35,8 @@ public class ParadaDTO implements Serializable {
         estado = par.getEstado();
 
         Point point = par.getCoordenadas();
-        coordenada = new CoordenadaDTO( point.getX(), point.getY() );
+        if (point != null)
+            coordenada = new CoordenadaDTO( point.getX(), point.getY() );
     }
 
     /**

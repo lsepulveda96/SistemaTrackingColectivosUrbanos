@@ -2,6 +2,7 @@ package com.stcu.services;
 
 import java.util.List;
 
+import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
 
 public interface RecorridoService {
@@ -15,5 +16,7 @@ public interface RecorridoService {
     public Recorrido saveRecorrido( Recorrido recorrido );
 
     public Recorrido updateRecorrido( long id, Recorrido recorrido );
+
+    public List<ParadaRecorrido> getParadasRecorrido( long idrecorrido );
 
 }

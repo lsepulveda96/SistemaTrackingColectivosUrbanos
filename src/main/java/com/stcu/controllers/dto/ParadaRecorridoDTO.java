@@ -14,7 +14,7 @@ import lombok.Setter;
 public class ParadaRecorridoDTO implements Serializable {
     
     private long id;
-    private long paradaCodigo;
+    private ParadaDTO parada;
 
     private int orden;
     private int distancia;
@@ -24,7 +24,7 @@ public class ParadaRecorridoDTO implements Serializable {
 
     public ParadaRecorridoDTO( ParadaRecorrido pr ) {
         this.id = pr.getId();
-        this.paradaCodigo = pr.getParada().getCodigo();
+        this.parada = new ParadaDTO( pr.getParada() );
         //this.recorridoId = pr.getRecorrido().getId();
         this.orden = pr.getOrden();
         this.distancia = pr.getDistancia();
@@ -42,7 +42,8 @@ public class ParadaRecorridoDTO implements Serializable {
     private static ParadaRecorridoDTO toParadaRecorridoDTO( ParadaRecorrido pr ) {
         ParadaRecorridoDTO npr = new ParadaRecorridoDTO();
         npr.setId( pr.getId() );
-        npr.setParadaCodigo( pr.getParada().getCodigo() );
+        npr.setParada( new ParadaDTO( pr.getParada() ));
+        //npr.setParadaCodigo( pr.getParada().getCodigo() );
         //npr.setRecorridoId( pr.getRecorrido().getId() );
         npr.setOrden( pr.getOrden() );
         npr.setDistancia( pr.getDistancia() );
@@ -54,8 +55,10 @@ public class ParadaRecorridoDTO implements Serializable {
     public static List<ParadaRecorrido> toListParadaRecorrido( List<ParadaRecorridoDTO> listdto ) {
         List<ParadaRecorrido> listPR = new ArrayList<ParadaRecorrido>();
         listdto.forEach( item -> {
-            ParadaRecorrido pr = new ParadaRecorrido( new Parada( item.getParadaCodigo(), null, null), null );
+            ParadaRecorrido pr = new ParadaRecorrido( new Parada( item.getParada().getCodigo(), item.getParada().getDireccion(), null ), null);
             pr.setOrden( item.getOrden() );
+            pr.setDistancia(item.getDistancia());
+            pr.setTiempo(item.getTiempo());
             listPR.add( pr );
         });
         return listPR;

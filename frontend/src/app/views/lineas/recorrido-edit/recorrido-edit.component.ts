@@ -75,13 +75,15 @@ export class RecorridoEditComponent implements OnInit {
     this.modeNew = (mod == 'new');
     const id = this.route.snapshot.paramMap.get('id');
 
+
+    this.inicializarMapa();
+
     this.waiting = true;
     this.servicioLinea.getLinea(parseInt(id)).subscribe(result => {
       this.waiting = false;
       this.linea = result.data;
     });
 
-    this.inicializarMapa();
     if (this.modeNew)
       this.nuevoRecorrido();
     else
@@ -92,10 +94,11 @@ export class RecorridoEditComponent implements OnInit {
    * Configura para generar nuevo recorrido y habilita edicion.
    */
   nuevoRecorrido() {
-    // cargar todas las paradas.
+    console.log("Nuevo recorrido para linea " );
     this.paradasRecorrido = [];
     this.waypoints = [];
     this.trayectos = [];
+    // cargar todas las paradas.
     this.waiting = true;
     this.servicioParada.getParadasActivas().subscribe(result => {
       this.waiting = false;
@@ -112,6 +115,7 @@ export class RecorridoEditComponent implements OnInit {
    * @param id 
    */
   editarRecorrido(id: number) {
+    console.log("editar recorrido " + id );
     this.waiting = true;
     this.servicioLinea.getRecorrido(id).subscribe(result => {
       this.waiting = false;
@@ -324,7 +328,7 @@ export class RecorridoEditComponent implements OnInit {
     });
     const paradasRec = this.paradasRecorrido.map( (pr: any, index: number) => {
       return { 
-        id: null, paradaCodigo: pr.Parada.codigo, 
+        id: null, parada: { codigo: pr.Parada.codigo }, 
         orden: index, distancia: null, tiempo: null
       }
     });

@@ -73,4 +73,9 @@ public class RecorridoServiceImp implements RecorridoService {
         return null;
     }
 
+    @Override
+    public List<ParadaRecorrido> getParadasRecorrido( long idrec )  {
+        List<ParadaRecorrido> prs = this.paradaRecRepo.findByRecorridoId(idrec);
+        return prs;
+    }
 }

@@ -68,6 +68,5 @@ public class Recorrido {
     private LineString waypoints;
 
     public Recorrido() {}
-
     
 }
