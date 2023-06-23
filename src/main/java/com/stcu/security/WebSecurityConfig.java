@@ -23,7 +23,7 @@ import com.stcu.security.services.UserDetailsServiceImpl;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-    
+
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
@@ -35,7 +35,7 @@ public class WebSecurityConfig {
         return new AuthTokenFilter();
     }
 
-    @Bean 
+    @Bean
     DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
@@ -44,8 +44,8 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager( AuthenticationConfiguration authConfig ) 
-        throws Exception {
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
+            throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
@@ -55,15 +55,36 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain filterChain( HttpSecurity http ) throws Exception {
-        http.cors().and().csrf().disable()
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS).and()
-            .authorizeHttpRequests().antMatchers("/api/auth/**").permitAll()
-            .antMatchers("/api/test/**").permitAll()
-            .anyRequest().authenticated();
-        http.authenticationProvider( authenticationProvider());
-        http.addFilterBefore(authenticationJwtTokenFilter(),UsernamePasswordAuthenticationFilter.class);
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        /*
+         * http.cors().and().csrf().disable()
+         * .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+         * .sessionManagement().sessionCreationPolicy(
+         * SessionCreationPolicy.STATELESS).and()
+         * .authorizeHttpRequests().antMatchers("/v1/auth/**").permitAll()
+         * .antMatchers("/v1/test/**").permitAll()
+         * .antMatchers("/v1/mobile/**").permitAll()
+         * .anyRequest().authenticated();
+         */
+
+        http
+            .cors(cors -> {
+                try {
+                    cors.and().csrf(csrf -> csrf.disable());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            })
+            .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler))
+            .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authRequest -> authRequest
+                .antMatchers("/v1/auth/**").permitAll()
+                .antMatchers("/v1/test/**").permitAll()
+                .antMatchers("/v1/mobile/**").permitAll()
+                .anyRequest().authenticated());
+
+        http.authenticationProvider(authenticationProvider());
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

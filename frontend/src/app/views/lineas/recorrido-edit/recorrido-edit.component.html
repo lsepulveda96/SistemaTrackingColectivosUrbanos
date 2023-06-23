@@ -19,6 +19,7 @@
                             <mat-label>Denominacion</mat-label>
                             <input matInput [formControl]="denominacionIC" class="text-upper" required>
                             <mat-error *ngIf="denominacionIC.hasError('required')">requerido</mat-error>
+                            <mat-error *ngIf="denominacionIC.errors?.maxlength">maximo 15 caracteres</mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -70,17 +71,18 @@
             </div>
         </div>
         <mat-divider></mat-divider>
-        <br>
-        <div class="d-flex justify-content-end">
-            <button mat-stroked-button color="primary" (click)="guardarRecorrido()" class="button-border"
-                *ngIf="modeNew" [disabled]="denominacionIC.hasError('required')">
+        <div class="d-flex justify-content-end my-1">
+            <button mat-stroked-button color="primary" (click)="guardarRecorrido()" 
+                class="button-border" *ngIf="modeNew" 
+                [disabled]="denominacionIC.hasError('required') || denominacionIC.errors?.maxlength">
                 Guardar
             </button>
-            <button mat-stroked-button color="primary" (click)="actualizarRecorrido()" class="button-border"
-                *ngIf="!modeNew">
+            <button mat-stroked-button color="primary" (click)="actualizarRecorrido()" 
+                class="button-border" *ngIf="!modeNew"
+                [disabled]="denominacionIC.hasError('required') || denominacionIC.errors?.maxlength">
                 Actualizar
             </button>
-            <button mat-stroked-button color="primary" [routerLink]="['../../..']" class="button-border">
+            <button mat-stroked-button color="primary" (click)="cerrar()" class="button-border">
                 Cerrar
             </button>
         </div>

@@ -55,7 +55,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatTooltipModule,
     MatListModule,
     MatSelectModule,
-    ScrollingModule
+    ScrollingModule,
   ]
 })
 export class LineasModule { }

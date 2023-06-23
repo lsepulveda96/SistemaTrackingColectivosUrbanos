@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { HTTPCONFIG  } from './httpconfig';
 
-const AUTH_API = "/api/auth";
+const AUTH_API = "/v1/auth";
 
 const httpOptions = {
   headers: new HttpHeaders( {'Content-type':'application/json'})

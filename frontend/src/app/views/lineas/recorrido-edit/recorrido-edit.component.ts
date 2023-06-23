@@ -32,13 +32,13 @@ export class RecorridoEditComponent implements OnInit {
   waypoints: any[] = []; // waypoints del recorrido.
   rutas: any;
 
-  map: L.Map; // Mapa en pantalla.
+  map: any; // Mapa en pantalla.
   control: any; // Control de ruta en el mapa.
 
   paradasDisponibles: Parada[]; // lista de paradas disponibles para agregar al recorrido.
   paradasRecorrido: any[]; // lista de paradas en el recorrido.
   paradaIC = new FormControl(null); // Parada seleccionada de la lista de disponibles.
-  denominacionIC = new FormControl('', Validators.required);
+  denominacionIC = new FormControl('', [Validators.required, Validators.maxLength(15)]);
 
   // Icono de parada general.
   iconDiv = L.divIcon({
@@ -75,8 +75,9 @@ export class RecorridoEditComponent implements OnInit {
     this.modeNew = (mod == 'new');
     const id = this.route.snapshot.paramMap.get('id');
 
-
-    this.inicializarMapa();
+    setTimeout(() => {
+      this.inicializarMapa();  
+    });
 
     this.waiting = true;
     this.servicioLinea.getLinea(parseInt(id)).subscribe(result => {
@@ -94,7 +95,6 @@ export class RecorridoEditComponent implements OnInit {
    * Configura para generar nuevo recorrido y habilita edicion.
    */
   nuevoRecorrido() {
-    console.log("Nuevo recorrido para linea " );
     this.paradasRecorrido = [];
     this.waypoints = [];
     this.trayectos = [];
@@ -115,7 +115,6 @@ export class RecorridoEditComponent implements OnInit {
    * @param id 
    */
   editarRecorrido(id: number) {
-    console.log("editar recorrido " + id );
     this.waiting = true;
     this.servicioLinea.getRecorrido(id).subscribe(result => {
       this.waiting = false;
@@ -172,10 +171,10 @@ export class RecorridoEditComponent implements OnInit {
     if (!this.paradasRecorrido) // Si el arreglo de parada es null se inicializa.
       this.paradasRecorrido = [];
     // Se agrega la parada al arreglo de paradas.
-    this.paradasRecorrido.push( { 
+    this.paradasRecorrido.push({
       Parada: this.paradaIC.value,
       orden: this.paradasRecorrido.length,
-      distancia: null, tiempo: null 
+      distancia: null, tiempo: null
     });
     // se elimina la parada de la lista de paradas disponibles
     this.paradasDisponibles = this.paradasDisponibles.filter(par => par.codigo != this.paradaIC.value.codigo);
@@ -214,7 +213,7 @@ export class RecorridoEditComponent implements OnInit {
     const len = this.paradasRecorrido.length;
     if (len <= 2) {
       const paradaRemove = this.paradasRecorrido.pop();
-      this.addParadaToDisponibles(paradaRemove.Parada );
+      this.addParadaToDisponibles(paradaRemove.Parada);
       if (this.control) {
         this.control.setWaypoints([]);
         this.control.remove();
@@ -326,9 +325,9 @@ export class RecorridoEditComponent implements OnInit {
     this.trayectos = this.rutas.coordinates.map((coord: any) => {
       return { lat: coord.lat, lng: coord.lng };
     });
-    const paradasRec = this.paradasRecorrido.map( (pr: any, index: number) => {
-      return { 
-        id: null, parada: { codigo: pr.Parada.codigo }, 
+    const paradasRec = this.paradasRecorrido.map((pr: any, index: number) => {
+      return {
+        id: null, parada: { codigo: pr.Parada.codigo },
         orden: index, distancia: null, tiempo: null
       }
     });
@@ -340,18 +339,21 @@ export class RecorridoEditComponent implements OnInit {
       waypoints: this.waypoints,
       paradas: paradasRec
     }
-    
-    console.log("Guardar recorrido: ", this.recorrido);
-    console.log("paradas: ", this.paradasRecorrido);
 
     this.waiting = true;
     this.servicioLinea.saveRecorrido(this.recorrido).subscribe(result => {
       this.waiting = false;
-      console.log("save recorrido result : ", result);
+      this._msg.showMessage( result.mensaje, result.error ? 'ERROR':'EXITO');
+      if (!result.error) 
+        this.router.navigate(['../../view', this.linea.id], { relativeTo: this.route });
     });
   }
 
   actualizarRecorrido() {
     console.log("Actualizar recorrido: ");
+  }
+
+  cerrar() {
+    this.router.navigate( ['../../view', this.linea.id], { relativeTo: this.route });
   }
 }

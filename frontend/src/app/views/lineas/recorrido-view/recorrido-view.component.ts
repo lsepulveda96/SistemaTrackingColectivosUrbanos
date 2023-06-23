@@ -1,12 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Linea } from 'src/app/data/linea';
-import { Recorrido } from 'src/app/data/recorrido';
 import { LineaService } from 'src/app/services/linea.service';
 
 import * as L from 'leaflet';
 import { MessageService } from 'src/app/services/message.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-recorrido-view',
@@ -18,8 +17,13 @@ export class RecorridoViewComponent implements OnInit {
   waiting: boolean;
   id: any;
   linea: Linea;
-  recorridos: Recorrido[]; // recorridos activos
-  map: L.Map;
+  recorridos: any[]; // recorridos activos
+  map: any;
+  recGroup: any;
+  recorridoIC = new FormControl(null);
+  viewParadas: boolean = false;
+
+  colors = ['#008000', '#0000ff', '#ffa500', '#a52a2a', '#8b008b', '#1e90ff'];
 
   constructor(
     private serviceLinea: LineaService,
@@ -29,7 +33,6 @@ export class RecorridoViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get("id");
-    this.inicializarMapa();
     this.waiting = true;
     this.serviceLinea.getLinea(parseInt(this.id)).subscribe(result => {
       if (!result.error)
@@ -37,17 +40,16 @@ export class RecorridoViewComponent implements OnInit {
     });
     this.serviceLinea.getRecorridosActivos(parseInt(this.id)).subscribe(result => {
       this.waiting = false;
-      console.log("Recorrido activos de linea " + this.id, result);
       if (!result.error) {
-        this.recorridos = result.data;
+        this.recorridos = result.data.map((rec: any, i: number) => {
+          rec.color = this.colors[i];
+          return rec;
+        });
       }
     });
-  }
-
-
-  close() {
-    this.map.off();
-    //this.map.remove();
+    setTimeout(() => {
+      this.inicializarMapa();
+    });
   }
 
   /**
@@ -66,4 +68,43 @@ export class RecorridoViewComponent implements OnInit {
     }).addTo(this.map);
   }
 
+  loadRecorridoMapa(recorrido: any) {
+    const trays = recorrido.trayectos.map((wp: any) => new L.LatLng(wp.lat, wp.lng));
+
+    const polyline = L.polyline([], { color: recorrido.color });
+    polyline.addTo(this.map);
+
+    for (let tray of trays) {
+      polyline.addLatLng(tray);
+      polyline.redraw();
+    }
+  }
+
+  onSelectRecorrido() {
+    // Toma el recorrido seleccionado
+    const recSel = this.recorridoIC.value[0];
+    if (this.recGroup) // elimina todos los layers en el grupo
+      this.recGroup.clearLayers();
+    else // si el layer group no esta creado se crea.
+      this.recGroup = new L.LayerGroup();
+
+    // Crea el polyline que mostrara el recorrido.    
+    const polyline = L.polyline([], { color: recSel.color });
+    // Toma los trayectos del recorrido y en base a ellos genera el polyline
+    const trays = recSel.trayectos.map((wp: any) => new L.LatLng(wp.lat, wp.lng));
+    for (let tray of trays) {
+      polyline.addLatLng(tray);
+      //polyline.redraw();
+    }
+    this.recGroup.addLayer(polyline);
+    this.recGroup.addTo(this.map);
+  }
+
+  nuevoRecorrido() {
+    this.router.navigate(['../../new', this.linea.id], { relativeTo: this.route });
+  }
+
+  editarRecorrido(rec: any) {
+    console.log("edit recorrido: ", rec);
+  }
 }

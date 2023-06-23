@@ -13,25 +13,52 @@
         <div class="container">
             <div class="row">
                 <div class="col d-flex justify-content-start">
+                    <button mat-stroked-button color="primary" (click)="nuevoRecorrido()" matTooltip="nuevo"
+                        class="small">
+                        <mat-icon class="icon-size">add_box</mat-icon>
+                        nuevo
+                    </button>
+                    <button mat-stroked-button color="primary" (click)="editarRecorrido()" matTooltip="editar"
+                        *ngIf="recorridos && recorridos.length > 0" [disabled]="!recorridoIC.value" class="small">
+                        <mat-icon class="icon-size">edit</mat-icon>
+                        editar
+                    </button>
                     <span *ngIf="!recorridos || recorridos.length ==0">No se definieron recorridos para esta
                         linea</span>
                 </div>
                 <div class="col d-flex justify-content-end">
-                    <button mat-stroked-button color="primary" class="button-border" (click)="close()"
-                        [routerLink]="['../../new',linea?.id]">
-                        <mat-icon>add_box</mat-icon>
-                        Nuevo
-                    </button> &nbsp;
-                    <button mat-stroked-button color="primary" class="button-border">
-                        <mat-icon>history</mat-icon>
-                        Historial
+                    <button mat-stroked-button color="primary" matTooltip="historial" class="small">
+                        <mat-icon class="icon-size">history</mat-icon>
+                        historial
                     </button>
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="map-container">
-                    <div class="map-frame">
-                        <div id="map"></div>
+                <div class="col-2 border border-1">
+                    <mat-divider></mat-divider>
+                    <mat-selection-list #recs [multiple]="false" [formControl]="recorridoIC"
+                        (selectionChange)="onSelectRecorrido()" class="pt-4">
+                        <mat-list-option *ngFor="let rec of recorridos; let i=index;" [value]="rec" style="height: 40px;">
+                            <div [style.color]="rec.color" class="d-flex justify-content-start">
+                                <mat-icon matListIcon style="font-size: x-small;">
+                                    <i class="bi bi-fullscreen-exit" [style.color]="rec.color"></i>
+                                </mat-icon>
+                                <small [style.color]="rec.color" style="font-size: x-small;">
+                                    {{ rec.denominacion}}
+                                </small>
+                                <mat-divider></mat-divider>
+                            </div>
+                        </mat-list-option>
+                        <mat-checkbox color="primary" class="pt-4">
+                            <span style="font-size: x-small;">mostrar paradas</span>
+                        </mat-checkbox>
+                    </mat-selection-list>
+                </div>
+                <div class="col-10">
+                    <div class="map-container">
+                        <div class="map-frame">
+                            <div id="map" #mapView></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -39,7 +66,7 @@
     </mat-card-content>
     <mat-divider></mat-divider>
     <mat-card-actions align="end">
-        <div class="mx-4 my-2">
+        <div class="mx-4 my-1">
             <button mat-stroked-button color="primary" [routerLink]="['../../..']" class="button-border">
                 Cerrar
             </button>

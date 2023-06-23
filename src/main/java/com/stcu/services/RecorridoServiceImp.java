@@ -78,4 +78,11 @@ public class RecorridoServiceImp implements RecorridoService {
         List<ParadaRecorrido> prs = this.paradaRecRepo.findByRecorridoId(idrec);
         return prs;
     }
+
+    @Override
+    public boolean existDenominacion(long idlinea, String denom) {
+        if (this.recorridoRepo.findRecorridoActivoByDenominacion(idlinea, denom ) == null)
+            return false;
+        return true;
+    }
 }

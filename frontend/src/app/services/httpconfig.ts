@@ -1,3 +1,5 @@
+import { environment } from "src/environments/environment";
+
 export const HTTPCONFIG = {
-    url: 'http://localhost:50000'
+    url: environment.production ? '': 'http://localhost:50000'
 }

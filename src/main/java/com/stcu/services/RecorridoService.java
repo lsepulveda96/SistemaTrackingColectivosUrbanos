@@ -19,4 +19,5 @@ public interface RecorridoService {
 
     public List<ParadaRecorrido> getParadasRecorrido( long idrecorrido );
 
+    public boolean existDenominacion( long idlinea, String denom );
 }
