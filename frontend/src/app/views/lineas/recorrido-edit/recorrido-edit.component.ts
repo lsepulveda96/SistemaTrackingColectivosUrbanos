@@ -165,7 +165,7 @@ export class RecorridoEditComponent implements OnInit {
     const ultimaParada = this.paradasRecorrido[this.paradasRecorrido.length - 1];
     this.paradas.forEach((parada: any, index: number) => {
       let paradaIn = false;
-      if (this.paradasRecorrido && this.paradasRecorrido.find(par => par.Parada.codigo == parada.codigo))
+      if (this.paradasRecorrido && this.paradasRecorrido.find(par => par.parada.codigo == parada.codigo))
         paradaIn = true;
 
       const icon = paradaIn ? this.iconDivIn : this.iconDiv;
@@ -175,7 +175,7 @@ export class RecorridoEditComponent implements OnInit {
       marker.addTo(this.map);
 
       // Se muestran popup solo si no hay paradas en recorrido o si es la ultima parada del recorrido.
-      if (!this.paradasRecorrido || this.paradasRecorrido.length == 0 || (ultimaParada && ultimaParada.Parada.codigo == parada.codigo))
+      if (!this.paradasRecorrido || this.paradasRecorrido.length == 0 || (ultimaParada && ultimaParada.parada.codigo == parada.codigo))
         marker.openPopup();
     });
   }
@@ -232,7 +232,7 @@ export class RecorridoEditComponent implements OnInit {
     const len = this.paradasRecorrido.length;
     if (len <= 2) {
       const paradaRemove = this.paradasRecorrido.pop();
-      this.addParadaToDisponibles(paradaRemove.Parada);
+      this.addParadaToDisponibles(paradaRemove.parada);
       if (this.control) {
         this.control.setWaypoints([]);
         this.control.remove();
@@ -244,7 +244,7 @@ export class RecorridoEditComponent implements OnInit {
       const anteultimaParada = this.paradasRecorrido[len - 2];
       let lastwp = wps.pop();
       do {
-        if (lastwp.latLng.lat != anteultimaParada.Parada.coordenada.lat && lastwp.latLng.lng != anteultimaParada.Parada.coordenada.lng) {
+        if (lastwp.latLng.lat != anteultimaParada.parada.coordenada.lat && lastwp.latLng.lng != anteultimaParada.parada.coordenada.lng) {
           lastwp = wps.pop();
         }
         else {
@@ -254,7 +254,7 @@ export class RecorridoEditComponent implements OnInit {
       }
       while (lastwp != null);
       const paradaRemove = this.paradasRecorrido.pop();
-      this.addParadaToDisponibles(paradaRemove.Parada);
+      this.addParadaToDisponibles(paradaRemove.parada);
       this.control.setWaypoints(wps);
     }
     this.markParadaToMap();
@@ -269,8 +269,8 @@ export class RecorridoEditComponent implements OnInit {
       if (len >= 2) {
         const ultimaParada = this.paradasRecorrido[len - 1];
         const anteultimaParada = this.paradasRecorrido[len - 2];
-        const ultima = new L.LatLng(ultimaParada.Parada.coordenada.lat, ultimaParada.Parada.coordenada.lng);
-        const anteultima = new L.LatLng(anteultimaParada.Parada.coordenada.lat, anteultimaParada.Parada.coordenada.lng);
+        const ultima = new L.LatLng(ultimaParada.parada.coordenada.lat, ultimaParada.parada.coordenada.lng);
+        const anteultima = new L.LatLng(anteultimaParada.parada.coordenada.lat, anteultimaParada.parada.coordenada.lng);
         this.control = L.Routing.control({
           waypoints: [anteultima, ultima],
           show: false, autoRoute: true, collapsible: true,
@@ -299,7 +299,7 @@ export class RecorridoEditComponent implements OnInit {
     else {
       if (len >= 1) {
         const ultimaParada = this.paradasRecorrido[len - 1];
-        const ultima = new L.LatLng(ultimaParada.Parada.coordenada.lat, ultimaParada.Parada.coordenada.lng);
+        const ultima = new L.LatLng(ultimaParada.parada.coordenada.lat, ultimaParada.parada.coordenada.lng);
         const wps = this.control.getWaypoints();
         wps.push(ultima);
         this.control.setWaypoints(wps);
@@ -346,7 +346,7 @@ export class RecorridoEditComponent implements OnInit {
     });
     const paradasRec = this.paradasRecorrido.map((pr: any, index: number) => {
       return {
-        id: null, parada: { codigo: pr.Parada.codigo },
+        id: null, parada: { codigo: pr.parada.codigo },
         orden: index, distancia: null, tiempo: null
       }
     });

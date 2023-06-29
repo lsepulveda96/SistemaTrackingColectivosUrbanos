@@ -27,7 +27,8 @@
                         linea</span>
                 </div>
                 <div class="col d-flex justify-content-end">
-                    <button mat-stroked-button color="primary" matTooltip="historial" class="small">
+                    <button mat-stroked-button color="primary" matTooltip="historial" class="small"
+                        *ngIf="recorridos && recorridos.length >0">
                         <mat-icon class="icon-size">history</mat-icon>
                         historial
                     </button>
@@ -50,7 +51,7 @@
                             </div>
                         </mat-list-option>
                         <mat-checkbox color="primary" class="pt-4" [formControl]="showParadasIC"
-                            (change)="changeShowParadas($event)">
+                            (change)="changeShowParadas($event)" *ngIf="recorridos && recorridos.length>0">
                             <span style="font-size: x-small;">mostrar paradas</span>
                         </mat-checkbox>
                     </mat-selection-list>
