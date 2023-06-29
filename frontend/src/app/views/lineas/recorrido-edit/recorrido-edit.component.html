@@ -50,7 +50,7 @@
                                     <mat-icon matListIcon>
                                         <i class="bi bi-geo-fill" style="color:blue;"></i>
                                     </mat-icon>
-                                    <small>{{ parada.Parada.codigo + ':' + parada.Parada.direccion }}</small>
+                                    <small>{{ parada.parada.codigo + ':' + parada.parada.direccion }}</small>
                                     <button mat-icon-button *ngIf="i == paradasRecorrido.length-1" class="ml-2"
                                         color="primary" (click)="quitarUltimaParada()" matTooltip="quitar parada">
                                         <i class="bi bi-x-square-fill"></i>

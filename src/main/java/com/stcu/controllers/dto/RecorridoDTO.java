@@ -43,6 +43,7 @@ public class RecorridoDTO implements Serializable {
         this.fechaInicio = rec.getFechaInicio();
         this.fechaFin = rec.getFechaFin();
         this.activo = rec.isActivo();
+        
         this.linea = rec.getLinea();
 
         this.paradas = new ArrayList<ParadaRecorridoDTO>();

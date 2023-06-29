@@ -50,7 +50,7 @@ public class Recorrido {
     @Column(name="activo")
     private boolean activo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "linea_id",nullable=false)
     private Linea linea;
 

@@ -148,7 +148,8 @@ export class RecorridoViewComponent implements OnInit {
     this.router.navigate(['../../new', this.linea.id], { relativeTo: this.route });
   }
 
-  editarRecorrido(rec: any) {
-    console.log("edit recorrido: ", rec);
+  editarRecorrido() {
+    const rec = this.recorridoIC.value[0];
+    this.router.navigate(['../../edit', rec.id ], { relativeTo: this.route });
   }
 }

@@ -4,7 +4,7 @@ import { Linea } from "./linea";
 export interface Recorrido {
 
     id: number;
-    denominacion: String;
+    denominacion: string;
     fechaInicio: Date;
     fechaFin: Date;
     activo: boolean;

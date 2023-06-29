@@ -2,7 +2,10 @@ package com.stcu.controllers;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.ToString;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
 public class Response<T> {
     private boolean error;
     private int codigo;

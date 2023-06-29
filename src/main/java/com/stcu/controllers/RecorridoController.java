@@ -53,6 +53,17 @@ public class RecorridoController {
         return Mapper.getResponseAsJson(response);
     }
 
+    @GetMapping("/recorrido/{id}")
+    public String findRecorrido( @PathVariable long id ) {
+        Recorrido recorrido = service.getRecorrido(id);
+        Response<RecorridoDTO> response;
+        if (recorrido != null) 
+            response = new Response<RecorridoDTO>(false, 200, "Recorrido " + id , new RecorridoDTO(recorrido));
+        else
+            response = new Response<RecorridoDTO>( true, 400, "No se encontro recorrido " + id, null );
+        return Mapper.getResponseAsJson(response);
+    }
+
     @PostMapping("/recorridos")
     public String saveRecorrido(@RequestBody RecorridoDTO drec) {
         Response<RecorridoDTO> response;

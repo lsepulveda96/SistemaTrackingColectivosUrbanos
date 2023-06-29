@@ -74,19 +74,12 @@ export class RecorridoEditComponent implements OnInit {
     }
     this.modeNew = (mod == 'new');
     const id = this.route.snapshot.paramMap.get('id');
-
     setTimeout(() => {
-      this.inicializarMapa();  
-    });
-
-    this.waiting = true;
-    this.servicioLinea.getLinea(parseInt(id)).subscribe(result => {
-      this.waiting = false;
-      this.linea = result.data;
+      this.inicializarMapa();
     });
 
     if (this.modeNew)
-      this.nuevoRecorrido();
+      this.nuevoRecorrido(parseInt(id));
     else
       this.editarRecorrido(parseInt(id));
   }
@@ -94,10 +87,16 @@ export class RecorridoEditComponent implements OnInit {
   /**
    * Configura para generar nuevo recorrido y habilita edicion.
    */
-  nuevoRecorrido() {
+  nuevoRecorrido(idLinea: number) {
     this.paradasRecorrido = [];
     this.waypoints = [];
     this.trayectos = [];
+    // Recupera los datos de la linea.
+    this.waiting = true;
+    this.servicioLinea.getLinea(idLinea).subscribe(result => {
+      this.waiting = false;
+      this.linea = result.data;
+    });
     // cargar todas las paradas.
     this.waiting = true;
     this.servicioParada.getParadasActivas().subscribe(result => {
@@ -118,8 +117,28 @@ export class RecorridoEditComponent implements OnInit {
     this.waiting = true;
     this.servicioLinea.getRecorrido(id).subscribe(result => {
       this.waiting = false;
-      if (!result.error)
+      console.log("Editar Recorrido: ", result);
+      if (!result.error) {
+        this.linea = result.data.linea;
         this.recorrido = result.data;
+
+        this.denominacionIC.setValue(this.recorrido.denominacion);
+
+        this.waypoints = this.recorrido.waypoints;
+        this.trayectos = this.recorrido.trayectos;
+        this.paradasRecorrido = this.recorrido.paradas;
+
+        // cargar todas las paradas.
+        this.waiting = true;
+        this.servicioParada.getParadasActivas().subscribe(result => {
+          this.waiting = false;
+          if (!result.error) {
+            this.paradas = result.data;
+            this.paradasDisponibles = result.data;
+
+          }
+        });
+      }
     });
   }
 
@@ -172,7 +191,7 @@ export class RecorridoEditComponent implements OnInit {
       this.paradasRecorrido = [];
     // Se agrega la parada al arreglo de paradas.
     this.paradasRecorrido.push({
-      Parada: this.paradaIC.value,
+      parada: this.paradaIC.value,
       orden: this.paradasRecorrido.length,
       distancia: null, tiempo: null
     });
@@ -343,8 +362,8 @@ export class RecorridoEditComponent implements OnInit {
     this.waiting = true;
     this.servicioLinea.saveRecorrido(this.recorrido).subscribe(result => {
       this.waiting = false;
-      this._msg.showMessage( result.mensaje, result.error ? 'ERROR':'EXITO');
-      if (!result.error) 
+      this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
+      if (!result.error)
         this.router.navigate(['../../view', this.linea.id], { relativeTo: this.route });
     });
   }
@@ -354,6 +373,6 @@ export class RecorridoEditComponent implements OnInit {
   }
 
   cerrar() {
-    this.router.navigate( ['../../view', this.linea.id], { relativeTo: this.route });
+    this.router.navigate(['../../view', this.linea.id], { relativeTo: this.route });
   }
 }
