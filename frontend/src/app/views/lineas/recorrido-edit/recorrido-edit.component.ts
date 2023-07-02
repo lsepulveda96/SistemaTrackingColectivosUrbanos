@@ -76,12 +76,11 @@ export class RecorridoEditComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     setTimeout(() => {
       this.inicializarMapa();
+      if (this.modeNew)
+        this.nuevoRecorrido(parseInt(id));
+      else
+        this.editarRecorrido(parseInt(id));
     });
-
-    if (this.modeNew)
-      this.nuevoRecorrido(parseInt(id));
-    else
-      this.editarRecorrido(parseInt(id));
   }
 
   /**
@@ -117,7 +116,6 @@ export class RecorridoEditComponent implements OnInit {
     this.waiting = true;
     this.servicioLinea.getRecorrido(id).subscribe(result => {
       this.waiting = false;
-      console.log("Editar Recorrido: ", result);
       if (!result.error) {
         this.linea = result.data.linea;
         this.recorrido = result.data;
@@ -126,18 +124,29 @@ export class RecorridoEditComponent implements OnInit {
 
         this.waypoints = this.recorrido.waypoints;
         this.trayectos = this.recorrido.trayectos;
-        this.paradasRecorrido = this.recorrido.paradas;
+        //this.paradasRecorrido = this.recorrido.paradas;
+        //this.loadRecorridoToMap();
 
-        // cargar todas las paradas.
+        // Buscar todas las paradas activas y mostrar en el mapa
         this.waiting = true;
         this.servicioParada.getParadasActivas().subscribe(result => {
           this.waiting = false;
           if (!result.error) {
             this.paradas = result.data;
             this.paradasDisponibles = result.data;
-
+            // Agregar cada parada e ir dibujando con trayecto en el mapa sucesivamente.
+            this.paradasRecorrido = []
+            for (let paradaRec of this.recorrido.paradas) {
+              // agrega parada al recorrido;
+              this.paradasRecorrido.push(paradaRec);
+              // se elimina la parada de la lista de paradas disponibles
+              this.paradasDisponibles = this.paradasDisponibles.filter(par => par.codigo != paradaRec.parada.codigo);
+              this.markParadaToMap();
+            }
           }
         });
+
+
       }
     });
   }
@@ -178,6 +187,18 @@ export class RecorridoEditComponent implements OnInit {
       if (!this.paradasRecorrido || this.paradasRecorrido.length == 0 || (ultimaParada && ultimaParada.parada.codigo == parada.codigo))
         marker.openPopup();
     });
+  }
+
+  loadRecorridoToMap() {
+    if (!this.waypoints || this.waypoints.length == 0)
+      return;
+
+    const pinicio = L.latLng(this.waypoints[0].lat, this.waypoints[0].lng);
+
+    for (let i = 1; i < this.waypoints.length; i++) {
+      const par = L.latLng(this.waypoints[i].lat, this.waypoints[i].lng);
+
+    }
   }
 
   /**
