@@ -61,4 +61,8 @@ export class LineaService {
   saveParadasRecorrido( idrecorrido: number, paradas: Parada[]): Observable<any> {
     return this.http.post( HTTPCONFIG.url + '/recorrido/paradas/' + idrecorrido, paradas );
   }  
+
+  deactivateRecorrido( idRecorrido: number ): Observable<any> {
+    return this.http.delete( HTTPCONFIG.url + '/recorrido/' + idRecorrido );
+  }
 }

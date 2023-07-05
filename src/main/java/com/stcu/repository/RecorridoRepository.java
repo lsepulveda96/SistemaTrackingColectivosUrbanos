@@ -17,6 +17,9 @@ public interface RecorridoRepository extends JpaRepository<Recorrido,Long> {
     @Query("SELECT r FROM Recorrido r WHERE r.linea.id = ?1 AND r.activo is TRUE")
     List<Recorrido> findActivos( long idlinea );
 
+    @Query("SELECT r FROM Recorrido r WHERE r.linea.id = ?1 AND r.activo is FALSE")
+    List<Recorrido> findNoActivos( long idlinea );
+
     @Query("SELECT r FROM Recorrido r WHERE r.linea.id = ?1")
     List<Recorrido> findAll( long idlinea );
 }

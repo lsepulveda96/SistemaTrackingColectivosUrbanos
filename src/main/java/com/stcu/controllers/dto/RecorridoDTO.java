@@ -43,7 +43,7 @@ public class RecorridoDTO implements Serializable {
         this.fechaInicio = rec.getFechaInicio();
         this.fechaFin = rec.getFechaFin();
         this.activo = rec.isActivo();
-        
+
         this.linea = rec.getLinea();
 
         this.paradas = new ArrayList<ParadaRecorridoDTO>();
@@ -92,13 +92,15 @@ public class RecorridoDTO implements Serializable {
         rec.setWaypoints(geometryFactory.createLineString(wpoints));
 
         List<ParadaRecorrido> paradasRecorrido = new ArrayList<ParadaRecorrido>();
-        for (ParadaRecorridoDTO prd: paradas) {
-            ParadaRecorrido newpr = new ParadaRecorrido( new Parada( prd.getParada().getCodigo(),null, null), null );
-            newpr.setOrden(prd.getOrden());
-            paradasRecorrido.add( newpr );
+        for (ParadaRecorridoDTO prd : paradas) {
+            ParadaRecorrido pr = new ParadaRecorrido();
+            pr.setParada(prd.getParada() != null ? prd.getParada().ToParada(): null);
+            pr.setId(prd.getId());
+            pr.setRecorrido(rec);
+            pr.setOrden(prd.getOrden());
+            paradasRecorrido.add(pr);
         }
         rec.setParadas(paradasRecorrido);
-
         return rec;
     }
 

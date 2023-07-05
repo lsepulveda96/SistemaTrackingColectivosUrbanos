@@ -13,11 +13,15 @@ public interface RecorridoService {
 
     public List<Recorrido> getRecorridosActivos( long idlinea );
 
+    public List<Recorrido> getRecorridosNoActivos( long idlinea );
+    
     public Recorrido saveRecorrido( Recorrido recorrido );
 
     public Recorrido updateRecorrido( long id, Recorrido recorrido );
 
     public List<ParadaRecorrido> getParadasRecorrido( long idrecorrido );
 
-    public boolean existDenominacion( long idlinea, String denom );
+    public long existDenominacion( long idlinea, String denom );
+
+    public Recorrido deactivateRecorrido( long id );
 }

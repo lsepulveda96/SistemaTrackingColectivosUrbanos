@@ -25,6 +25,14 @@ export class RecorridoViewComponent implements OnInit {
   viewParadas: boolean = false;
   showParadasIC = new FormControl(false);
 
+  // Icono de parada que pertenece al recorrido.
+  iconDivIn = L.divIcon({
+    html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:blue"></i>',
+    iconSize: [35, 40],
+    iconAnchor: [40, 45],
+    popupAnchor: [-15, -30],
+    className: 'myDivIcon'
+  });
   colors = ['#008000', '#0000ff', '#ffa500', '#a52a2a', '#8b008b', '#1e90ff'];
 
   constructor(
@@ -111,16 +119,16 @@ export class RecorridoViewComponent implements OnInit {
       const recSel = this.recorridoIC.value[0];
       if (!recSel.paradas) {
         this.waiting = true;
-        this.serviceLinea.getParadasRecorrido( recSel.id ).subscribe( result => {
+        this.serviceLinea.getParadasRecorrido(recSel.id).subscribe(result => {
           this.waiting = false;
           if (!result.error) {
             recSel.paradas = result.data;
-            this.showParadasRecorrido( recSel.paradas );
+            this.showParadasRecorrido(recSel.paradas);
           }
         });
       }
       else {
-        this.showParadasRecorrido( recSel.paradas );
+        this.showParadasRecorrido(recSel.paradas);
       }
     }
     else if (!this.showParadasIC.value && this.paradasGroup) {
@@ -128,18 +136,20 @@ export class RecorridoViewComponent implements OnInit {
     }
   }
 
-  showParadasRecorrido( paradasRec: any[] ) {
-    if (this.paradasGroup) 
+  showParadasRecorrido(paradasRec: any[]) {
+    if (this.paradasGroup)
       this.paradasGroup.clearLayers();
     else
       this.paradasGroup = new L.LayerGroup();
 
-    for (let paradaRec of paradasRec ) {
-      const mark = new L.Marker( L.latLng( paradaRec.parada.coordenada.lat, paradaRec.parada.coordenada.lng ) );
-      const begin_end = paradaRec.orden == 0 ? 'INICIO ' : (paradaRec.orden == paradasRec.length-1 ? 'FIN ': ''); 
+    for (let paradaRec of paradasRec) {
+      const mark = new L.Marker(L.latLng(paradaRec.parada.coordenada.lat, paradaRec.parada.coordenada.lng), {
+        icon: this.iconDivIn
+      });
+      const begin_end = paradaRec.orden == 0 ? 'INICIO ' : (paradaRec.orden == paradasRec.length - 1 ? 'FIN ' : '');
       mark.bindPopup(begin_end + paradaRec.parada.codigo + ': ' + paradaRec.parada.direccion,
         { closeOnClick: true, autoClose: true });
-      this.paradasGroup.addLayer( mark );
+      this.paradasGroup.addLayer(mark);
     }
     this.paradasGroup.addTo(this.map);
   }
@@ -150,6 +160,6 @@ export class RecorridoViewComponent implements OnInit {
 
   editarRecorrido() {
     const rec = this.recorridoIC.value[0];
-    this.router.navigate(['../../edit', rec.id ], { relativeTo: this.route });
+    this.router.navigate(['../../edit', rec.id], { relativeTo: this.route });
   }
 }

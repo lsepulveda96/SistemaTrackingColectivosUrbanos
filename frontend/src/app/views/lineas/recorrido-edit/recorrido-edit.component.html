@@ -19,7 +19,7 @@
                             <mat-label>Denominacion</mat-label>
                             <input matInput [formControl]="denominacionIC" class="text-upper" required>
                             <mat-error *ngIf="denominacionIC.hasError('required')">requerido</mat-error>
-                            <mat-error *ngIf="denominacionIC.errors?.maxlength">maximo 15 caracteres</mat-error>
+                            <mat-error *ngIf="denominacionIC.errors?.maxlength">maximo 20 caracteres</mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                                     </mat-icon>
                                     <small>{{ parada.parada.codigo + ':' + parada.parada.direccion }}</small>
                                     <button mat-icon-button *ngIf="i == paradasRecorrido.length-1" class="ml-2"
-                                        color="primary" (click)="quitarUltimaParada()" matTooltip="quitar parada">
+                                        color="primary" (click)="quitarParada( parada )" matTooltip="quitar parada">
                                         <i class="bi bi-x-square-fill"></i>
                                     </button>
                                     <mat-divider></mat-divider>
@@ -71,7 +71,14 @@
             </div>
         </div>
         <mat-divider></mat-divider>
-        <div class="d-flex justify-content-end my-1">
+       <div class="d-flex justify-content-between my-2">
+        <div class="col justify-content-start">
+            <button mat-stroked-button color="warn" class="button-border" (click)="desactivarRecorrido()" *ngIf="!modeNew">
+                <mat-icon>close</mat-icon>
+                Desactivar
+            </button>
+        </div>
+        <div class="d-flex justify-content-end">
             <button mat-stroked-button color="primary" (click)="guardarRecorrido()" 
                 class="button-border" *ngIf="modeNew" 
                 [disabled]="denominacionIC.hasError('required') || denominacionIC.errors?.maxlength">
@@ -86,6 +93,8 @@
                 Cerrar
             </button>
         </div>
+       </div> 
+        
     </mat-card-content>
 
 </mat-card>
