@@ -75,21 +75,17 @@ public class RecorridoServiceImp implements RecorridoService {
                 this.recorridoRepo.save(rec);
 
                 for (ParadaRecorrido pr : recorrido.getParadas()) {
-                    System.out.println("------------------------- recorrido id: " + id + ", paradaRecorrido: " + pr.getId() + ", parada: " + pr.getParada() );
                     if (pr.getId() == 0) { // agregar parada recorrido
-                        System.out.println("------------------------- Agregar paradaRecorrido: " + pr.getId() + ", parada: " + pr.getParada() );
                         Parada par = this.paradaRepo.findByCodigo(pr.getParada().getCodigo());
                         ParadaRecorrido newPR = new ParadaRecorrido(par, rec);
                         newPR.setOrden(pr.getOrden());
                         this.paradaRecRepo.save(newPR);
                     } else if (pr.getId() > 0) { // actualizar o eliminar parada recorrido.
                         if (pr.getParada() != null) { // actualizar
-                            System.out.println("------------------------- Actualizar paradaRecorrido: " + pr.getId() + ", parada:  "+ pr.getParada() );
                             ParadaRecorrido updPR = this.paradaRecRepo.findById(pr.getId());
                             updPR.setOrden(pr.getOrden());
                             this.paradaRecRepo.save(updPR);
                         } else { // si parada == null se debe eliminar la parada recorrido.
-                            System.out.println("------------------------- Eliminar paradaRecorrido: " + pr.getId() + ", parada:  " + pr.getParada() );
                             this.paradaRecRepo.deleteById(pr.getId());
                         }
                     }

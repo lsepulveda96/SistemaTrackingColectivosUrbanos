@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Parada } from 'src/app/data/parada';
@@ -13,6 +12,7 @@ import * as L from 'leaflet';
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 import 'esri-leaflet-geocoder';
 import * as ELG from 'esri-leaflet-geocoder';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-parada-edit',
@@ -39,7 +39,7 @@ export class ParadaEditComponent implements OnInit {
   geocodeService: any;
 
   constructor(private serviceParada: ParadaService,
-    private _snackbar: MatSnackBar,
+    private _msg: MessageService,
     private router: Router,
     private route: ActivatedRoute) { }
 
@@ -72,21 +72,26 @@ export class ParadaEditComponent implements OnInit {
     this.serviceParada.getParada(codigo).subscribe(result => {
       this.spin = false;
       if (result.error) {
-        this._snackbar.open(result.mensaje, '', {
+        /* this._snackbar.open(result.mensaje, '', {
           duration: 4500,
           verticalPosition: 'top', // 'top' | 'bottom'
           horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
           panelClass: ['red-snackbar'],
-        });
+        }); */
+        this._msg.showMessage(result.mensaje, 'ERROR');
         this.router.navigate(['../..'], { relativeTo: this.route });
       }
       this.parada = result.data;
       this.descripcionIC.setValue(this.parada.descripcion);
       this.direccionIC.setValue(this.parada.direccion);
-      this.marker = L.marker([this.parada.coordenada.lat, this.parada.coordenada.lng], { icon: this.iconParada })
+      this.marker = L.marker([this.parada.coordenada.lat, this.parada.coordenada.lng], { icon: this.iconParada, draggable:true })
         .addTo(this.map)
         .bindPopup(this.parada.direccion)
         .openPopup();
+      this.marker.on('dragend', (e: any) => {
+        const point = {latlng: new L.LatLng( e.target._latlng.lat, e.target._latlng.lng )};
+        this.streetMarker( point )
+      });
     });
   }
 
@@ -115,22 +120,31 @@ export class ParadaEditComponent implements OnInit {
     });
   }
 
+  statusReverseOk: boolean = true;
   /**
    * Ajusta las coordenadas a la calle.
    * @param point 
    */
   streetMarker(point: any) {
-    this.geocodeService.reverse().latlng(point.latlng).run((error: any, result: any) => { // Ajusta direccion a calle.
-      if (error) {  // Si hay error muestra el mensaje.
-        this._snackbar.open('No se pudo obtener direccion, ingrese manualmente', '', {
-          duration: 4000, verticalPosition: 'bottom', horizontalPosition: 'center',
-          panelClass: ['yellow-snackbar']
-        });
-        this.addMarker( point );
-      }
-      else // Si hay resultado se carga la parada en la direccion ajustada.
-        this.addMarker( result );
-    });
+    if (this.statusReverseOk) {
+      this.geocodeService.reverse().latlng(point.latlng).run((error: any, result: any) => { // Ajusta direccion a calle.
+        if (error) {  // Si hay error muestra el mensaje.
+          /* this._snackbar.open('No se pudo obtener direccion, ingrese manualmente', '', {
+            duration: 4000, verticalPosition: 'bottom', horizontalPosition: 'center',
+            panelClass: ['yellow-snackbar']
+          }); */
+          this.statusReverseOk = false;
+          this._msg.showMessage('No se pudo chequear si el marcador corresponde a calle. Asegurese de que asi sea.', 'WARN');
+          this.addMarker(point);
+        }
+        else // Si hay resultado se carga la parada en la direccion ajustada.
+          this.addMarker(result);
+      });
+    }
+    else {
+      this._msg.showMessage('No se pudo chequear si el marcador corresponde a calle. Asegurese que asi sea', 'WARN');
+      this.addMarker(point);
+    }
   }
 
   /**
@@ -138,17 +152,25 @@ export class ParadaEditComponent implements OnInit {
    * @param coord 
    */
   addMarker(coord: any) {
+    console.log("Add marker: ", coord);
     if (this.marker && this.map.hasLayer(this.marker)) // Si ya esta la parada en el mapa se elimina.
-        this.map.removeLayer(this.marker);
-        
-    this.marker = L.marker(coord.latlng , { icon: this.iconParada }).addTo(this.map);
+      this.map.removeLayer(this.marker);
+
+    this.marker = L.marker(coord.latlng, { icon: this.iconParada, draggable: true }).addTo(this.map);
     fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&langCode=ES&featureTypes=StreetAddress&locationType=street&location=${coord.latlng.lng},${coord.latlng.lat}`)
       .then(res => res.json())
       .then(myJson => {
         this.marker.bindPopup(myJson.address.Address).openPopup();
-        this.direccionIC.setValue( myJson.address.Address );
+        // centrar mapa en el marker
+        /* const pointBounds = new L.LatLng( coord.latlng.lat +10, coord.latlng.lng);
+        this.map.fitBounds( [this.marker.getLatLng(), pointBounds] ); */
+        this.direccionIC.setValue(myJson.address.Address);
       })
       .catch(err => console.log("ERROR: ", err));
+    this.marker.on('dragend', (e: any) => {
+      const point = { latlng: new L.LatLng( e.target._latlng.lat, e.target._latlng.lng )};
+      this.streetMarker( point )
+    });
   }
 
   /**
@@ -171,12 +193,13 @@ export class ParadaEditComponent implements OnInit {
     this.spin = true;
     this.serviceParada.saveParada(this.parada).subscribe(result => {
       this.spin = false;
-      this._snackbar.open(result.mensaje, '', {
+      /* this._snackbar.open(result.mensaje, '', {
         duration: 4500,
         verticalPosition: 'top', // 'top' | 'bottom'
         horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
         panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar'],
-      });
+      }); */
+      this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
       if (!result.error)
         this.router.navigate(['../'], { relativeTo: this.route });
     });
@@ -196,12 +219,13 @@ export class ParadaEditComponent implements OnInit {
     this.spin = true;
     this.serviceParada.updateParada(this.parada).subscribe(result => {
       this.spin = false;
-      this._snackbar.open(result.mensaje, '', {
+      /* this._snackbar.open(result.mensaje, '', {
         duration: 4500,
         verticalPosition: 'top', // 'top' | 'bottom'
         horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
         panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar'],
-      });
+      }); */
+      this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
       if (!result.error)
         this.router.navigate(['../..'], { relativeTo: this.route });
     });

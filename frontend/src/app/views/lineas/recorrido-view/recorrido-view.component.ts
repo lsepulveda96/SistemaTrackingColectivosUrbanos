@@ -78,18 +78,9 @@ export class RecorridoViewComponent implements OnInit {
     }).addTo(this.map);
   }
 
-  loadRecorridoMapa(recorrido: any) {
-    const trays = recorrido.trayectos.map((wp: any) => new L.LatLng(wp.lat, wp.lng));
-
-    const polyline = L.polyline([], { color: recorrido.color });
-    polyline.addTo(this.map);
-
-    for (let tray of trays) {
-      polyline.addLatLng(tray);
-      polyline.redraw();
-    }
-  }
-
+  /**
+   * Muestra el recorrido seleccionado en el mapa.
+   */
   onSelectRecorrido() {
     this.showParadasIC.setValue(false);
     if (this.paradasGroup)
@@ -106,14 +97,18 @@ export class RecorridoViewComponent implements OnInit {
     const polyline = L.polyline([], { color: recSel.color });
     // Toma los trayectos del recorrido y en base a ellos genera el polyline
     const trays = recSel.trayectos.map((wp: any) => new L.LatLng(wp.lat, wp.lng));
+    console.log("Mostrar recorrido: ", recSel.denominacion, ", waypoints: ", trays );
     for (let tray of trays) {
       polyline.addLatLng(tray);
-      //polyline.redraw();
     }
     this.recGroup.addLayer(polyline);
     this.recGroup.addTo(this.map);
   }
 
+  /**
+   * Mostrar/ocultar las paradas de un recorrido seleccionado.
+   * @param event 
+   */
   changeShowParadas(event: any) {
     if (this.showParadasIC.value && this.recorridoIC.value) {
       const recSel = this.recorridoIC.value[0];
@@ -136,6 +131,10 @@ export class RecorridoViewComponent implements OnInit {
     }
   }
 
+  /**
+   * Muesta el listado de paradas en el mapa.
+   * @param paradasRec 
+   */
   showParadasRecorrido(paradasRec: any[]) {
     if (this.paradasGroup)
       this.paradasGroup.clearLayers();
@@ -154,10 +153,16 @@ export class RecorridoViewComponent implements OnInit {
     this.paradasGroup.addTo(this.map);
   }
 
+  /**
+   * Navega a la pagina para definir nuevo recorrido para la linea.
+   */
   nuevoRecorrido() {
     this.router.navigate(['../../new', this.linea.id], { relativeTo: this.route });
   }
 
+  /**
+   * Navega a la pagina para editar el recorrido seleccionado.
+   */
   editarRecorrido() {
     const rec = this.recorridoIC.value[0];
     this.router.navigate(['../../edit', rec.id], { relativeTo: this.route });

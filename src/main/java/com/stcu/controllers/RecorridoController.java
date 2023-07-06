@@ -98,14 +98,14 @@ public class RecorridoController {
         long idRecDenom = service.existDenominacion(drec.getLinea().getId(), drec.getDenominacion());
         if (idRecDenom != 0 && idRecDenom != idrec)
             response = new Response<RecorridoDTO>(true, 400,
-                    "Ya existe recorrido activo con igual denominacion, ingrese otro valor en el campo denominacion",
+                    "Ya existe recorrido activo con denominacion " + drec.getDenominacion() + ", ingrese otra denominacion",
                     null);
         else {
             Recorrido updRec = service.updateRecorrido(idrec, drec.toRecorrido());
             if (updRec != null)
-                response = new Response<RecorridoDTO>(false, 200, "Nuevo Recorrido creado", new RecorridoDTO(updRec));
+                response = new Response<RecorridoDTO>(false, 200, "Recorrido " + updRec.getDenominacion() + " actualizado", new RecorridoDTO(updRec));
             else
-                response = new Response<RecorridoDTO>(true, 400, "No se pudo guardar nuevo Recorrido", null);
+                response = new Response<RecorridoDTO>(true, 400, "No se pudo actualizar recorrido " + drec.getDenominacion(), null);
         }
         return Mapper.getResponseAsJson(response);
     }

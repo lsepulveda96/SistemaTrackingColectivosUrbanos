@@ -196,7 +196,25 @@ export class RecorridoEditComponent implements OnInit {
   }
 
   loadAllTrayectosToMap() {
-    console.log("Cargar todos los trayectos en el mapa");
+    const wps = this.trayectos.map((tray: any) => new L.LatLng(tray.lat, tray.lng));
+    const routes = this.waypoints.map((wp: any) => new L.LatLng(wp.lat, wp.lng));
+    this.control = L.Routing.control({
+      waypoints: wps,
+      show: false, autoRoute: true, collapsible: true,
+      plan: L.Routing.plan(routes, {
+        addWaypoints: true, draggableWaypoints: true,
+        createMarker: (i, wp, n) => { return null; }
+      }),
+      lineOptions: { styles: [{ color: 'red', weight: 5 }], extendToWaypoints: false, missingRouteTolerance: 5 }
+    }).addTo(this.map);
+    // Oculta el itinerario
+    const routingControlContainer = this.control.getContainer();
+    const controlContainerParent = routingControlContainer.parentNode;
+    controlContainerParent.removeChild(routingControlContainer);
+
+    this.control.on('routeselected', (e: any) => {
+      this.rutas = e.route;
+    });
   }
 
   /**
@@ -271,13 +289,7 @@ export class RecorridoEditComponent implements OnInit {
         show: false, autoRoute: true, collapsible: true,
         plan: L.Routing.plan([anteultimoMark, ultimoMark], {
           addWaypoints: true, draggableWaypoints: true,
-          createMarker: (i, wp, n) => {
-            return null;
-            /* let marker: L.Marker;
-            if (i == 0 || i == n - 1)
-              marker = L.marker(wp.latLng, { icon: this.iconDivIn, draggable: false });
-            return marker; */
-          }
+          createMarker: (i, wp, n) => { return null; }
         }),
         lineOptions: { styles: [{ color: 'red', weight: 5 }], extendToWaypoints: false, missingRouteTolerance: 5 }
       }).addTo(this.map);
@@ -287,7 +299,6 @@ export class RecorridoEditComponent implements OnInit {
       controlContainerParent.removeChild(routingControlContainer);
 
       this.control.on('routeselected', (e: any) => {
-        console.log("ruta seleccionada: ", e);
         this.rutas = e.route;
       });
     }
@@ -374,7 +385,6 @@ export class RecorridoEditComponent implements OnInit {
       waypoints: this.waypoints,
       paradas: this.paradasRecorrido //paradasRec
     }
-
     this.waiting = true;
     this.servicioLinea.saveRecorrido(this.recorrido).subscribe(result => {
       this.waiting = false;
@@ -401,26 +411,27 @@ export class RecorridoEditComponent implements OnInit {
     });
     // Las paradas que ya estaban en el recorrido se actualiza las propiedades (id!=null).
     // Las paradas que no estaban el en recorrido se crearan (id==null)
-    // Las paradas que estanan en el recorrido y no estn en el nuevo listado se eliminaran (id=-2).
+    // Las paradas que estaban en el recorrido y no estan en el nuevo listado se eliminaran (id=-2).
     const paradasUpd = [];
     for (let pr of this.paradasRecorrido) {
       const par = { id: pr.id, parada: pr.parada, orden: pr.orden, distancia: pr.distancia, tiempo: pr.tiempo };
-      const updpr = this.recorrido.paradas.find(par => par.parada.codigo == pr.parada.codigo);
-      if (updpr)  // si ya estaba en el recorrido se toma el id para que se actualizen las propiedades.
-        par.id = updpr.id;
-      // si no esta se copia tal cual (id==null)
+      if (!par.id) { // si no tiene id, se busca si estaba en el recorrido original y se copia el id para actualizar los campos.
+        const updpr = this.recorrido.paradas.find(par => par.parada.codigo == pr.parada.codigo);
+        if (updpr)  // si ya estaba en el recorrido se toma el id para que se actualizen las propiedades.
+          par.id = updpr.id;
+      }
+      // si no tiene id o no se encontro en el recorrido original se va a generar el registro (id==null)
       paradasUpd.push(par);
     }
-    const paradasDelete = this.recorrido.paradas.filter(pr => !this.paradasRecorrido.find(p => p.id == pr.id));
-    for (let pd of paradasDelete) // setea la parada a null (para que se elimine la paradaRecorrido) y las agrega a la lista.;
+    //const paradasDelete = this.recorrido.paradas.filter(pr => !this.paradasRecorrido.find(p => p.id == pr.id));
+    const paradasDel = this.recorrido.paradas.filter( pr => !this.paradasRecorrido.find( p => p.parada.codigo == pr.parada.codigo ));
+    for (let pd of paradasDel) // setea la parada a null (para que se elimine la paradaRecorrido) y las agrega a la lista.;
       paradasUpd.push({ id: pd.id, parada: null });
 
     this.recorrido.denominacion = this.denominacionIC.value.trim().toUpperCase();
     this.recorrido.trayectos = this.trayectos;
     this.recorrido.waypoints = this.waypoints;
     this.recorrido.paradas = paradasUpd;
-
-    console.log("Actualizar recorrido: ", this.recorrido);
 
     this.waiting = true;
     this.servicioLinea.updateRecorrido(this.recorrido.id, this.recorrido).subscribe(result => {

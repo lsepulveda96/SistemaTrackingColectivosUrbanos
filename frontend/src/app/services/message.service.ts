@@ -9,11 +9,12 @@ export class MessageService {
   constructor(private _snackbar: MatSnackBar) { }
 
   showMessage( message: string, tipo: string ) {
-    this._snackbar.open( message, tipo=='ERROR' ? 'Error':'Exito', {
+    this._snackbar.open( message, tipo=='ERROR' ? 'Error':( tipo=='WARN' ? 'Atencion':'Exito'), {
       duration: 4500,
       verticalPosition: 'bottom',
       horizontalPosition: 'end',
-      panelClass: tipo=='ERROR' ? ['red-snackbar']:['blue-snackbar']
+      panelClass: tipo=='ERROR' ? ['red-snackbar']: 
+                  (tipo=='WARN' ? ['yellow-snackbar']:['blue-snackbar'])
     });
   }
 }
