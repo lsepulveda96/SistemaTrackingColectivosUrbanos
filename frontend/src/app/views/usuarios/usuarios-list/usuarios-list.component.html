@@ -17,21 +17,35 @@
             <table mat-table [dataSource]="usuariosDS" class="mat-elevation-z10" *ngIf="isadmin">
                 <ng-container matColumnDef="id">
                     <th mat-header-cell *matHeaderCellDef width="10%">Id</th>
-                    <td mat-cell *matCellDef="let usr">{{ usr.id }}</td>
+                    <td mat-cell *matCellDef="let usr">
+                        <span [ngStyle]="{'color': usr.estado=='NO_ACTIVO' ? 'gray':'black'}">
+                            {{ usr.id }}
+                        </span>
+                        </td>
                 </ng-container>
                 <ng-container matColumnDef="usuario">
                     <th mat-header-cell *matHeaderCellDef width="20%">Usuario</th>
-                    <td mat-cell *matCellDef="let usr">{{ usr.usuario }}</td>
+                    <td mat-cell *matCellDef="let usr">
+                        <span [ngStyle]="{'color': usr.estado=='NO_ACTIVO' ? 'gray':'black'}">
+                            {{ usr.usuario }}
+                        </span>
+                    </td>
                 </ng-container>
                 <ng-container matColumnDef="nombre">
                     <th mat-header-cell *matHeaderCellDef width="30%">Apellido y nombre</th>
                     <td mat-cell *matCellDef="let usr">
-                        {{ usr.apellido && usr.nombre ? usr.apellido + ' ' + usr.nombre : '' }}
+                        <span [ngStyle]="{'color': usr.estado=='NO_ACTIVO' ? 'gray':'black'}">
+                            {{ usr.apellido && usr.nombre ? usr.apellido + ' ' + usr.nombre : '' }}
+                        </span>
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="estado">
                     <th mat-header-cell *matHeaderCellDef width="20%">estado</th>
-                    <td mat-cell *matCellDef="let usr">{{ usr.estado }}</td>
+                    <td mat-cell *matCellDef="let usr">
+                        <span [ngStyle]="{'color': usr.estado=='NO_ACTIVO' ? 'gray':'black'}">
+                            {{ usr.estado }}
+                        </span>
+                        </td>
                 </ng-container>
                 <ng-container matColumnDef="acciones">
                     <th mat-header-cell *matHeaderCellDef width="20%">

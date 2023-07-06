@@ -4,15 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Parada } from 'src/app/data/parada';
 import { ParadaService } from 'src/app/services/parada.service';
-
+import { MessageService } from 'src/app/services/message.service';
 import { ESRI_PARAMS } from 'src/app/services/esriConfig';
 
 import * as L from 'leaflet';
-
+import * as ELG from 'esri-leaflet-geocoder';
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 import 'esri-leaflet-geocoder';
-import * as ELG from 'esri-leaflet-geocoder';
-import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-parada-edit',
@@ -72,12 +70,6 @@ export class ParadaEditComponent implements OnInit {
     this.serviceParada.getParada(codigo).subscribe(result => {
       this.spin = false;
       if (result.error) {
-        /* this._snackbar.open(result.mensaje, '', {
-          duration: 4500,
-          verticalPosition: 'top', // 'top' | 'bottom'
-          horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
-          panelClass: ['red-snackbar'],
-        }); */
         this._msg.showMessage(result.mensaje, 'ERROR');
         this.router.navigate(['../..'], { relativeTo: this.route });
       }
@@ -129,10 +121,6 @@ export class ParadaEditComponent implements OnInit {
     if (this.statusReverseOk) {
       this.geocodeService.reverse().latlng(point.latlng).run((error: any, result: any) => { // Ajusta direccion a calle.
         if (error) {  // Si hay error muestra el mensaje.
-          /* this._snackbar.open('No se pudo obtener direccion, ingrese manualmente', '', {
-            duration: 4000, verticalPosition: 'bottom', horizontalPosition: 'center',
-            panelClass: ['yellow-snackbar']
-          }); */
           this.statusReverseOk = false;
           this._msg.showMessage('No se pudo chequear si el marcador corresponde a calle. Asegurese de que asi sea.', 'WARN');
           this.addMarker(point);
@@ -152,7 +140,6 @@ export class ParadaEditComponent implements OnInit {
    * @param coord 
    */
   addMarker(coord: any) {
-    console.log("Add marker: ", coord);
     if (this.marker && this.map.hasLayer(this.marker)) // Si ya esta la parada en el mapa se elimina.
       this.map.removeLayer(this.marker);
 
@@ -193,12 +180,6 @@ export class ParadaEditComponent implements OnInit {
     this.spin = true;
     this.serviceParada.saveParada(this.parada).subscribe(result => {
       this.spin = false;
-      /* this._snackbar.open(result.mensaje, '', {
-        duration: 4500,
-        verticalPosition: 'top', // 'top' | 'bottom'
-        horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
-        panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar'],
-      }); */
       this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
       if (!result.error)
         this.router.navigate(['../'], { relativeTo: this.route });
@@ -219,12 +200,6 @@ export class ParadaEditComponent implements OnInit {
     this.spin = true;
     this.serviceParada.updateParada(this.parada).subscribe(result => {
       this.spin = false;
-      /* this._snackbar.open(result.mensaje, '', {
-        duration: 4500,
-        verticalPosition: 'top', // 'top' | 'bottom'
-        horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
-        panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar'],
-      }); */
       this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
       if (!result.error)
         this.router.navigate(['../..'], { relativeTo: this.route });
