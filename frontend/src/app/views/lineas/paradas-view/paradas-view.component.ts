@@ -54,4 +54,8 @@ export class ParadasViewComponent implements OnInit {
     }
   }
 
+  showQRCode( pr:any) {
+    console.log("Imprimir QR Code: ", pr, " , linea: ", this.linea.id );
+  }
+
 }
