@@ -6,6 +6,7 @@ import * as L from 'leaflet';
 import { Linea } from 'src/app/data/linea';
 import { Parada } from 'src/app/data/parada';
 import { LineaService } from 'src/app/services/linea.service';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-paradas-view',
@@ -14,30 +15,43 @@ import { LineaService } from 'src/app/services/linea.service';
 })
 export class ParadasViewComponent implements OnInit {
 
-  modeNew: boolean;
   waiting: boolean;
   linea: Linea;
-  paradas: Parada[];
-  map: L.Map;
+  recorridos: any[];
+  paradasRec: any[];
 
   constructor( private servicioLinea: LineaService, 
-    private snackbar: MatSnackBar,
+    private _msg: MessageService,
     private route: ActivatedRoute,
     private router: Router ) { }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
+    const idLinea = this.route.snapshot.paramMap.get('id');
     this.waiting = true;
-    this.servicioLinea.getLinea( parseInt(id ))
+    this.servicioLinea.getLinea( parseInt(idLinea ))
       .subscribe( result => {
         this.waiting = false;
         this.linea = result.data;
+        console.log("Linea: ", this.linea );
       });
-    this.servicioLinea.getRecorridosActivos( parseInt(id))
+    this.servicioLinea.getRecorridosActivos( parseInt(idLinea))
       .subscribe( result => {
-        
+        console.log("Recorridos activos: ", result );
+        this.recorridos = result.data;
       });
       
+  }
+
+  onSelectRecorrido(recorridoSelect: any) {
+    console.log("selecciona recorrido: ", recorridoSelect );
+    if (!recorridoSelect.paradas){
+      this.waiting = true;
+      this.servicioLinea.getParadasRecorrido( recorridoSelect.id ).subscribe( result => {
+        this.waiting = false;
+        console.log("Paradas de recorrido " + recorridoSelect.denominacion, ": ", result.data );
+        this.paradasRec = result.data;
+      });
+    }
   }
 
 }

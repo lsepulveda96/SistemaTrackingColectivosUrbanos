@@ -130,7 +130,7 @@ export class ParadaEditComponent implements OnInit {
       });
     }
     else {
-      this._msg.showMessage('No se pudo chequear si el marcador corresponde a calle. Asegurese que asi sea', 'WARN');
+      this._msg.showMessage('No se pudo verificar si el markador esta sobre la calle. Asegurese que asi sea', 'WARN');
       this.addMarker(point);
     }
   }

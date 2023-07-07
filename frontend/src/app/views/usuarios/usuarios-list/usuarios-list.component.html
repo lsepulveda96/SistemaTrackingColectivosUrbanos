@@ -5,12 +5,12 @@
             &nbsp;Usuarios
         </mat-card-title>
     </mat-card-header>
-    
+
     <mat-divider></mat-divider>
-    <div class="loading-indicator" *ngIf="waiting"> 
+    <div class="loading-indicator" *ngIf="waiting">
         <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
     </div>
-    
+
     <mat-card-content>
         <div class="container">
             <span *ngIf="!isadmin">No tiene acceso a esta vista</span>
@@ -21,7 +21,7 @@
                         <span [ngStyle]="{'color': usr.estado=='NO_ACTIVO' ? 'gray':'black'}">
                             {{ usr.id }}
                         </span>
-                        </td>
+                    </td>
                 </ng-container>
                 <ng-container matColumnDef="usuario">
                     <th mat-header-cell *matHeaderCellDef width="20%">Usuario</th>
@@ -43,32 +43,33 @@
                     <th mat-header-cell *matHeaderCellDef width="20%">estado</th>
                     <td mat-cell *matCellDef="let usr">
                         <span [ngStyle]="{'color': usr.estado=='NO_ACTIVO' ? 'gray':'black'}">
-                            {{ usr.estado }}
+                            {{ usr.estado.replace('_',' ') }}
                         </span>
-                        </td>
+                        <button mat-icon-button color="primary" matTooltip="desactivar" matTooltipPosition="after"
+                            (click)="bajaUsuario(usr.id, usr.usuario)" *ngIf="usr.estado=='ACTIVO'">
+                            <i class="bi bi-toggle-on"></i>
+                        </button>
+                        <button mat-icon-button color="primary" matTooltip="Activar" matTooltipPosition="after"
+                            (click)="activarUsuario(usr.id, usr.usuario)" *ngIf="usr.estado=='NO_ACTIVO'">
+                            <i class="bi bi-toggle-off"></i>
+                        </button>
+                    </td>
                 </ng-container>
                 <ng-container matColumnDef="acciones">
                     <th mat-header-cell *matHeaderCellDef width="20%">
-                        <button mat-icon-button color="primary" [routerLink]="['new']" matTooltip="Nuevo usuario" matTooltipPosition="right">
+                        <button mat-icon-button color="primary" [routerLink]="['new']" matTooltip="Nuevo usuario"
+                            matTooltipPosition="right">
                             <mat-icon>add_box</mat-icon>
                         </button>
                     </th>
                     <td mat-cell *matCellDef="let usr">
-                        <button mat-icon-button color="primary" [routerLink]="['view',usr.id]" 
-                            matTooltip="ver" matTooltipPosition="before">
+                        <button mat-icon-button color="primary" [routerLink]="['view',usr.id]" matTooltip="ver"
+                            matTooltipPosition="below">
                             <mat-icon>pageview</mat-icon>
                         </button>
-                        <button mat-icon-button color="primary" [routerLink]="['edit',usr.id]" 
-                            matTooltip="editar" matTooltipPosition="after">
+                        <button mat-icon-button color="primary" [routerLink]="['edit',usr.id]" matTooltip="editar"
+                            matTooltipPosition="below">
                             <mat-icon>edit</mat-icon>
-                        </button>
-                        <button mat-icon-button color="warn" matTooltip="Baja" matTooltipPosition="after"
-                            (click)="bajaUsuario(usr.id, usr.usuario)" *ngIf="usr.estado=='ACTIVO'">
-                            <mat-icon>highlight_off</mat-icon>
-                        </button>
-                        <button mat-icon-button color="primary" matTooltip="Activar" matTooltipPosition="after"
-                            (click)="activarUsuario(usr.id, usr.usuario)" *ngIf="usr.estado=='NO_ACTIVO'">
-                            <mat-icon>check_circle_outline</mat-icon>
                         </button>
                     </td>
                 </ng-container>

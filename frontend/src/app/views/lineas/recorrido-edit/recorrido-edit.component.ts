@@ -198,23 +198,7 @@ export class RecorridoEditComponent implements OnInit {
   loadAllTrayectosToMap() {
     const wps = this.trayectos.map((tray: any) => new L.LatLng(tray.lat, tray.lng));
     const routes = this.waypoints.map((wp: any) => new L.LatLng(wp.lat, wp.lng));
-    this.control = L.Routing.control({
-      waypoints: wps,
-      show: false, autoRoute: true, collapsible: true,
-      plan: L.Routing.plan(routes, {
-        addWaypoints: true, draggableWaypoints: true,
-        createMarker: (i, wp, n) => { return null; }
-      }),
-      lineOptions: { styles: [{ color: 'red', weight: 5 }], extendToWaypoints: false, missingRouteTolerance: 5 }
-    }).addTo(this.map);
-    // Oculta el itinerario
-    const routingControlContainer = this.control.getContainer();
-    const controlContainerParent = routingControlContainer.parentNode;
-    controlContainerParent.removeChild(routingControlContainer);
-
-    this.control.on('routeselected', (e: any) => {
-      this.rutas = e.route;
-    });
+    this.initControlRouting( wps, routes );
   }
 
   /**
@@ -270,7 +254,6 @@ export class RecorridoEditComponent implements OnInit {
     }
   }
 
-  findingRoute: boolean = false;
   /**
    * Agrega automaticamente un trayecto de recorrido entre las ultimas dos paradas en el recorrido.
    * @returns 
@@ -281,44 +264,11 @@ export class RecorridoEditComponent implements OnInit {
       return;
 
     if (!this.control) { // Inicializa el control solo si hay dos paradas.
-      const ultimaPR = this.paradasRecorrido[len - 1];
-      const anteultimaPR = this.paradasRecorrido[len - 2];
-      const ultimoMark = new L.LatLng(ultimaPR.parada.coordenada.lat, ultimaPR.parada.coordenada.lng);
-      const anteultimoMark = new L.LatLng(anteultimaPR.parada.coordenada.lat, anteultimaPR.parada.coordenada.lng);
-      this.control = L.Routing.control({
-        waypoints: [anteultimoMark, ultimoMark],
-        show: false, autoRoute:true, collapsible: true,showAlternatives: false,  fitSelectedRoutes: false,
-        plan: L.Routing.plan([anteultimoMark, ultimoMark], {
-          addWaypoints: true, draggableWaypoints: true,
-          createMarker: (i, wp, n) => { return null; }
-        }),
-        lineOptions: { styles: [{ color: 'red', weight: 5 }], extendToWaypoints: false, missingRouteTolerance: 5 }
-      }).addTo(this.map)
-      .on('routingstart', (e: any) => {
-        this.waiting = this.findingRoute ? false: true;
-        console.log("Routing start: ", e);
-      })
-      .on('routesfound', (e: any) => {
-        this.waiting = false;
-        console.log("Routes found: ", e);
-      })
-      .on('routingerror', (e:any) => {
-        this.waiting = false;
-        console.log("routing error: ", e )
-      })
-
-      this.control.on('routeselected', (e: any) => {
-        this.waiting = false;
-        console.log("route selected: ", e);
-        this.rutas = e.route;
-      })
-      //.addTo(this.map);
-      // Oculta el itinerario
-      const routingControlContainer = this.control.getContainer();
-      const controlContainerParent = routingControlContainer.parentNode;
-      controlContainerParent.removeChild(routingControlContainer);
-
-
+      const ultimaPR = this.paradasRecorrido[len - 1].parada.coordenada;
+      const anteultimaPR = this.paradasRecorrido[len - 2].parada.coordenada;
+      const ultimoMark = new L.LatLng(ultimaPR.lat, ultimaPR.lng);
+      const anteultimoMark = new L.LatLng(anteultimaPR.lat, anteultimaPR.lng);
+      this.initControlRouting( [anteultimoMark,ultimoMark], [anteultimoMark,ultimoMark])
     }
     else {
       const ultimoMark = new L.LatLng(this.paradasRecorrido[len - 1].parada.coordenada.lat, this.paradasRecorrido[len - 1].parada.coordenada.lng);
@@ -334,7 +284,43 @@ export class RecorridoEditComponent implements OnInit {
       const primerMark = new L.LatLng(this.paradasRecorrido[0].parada.coordenada.lat, this.paradasRecorrido[0].parada.coordenada.lng);
       this.map.fitBounds([primerMark, ultimoMark]);
     }
+  }
 
+  /**
+   * Inicializa el control routing con los trayectos y rutas.
+   * @param waypoints 
+   * @param routes 
+   */
+  initControlRouting(waypoints: any[], routes: any[]) {
+    this.control = L.Routing.control({
+      waypoints: waypoints,
+      show: false, 
+      autoRoute: true, 
+      collapsible: true, 
+      showAlternatives: false, 
+      fitSelectedRoutes: true,
+      useZoomParameter: false,
+      plan: L.Routing.plan( routes, {
+        addWaypoints: true, draggableWaypoints: true,
+        createMarker: (i, wp, n) => { return null; }
+      }),
+      lineOptions: { 
+        styles: [{ color: 'red', weight: 5 }], 
+        extendToWaypoints: true, 
+        missingRouteTolerance: 5 
+      }
+    })
+    .addTo(this.map);
+    
+    this.control.on('routeselected', (e: any) => {
+      console.log("RouteSelectd : ", e );
+      this.rutas = e.route;
+    });
+
+    // Oculta el itinerario
+    const routingControlContainer = this.control.getContainer();
+    const controlContainerParent = routingControlContainer.parentNode;
+    controlContainerParent.removeChild(routingControlContainer);
   }
 
   /**

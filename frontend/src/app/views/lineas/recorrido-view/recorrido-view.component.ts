@@ -99,7 +99,6 @@ export class RecorridoViewComponent implements OnInit {
     const polyline = L.polyline([], { color: recSel.color });
     // Toma los trayectos del recorrido y en base a ellos genera el polyline
     const trays = recSel.trayectos.map((wp: any) => new L.LatLng(wp.lat, wp.lng));
-    console.log("Mostrar recorrido: ", recSel.denominacion, ", waypoints: ", trays );
     for (let tray of trays) {
       polyline.addLatLng(tray);
     }
