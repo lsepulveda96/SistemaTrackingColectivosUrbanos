@@ -33,7 +33,9 @@ export class RecorridoViewComponent implements OnInit {
     popupAnchor: [-15, -30],
     className: 'myDivIcon'
   });
-  colors = ['#008000', '#0000ff', '#ffa500', '#a52a2a', '#8b008b', '#1e90ff'];
+  
+  // colores: verde, marron, violeta, celeste, amarillo, azul
+  colors = ['#008000','#a52a2a', '#8b008b', '#1e90ff','#ffa500', '#0000ff'];
 
   constructor(
     private serviceLinea: LineaService,
@@ -103,6 +105,7 @@ export class RecorridoViewComponent implements OnInit {
     }
     this.recGroup.addLayer(polyline);
     this.recGroup.addTo(this.map);
+    this.map.fitBounds( trays );
   }
 
   /**

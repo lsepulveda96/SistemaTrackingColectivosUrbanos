@@ -270,6 +270,7 @@ export class RecorridoEditComponent implements OnInit {
     }
   }
 
+  findingRoute: boolean = false;
   /**
    * Agrega automaticamente un trayecto de recorrido entre las ultimas dos paradas en el recorrido.
    * @returns 
@@ -286,21 +287,38 @@ export class RecorridoEditComponent implements OnInit {
       const anteultimoMark = new L.LatLng(anteultimaPR.parada.coordenada.lat, anteultimaPR.parada.coordenada.lng);
       this.control = L.Routing.control({
         waypoints: [anteultimoMark, ultimoMark],
-        show: false, autoRoute: true, collapsible: true,
+        show: false, autoRoute:true, collapsible: true,showAlternatives: false,  fitSelectedRoutes: false,
         plan: L.Routing.plan([anteultimoMark, ultimoMark], {
           addWaypoints: true, draggableWaypoints: true,
           createMarker: (i, wp, n) => { return null; }
         }),
         lineOptions: { styles: [{ color: 'red', weight: 5 }], extendToWaypoints: false, missingRouteTolerance: 5 }
-      }).addTo(this.map);
+      }).addTo(this.map)
+      .on('routingstart', (e: any) => {
+        this.waiting = this.findingRoute ? false: true;
+        console.log("Routing start: ", e);
+      })
+      .on('routesfound', (e: any) => {
+        this.waiting = false;
+        console.log("Routes found: ", e);
+      })
+      .on('routingerror', (e:any) => {
+        this.waiting = false;
+        console.log("routing error: ", e )
+      })
+
+      this.control.on('routeselected', (e: any) => {
+        this.waiting = false;
+        console.log("route selected: ", e);
+        this.rutas = e.route;
+      })
+      //.addTo(this.map);
       // Oculta el itinerario
       const routingControlContainer = this.control.getContainer();
       const controlContainerParent = routingControlContainer.parentNode;
       controlContainerParent.removeChild(routingControlContainer);
 
-      this.control.on('routeselected', (e: any) => {
-        this.rutas = e.route;
-      });
+
     }
     else {
       const ultimoMark = new L.LatLng(this.paradasRecorrido[len - 1].parada.coordenada.lat, this.paradasRecorrido[len - 1].parada.coordenada.lng);
@@ -424,7 +442,7 @@ export class RecorridoEditComponent implements OnInit {
       paradasUpd.push(par);
     }
     //const paradasDelete = this.recorrido.paradas.filter(pr => !this.paradasRecorrido.find(p => p.id == pr.id));
-    const paradasDel = this.recorrido.paradas.filter( pr => !this.paradasRecorrido.find( p => p.parada.codigo == pr.parada.codigo ));
+    const paradasDel = this.recorrido.paradas.filter(pr => !this.paradasRecorrido.find(p => p.parada.codigo == pr.parada.codigo));
     for (let pd of paradasDel) // setea la parada a null (para que se elimine la paradaRecorrido) y las agrega a la lista.;
       paradasUpd.push({ id: pd.id, parada: null });
 
