@@ -1,0 +1,10 @@
+/* The div container */
+.qrcodeImage {
+  display: flex;
+  flex: 1;
+}
+
+.button-border {
+  border: 1px solid;
+  margin-left: 10px;
+}

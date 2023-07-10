@@ -44,7 +44,8 @@
                                 </mat-icon>
                                 <small>{{ pr.parada.codigo + ':' + pr.parada.direccion }}</small>
                             </div>
-                            <button mat-icon-button class="ml-2" color="primary" (click)="showQRCode( pr )"
+                            <button mat-icon-button class="ml-2" color="primary" 
+                                (click)="showQRCode( pr,recs.selectedOptions.selected[0].value )"
                                 style="color: black" matTooltip="ver codigo QR">
                                 <mat-icon><i class="bi bi-qr-code"></i></mat-icon>
                             </button>

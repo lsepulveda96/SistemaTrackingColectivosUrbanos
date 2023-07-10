@@ -25,6 +25,9 @@ import { ParadasViewComponent } from './paradas-view/paradas-view.component';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { ParadaQrComponent } from './parada-qr/parada-qr.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { QRCodeModule } from 'angularx-qrcode';
 
 
 @NgModule({
@@ -37,7 +40,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     RecorridosListComponent,
     RecorridoEditComponent,
     ParadasEditComponent,
-    ParadasViewComponent
+    ParadasViewComponent,
+    ParadaQrComponent
   ],
   imports: [
     CommonModule,
@@ -56,6 +60,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatListModule,
     MatSelectModule,
     ScrollingModule,
+    MatDialogModule,
+    QRCodeModule
   ]
 })
 export class LineasModule { }
