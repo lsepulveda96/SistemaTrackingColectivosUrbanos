@@ -31,4 +31,4 @@
 ** update 17/01/2023 from angular 12 
 
 ### Movil
-* Ionic framework
+* Android SDK 
