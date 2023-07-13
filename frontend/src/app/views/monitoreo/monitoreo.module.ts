@@ -11,12 +11,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MonitUnidadComponent } from './monit-unidad/monit-unidad.component';
 
 
 @NgModule({
   declarations: [
     MonitoreoComponent,
-    EnrecorridoListComponent
+    EnrecorridoListComponent,
+    MonitUnidadComponent
   ],
   imports: [
     CommonModule,

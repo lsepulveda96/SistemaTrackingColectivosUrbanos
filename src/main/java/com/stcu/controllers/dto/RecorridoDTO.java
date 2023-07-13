@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.stcu.model.Linea;
-import com.stcu.model.Parada;
 import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
 

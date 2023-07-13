@@ -121,4 +121,5 @@ public class RecorridoController {
             response = new Response<RecorridoDTO>(true, 400, "No se pudo desctivar recorrido", null);
         return Mapper.getResponseAsJson(response);
     }
+
 }

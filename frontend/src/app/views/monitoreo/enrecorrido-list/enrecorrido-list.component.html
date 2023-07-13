@@ -9,20 +9,20 @@
         <table mat-table [dataSource]="transitoDS">
             <ng-container matColumnDef="unidad">
                 <th mat-header-cell *matHeaderCellDef>Unidad</th>
-                <td mat-cell *matCellDef="let transit">{{ transit.unidad }}</td>
+                <td mat-cell *matCellDef="let transit">{{ transit.colectivo.unidad }}</td>
             </ng-container>
             <ng-container matColumnDef="linea">
                 <th mat-header-cell *matHeaderCellDef>Linea</th>
-                <td mat-cell *matCellDef="let transit">{{ transit.linea }}</td>
+                <td mat-cell *matCellDef="let transit">{{ transit.linea.denominacion }}</td>
             </ng-container>
             <ng-container matColumnDef="recorrido">
                 <th mat-header-cell *matHeaderCellDef>Recorrido</th>
-                <td mat-cell *matCellDef="let transit">{{ transit.recorrido }}</td>
+                <td mat-cell *matCellDef="let transit">{{ transit.recorrido.denominacion }}</td>
             </ng-container>
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let transit">
-                    <button mat-icon-button color="primary" [routerLink]="['view']" 
+                    <button mat-icon-button color="primary" [routerLink]="['monit', transit.colectivo.id ]" 
                         matTooltip="monitorear" matTooltipPosition="right">
                         <mat-icon>departure_board</mat-icon>
                     </button>

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.stcu.controllers.dto.RecorridoDTO;
 import com.stcu.model.Linea;
-import com.stcu.model.Parada;
 import com.stcu.model.Recorrido;
 import com.stcu.services.LineaServiceImp;
 import com.stcu.services.RecorridoService;
@@ -97,6 +96,7 @@ public class LineaController {
      * @param id
      * @return json respuesta con objeto Lista de paradas
      */
+    /* 
     @GetMapping(value="/linea/paradas/{id}")
     public String getParadasLinea(@PathVariable long id ) {
         Recorrido recorridoActual = service.getRecorridoActual( id );
@@ -111,13 +111,14 @@ public class LineaController {
         }
         return Mapper.getResponseAsJson(response);
     }
-    
+     */
 
     /**
      * Recupera lista de recorridos de una linea (pasados y actual)
      * @param id
      * @return json respuesta con objeto Lista de recorridos.
      */
+    /* 
     @GetMapping(value = "/linea/recorridos/{id}")
     public String getRecorridosLinea( @PathVariable long id ) {
         List<Recorrido> recorridos = service.getRecorridos( id );
@@ -125,8 +126,9 @@ public class LineaController {
         Response<List<Recorrido>> response = new Response<List<Recorrido>>( false, 200, "Recorridos de linea " + id, recorridos );
         return Mapper.getResponseAsJson(response);
      }
+     */
 
-
+     /* 
      @GetMapping(value="/linea/recorrido/activo/{idlinea}")
      public String getRecorridoActivo(@PathVariable long idlinea) {
         Recorrido recorrido = service.getRecorridoActual(idlinea);
@@ -138,7 +140,8 @@ public class LineaController {
             resp = new Response<RecorridoDTO>( true, 300, "No se encontro recorrido para linea " + idlinea, null );
 
         return Mapper.getResponseAsJson(resp);
-     }  
+     } 
+     */  
 
      @GetMapping( value="/linea/recorrido/{idrecorrido}")
      public String getRecorrido( @PathVariable long idrecorrido ) {

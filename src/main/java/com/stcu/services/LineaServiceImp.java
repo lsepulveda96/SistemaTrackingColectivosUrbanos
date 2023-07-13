@@ -3,8 +3,6 @@ package com.stcu.services;
 import java.util.List;
 
 import com.stcu.model.Linea;
-import com.stcu.model.Parada;
-import com.stcu.model.Recorrido;
 import com.stcu.repository.LineaRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,21 +43,5 @@ public class LineaServiceImp implements LineaService {
         }
         return updLinea;
     }
-
-    @Override
-    public List<Recorrido> getRecorridos(long idLinea) {
-        return repo.findAllRecorridos( idLinea );
-    }
-
-    @Override
-    public Recorrido getRecorridoActual(long idLinea) {
-        return  repo.findRecorridoActual( idLinea );
-    }
-
-    @Override
-    public List<Parada> getParadas(long idRecorrido) {
-        return repo.findParadas(idRecorrido);
-    }
-    
 
 }

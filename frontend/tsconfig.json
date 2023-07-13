@@ -24,5 +24,8 @@
       "es2017",
       "dom"
     ]
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true
   }
 }

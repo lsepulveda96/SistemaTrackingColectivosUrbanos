@@ -29,12 +29,12 @@ import { AuthInterceptor } from './helpers/auth.interceptor';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    DemoMaterialModule,
     FormsModule,
     FlexLayoutModule,
+    DemoMaterialModule,
     HttpClientModule,
     SharedModule,
-    RouterModule.forRoot(AppRoutes)
+    RouterModule.forRoot(AppRoutes, { useHash:true })
   ],
   providers: [
     {

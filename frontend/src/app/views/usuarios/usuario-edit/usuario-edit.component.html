@@ -22,7 +22,7 @@
                                     <mat-form-field appearance="standard" style="width: 100%;">
                                         <mat-label>Nombre de usuario</mat-label>
                                         <input matInput [formControl]="usuarioIC" autocomplete="off" required
-                                            [readonly]="usuario" />
+                                            [readonly]="!!usuario" />
                                         <mat-error *ngIf="usuarioIC.hasError('required')">requerido</mat-error>
                                         <mat-error *ngIf="usuarioIC.hasError('minlength')">al menos 5
                                             caracteres</mat-error>
