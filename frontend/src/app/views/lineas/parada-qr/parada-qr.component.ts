@@ -31,7 +31,9 @@ export class ParadaQrComponent implements OnInit {
     this.qrdata = JSON.stringify({
       linea: this.linea.id,
       parada: this.parada.codigo,
-      recorrido: this.recorrido.id
+      par: this.parada.direccion,
+      recorrido: this.recorrido.id,
+      rec2: this.recorrido.denominacion,
     });
   }
 

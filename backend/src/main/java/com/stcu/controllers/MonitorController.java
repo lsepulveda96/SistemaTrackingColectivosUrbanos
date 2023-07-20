@@ -37,4 +37,9 @@ public class MonitorController {
             response = new Response<ColectivoRecorridoDTO>(true, 400, "No se encontro colectivo recorrido", null);
         return Mapper.getResponseAsJson(response);
     }
+
+    @GetMapping("/transito/ubicacion/{id}")
+    public String findUltimaUbicacionTransito( @PathVariable long id ) {
+        return "";
+    }
 }

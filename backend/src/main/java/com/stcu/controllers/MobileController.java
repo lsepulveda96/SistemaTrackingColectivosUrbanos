@@ -14,14 +14,9 @@ import com.stcu.controllers.dto.ParadaDTO;
 public class MobileController {
     
     @GetMapping("/test")
-    ResponseEntity<?> testMobileApi() {
-        ParadaDTO p = new ParadaDTO();
-        p.setCodigo(100);
-        p.setDescripcion("prueba parada respuesta");
-        p.setDireccion("albarracin 145");
-        p.setEstado("ACTIVA");
-        p.setCoordenada( new CoordenadaDTO( -42.775935, -65.038144));
+    public String testMobileApi() {
+
         
-        return new ResponseEntity<>( p, HttpStatus.OK );
+        return "Conectado";
     }
 }

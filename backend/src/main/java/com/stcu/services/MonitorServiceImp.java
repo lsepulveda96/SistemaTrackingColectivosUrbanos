@@ -3,12 +3,14 @@ package com.stcu.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.stcu.model.ColectivoRecorrido;
 import com.stcu.model.Ubicacion;
 import com.stcu.repository.ColectivoRecorridoRepository;
 import com.stcu.repository.UbicacionRepository;
 
+@Service
 public class MonitorServiceImp implements MonitorService {
 
     @Autowired

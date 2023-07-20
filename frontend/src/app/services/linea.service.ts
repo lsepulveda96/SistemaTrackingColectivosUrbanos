@@ -51,7 +51,7 @@ export class LineaService {
   }
 
   updateRecorrido( idrec: number, recorrido: Recorrido ): Observable<any> {
-    return this.http.put( HTTPCONFIG.url + '/recorrido/' + idrec, recorrido  );
+    return this.http.put( HTTPCONFIG.url + '/   /' + idrec, recorrido  );
   }
 
   getParadasRecorrido( idrecorrido: number ): Observable<any> {
