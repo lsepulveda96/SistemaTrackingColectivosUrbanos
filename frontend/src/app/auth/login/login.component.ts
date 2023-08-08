@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
           this.errorMessage = 'Usuario y/o contraseña incorrecta';
           this.isLoginFailed = true;
           this.waiting = false;
-        }, 2000);
+        }, 1800);
       });
   }
 
@@ -65,5 +65,9 @@ export class LoginComponent implements OnInit {
       this.isLoginFailed = false;
       this.errorMessage = "";
     }
+  }
+
+  onKeyEnterPasswd() {
+    this.onSubmit();
   }
 }

@@ -9,13 +9,21 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
 @SpringBootApplication(scanBasePackages = {"com.stcu","com.stcu.repository"}, exclude = { SecurityAutoConfiguration.class })
 @EnableJpaRepositories("com.stcu.repository")
 @EntityScan("com.stcu.model")
-public class StcuApplication {
+public class StcuApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(StcuApplication.class, args);
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure( SpringApplicationBuilder application ) {
+		return application.sources( StcuApplication.class );
 	}
 
     @Bean
@@ -26,17 +34,6 @@ public class StcuApplication {
 				registry.addMapping("/**")
 					.allowedOrigins("http://localhost:4200")
 					.allowedMethods("GET","POST","PUT","DELETE");
-				
-
-				/*
-				registry.addMapping("/usuarios").allowedOrigins("http://localhost:4200");
-
-				registry.addMapping("/colectivos").allowedOrigins("http://localhost:4200");
-				registry.addMapping("/colectivo/{id}").allowedOrigins( "http://localhost:4200");
-
-				registry.addMapping("/lineas").allowedOrigins("http://localhost:4200");
-				registry.addMapping("/paradas").allowedOrigins("http://localhost:4200");
-				*/
 			}
 		};
 	}
