@@ -4,6 +4,7 @@ import { ColectivoEditComponent } from './colectivo-edit/colectivo-edit.componen
 import { ColectivoViewComponent } from './colectivo-view/colectivo-view.component';
 import { ColectivosListComponent } from './colectivos-list/colectivos-list.component';
 import { ColectivosComponent } from './colectivos.component';
+import { AccessRoutesGuard } from 'src/app/helpers/access-routes.guard';
 
 const routes: Routes = [
   { 
@@ -12,7 +13,9 @@ const routes: Routes = [
     children: [ 
       { path:'', component: ColectivosListComponent },
       { path:'list', component: ColectivosListComponent },
-      { path: 'new', component: ColectivoEditComponent },
+      { path: 'new', 
+        canActivate: [AccessRoutesGuard],
+        component: ColectivoEditComponent },
       { path: 'edit/:id', component: ColectivoEditComponent },
       { path: 'view/:id', component: ColectivoViewComponent }
     ]
