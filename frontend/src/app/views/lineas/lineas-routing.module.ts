@@ -10,6 +10,7 @@ import { ParadasViewComponent } from './paradas-view/paradas-view.component';
 import { RecorridoEditComponent } from './recorrido-edit/recorrido-edit.component';
 import { RecorridoViewComponent } from './recorrido-view/recorrido-view.component';
 import { RecorridosListComponent } from './recorridos-list/recorridos-list.component';
+import { AccessRoutesGuard } from 'src/app/helpers/access-routes.guard';
 
 const routes: Routes = [
   { 
@@ -18,15 +19,23 @@ const routes: Routes = [
     children: [
       { path: '', component: LineasListComponent },
       { path:'list', component: LineasListComponent },
-      { path:'new', component: LineaEditComponent },
-      { path:'edit/:id', component: LineaEditComponent },
+      { path:'new', 
+        canActivate:[AccessRoutesGuard], 
+        component: LineaEditComponent },
+      { path:'edit/:id', 
+        canActivate:[AccessRoutesGuard],
+        component: LineaEditComponent },
       { path:'view/:id', component: LineaViewComponent },
       { path:'recorrido/view/:id', component: RecorridoViewComponent },
-      { path:'recorrido/:modo/:id', component: RecorridoEditComponent },
+      { path:'recorrido/:modo/:id', 
+        canActivate:[AccessRoutesGuard],
+        component: RecorridoEditComponent },
       { path:'recorridos/:id', component: RecorridosListComponent },
       { path:'paradas/:id', component: ParadasListComponent },
       { path:'paradas/view/:id', component: ParadasViewComponent },
-      { path:'paradas/edit/:id', component: ParadasEditComponent }
+      { path:'paradas/edit/:id',
+        canActivate:[AccessRoutesGuard],
+        component: ParadasEditComponent }
     ]
   }
 ];

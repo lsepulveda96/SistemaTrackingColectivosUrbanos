@@ -13,10 +13,8 @@ const routes: Routes = [
     children: [ 
       { path:'', component: ColectivosListComponent },
       { path:'list', component: ColectivosListComponent },
-      { path: 'new', 
-        canActivate: [AccessRoutesGuard],
-        component: ColectivoEditComponent },
-      { path: 'edit/:id', component: ColectivoEditComponent },
+      { path: 'new', canActivate: [AccessRoutesGuard],component: ColectivoEditComponent },
+      { path: 'edit/:id', canActivate: [AccessRoutesGuard], component: ColectivoEditComponent },
       { path: 'view/:id', component: ColectivoViewComponent }
     ]
   }];

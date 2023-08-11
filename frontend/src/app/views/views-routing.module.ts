@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../helpers/auth.guard';
 import { MapComponent } from './map/map.component';
 import { ViewsComponent } from './views.component';
+import { AccessRoutesGuard } from '../helpers/access-routes.guard';
 
 const routes: Routes = [
   { 
@@ -12,7 +13,7 @@ const routes: Routes = [
       { 
         path: 'usuarios', 
         loadChildren: () => import('./usuarios/usuarios.module').then(m => m.UsuariosModule),
-        canActivate: [AuthGuard] 
+        canActivate: [AccessRoutesGuard,AuthGuard] 
       },
       { 
         path: 'colectivos', 

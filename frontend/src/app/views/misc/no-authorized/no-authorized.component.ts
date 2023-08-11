@@ -1,4 +1,6 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-no-authorized',
@@ -7,9 +9,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NoAuthorizedComponent implements OnInit {
 
-  constructor() { }
+  constructor( private location: Location) { }
 
   ngOnInit(): void {
   }
 
+  volver() {
+    console.log("Volver");
+    console.log("History: ", this.location.path() );
+    //this.location.historyGo
+  }
 }
