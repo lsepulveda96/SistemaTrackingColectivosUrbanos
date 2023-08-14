@@ -67,7 +67,7 @@ public class WebSecurityConfig {
             .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authRequest -> authRequest
-                .antMatchers("/index.html","/").permitAll()
+                .antMatchers("/").permitAll()
                 .antMatchers("/v1/auth/**").permitAll()
                 .antMatchers("/v1/test/**").permitAll()
                 .antMatchers("/v1/mobile/**").permitAll()

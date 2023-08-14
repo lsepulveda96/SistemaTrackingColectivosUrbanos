@@ -1,4 +1,4 @@
-package com.stcu.stcu;
+package com.stcu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,21 +9,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-
 @SpringBootApplication(scanBasePackages = {"com.stcu","com.stcu.repository"}, exclude = { SecurityAutoConfiguration.class })
 @EnableJpaRepositories("com.stcu.repository")
 @EntityScan("com.stcu.model")
-public class StcuApplication extends SpringBootServletInitializer {
+public class StcuApplication  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(StcuApplication.class, args);
-	}
-
-	@Override
-	protected SpringApplicationBuilder configure( SpringApplicationBuilder application ) {
-		return application.sources( StcuApplication.class );
 	}
 
     @Bean
