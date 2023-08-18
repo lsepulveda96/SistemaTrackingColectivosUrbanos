@@ -10,7 +10,7 @@ import com.stcu.controllers.dto.CoordenadaDTO;
 import com.stcu.controllers.dto.ParadaDTO;
 
 @RestController
-@RequestMapping("/v1/mobile")
+@RequestMapping("/api/mobile")
 public class MobileController {
     
     @GetMapping("/test")

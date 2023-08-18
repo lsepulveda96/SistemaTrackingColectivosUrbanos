@@ -24,7 +24,7 @@ public class StcuApplication  {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-					.allowedOrigins("http://localhost:4200")
+					.allowedOrigins("http://localhost:4200","http://localhost:50004/stcu2")
 					.allowedMethods("GET","POST","PUT","DELETE");
 			}
 		};

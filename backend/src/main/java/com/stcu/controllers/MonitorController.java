@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.stcu.controllers.dto.ColectivoRecorridoDTO;
 import com.stcu.model.ColectivoRecorrido;
 import com.stcu.services.MonitorService;
 
 @RestController
+@RequestMapping("/api")
 public class MonitorController {
 
     @Autowired

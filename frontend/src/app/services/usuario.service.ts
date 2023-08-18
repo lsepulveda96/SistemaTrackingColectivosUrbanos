@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { HTTPCONFIG  } from './httpconfig';
+import { HTTPCONFIG,API  } from './httpconfig';
 
 
 @Injectable({
@@ -17,22 +17,22 @@ export class UsuarioService {
     dni: string, direccion: string, telefono: string ): Observable<any> {
     const payload = {  email: email, apellido: apellido, nombre: nombre, 
       dni: dni, direccion: direccion, telefono: telefono, superusuario: isSuper };
-    return this.http.put( HTTPCONFIG.url + '/usuario/' + id, payload);
+    return this.http.put( HTTPCONFIG.url + API + '/usuario/' + id, payload);
   }
 
   getUsuarios(): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/usuarios');
+    return this.http.get( HTTPCONFIG.url + API + '/usuarios');
   }
 
   getUsuario( id: number ): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/usuario/' + id );
+    return this.http.get( HTTPCONFIG.url + API + '/usuario/' + id );
   }
 
   deactivateUsuario( id: number ): Observable<any> {
-    return this.http.delete( HTTPCONFIG.url + '/usuario/' + id );
+    return this.http.delete( HTTPCONFIG.url + API + '/usuario/' + id );
   }
 
   activateUsuario( id: number ): Observable<any> {
-    return this.http.get( HTTPCONFIG.url + '/usuario/activate/' + id );
+    return this.http.get( HTTPCONFIG.url + API + '/usuario/activate/' + id );
   }
 }
