@@ -11,39 +11,56 @@
     <mat-card-content>
         <div class="container">
             <div class="row">
-                <div class="col-4">
-                    <mat-form-field appearance="standard" style="width:100%">
-                        <mat-label>Numero de unidad</mat-label>
-                        <input matInput [formControl]="unidadIC" autocomplete="off" required class="text-upper"/>
-                        <mat-error *ngIf="unidadIC.hasError('required')">requerido</mat-error>
-                    </mat-form-field>
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col-4">
+                            <mat-form-field appearance="standard">
+                                <mat-label>Numero de unidad</mat-label>
+                                <input matInput [formControl]="unidadIC" autocomplete="off" required
+                                    class="text-upper" />
+                                <mat-error *ngIf="unidadIC.hasError('required')">requerido</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <mat-form-field appearance="standard" style="width: 100%;">
+                                <mat-label>Marca</mat-label>
+                                <input matInput [formControl]="marcaIC" autocomplete="off" class="text-upper"
+                                    required />
+                                <mat-error *ngIf="marcaIC.hasError('required')">requerido</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                            <mat-form-field appearance="standard" style="width: 100%;">
+                                <mat-label>Modelo</mat-label>
+                                <input matInput [formControl]="modeloIC" class="text-upper" autocomplete="off" />
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="standard" style="width:100%">
+                                <mat-label>Año</mat-label>
+                                <input matInput [formControl]="anioIC" type="number" />
+                                <mat-error *ngIf="anioIC.hasError('pattern')">Año invalido</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 d-flex justify-content-start">
+                    <div class="frame">
+                        <img [src]="url" class="rounded float-right" width="200" height="200">
+                        <button mat-icon-button color="primary" matTooltipPosition="left" matTooltip="cargar imagen"
+                            (click)="hiddenfileinput.click()" style="margin: auto;">
+                            <mat-icon>add_photo_alternate</mat-icon>
+                        </button>
+                        <input #hiddenfileinput style="display: none" type="file" (change)="onImagenSelect($event)"
+                            accept="image/png,image/jpeg">
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-5">
-                    <mat-form-field appearance="standard" style="width: 100%;">
-                        <mat-label>Marca</mat-label>
-                        <input matInput [formControl]="marcaIC" autocomplete="off" class="text-upper" required />
-                        <mat-error *ngIf="marcaIC.hasError('required')">requerido</mat-error>
-                    </mat-form-field>
-                </div>
                 <div class="col-4">
-                    <mat-form-field appearance="standard" style="width: 100%;">
-                        <mat-label>Modelo</mat-label>
-                        <input matInput [formControl]="modeloIC" class="text-upper" autocomplete="off" />
-                    </mat-form-field>
-                </div>
-                <div class="col-3">
-                    <mat-form-field appearance="standard" style="width:100%">
-                        <mat-label>Año</mat-label>
-                        <input matInput [formControl]="anioIC" type="number" />
-                        <mat-error *ngIf="anioIC.hasError('pattern')">Año invalido</mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <mat-form-field appearance="standard" style="width:100%">
+                    <mat-form-field appearance="standard">
                         <mat-label>Patente</mat-label>
                         <input matInput [formControl]="patenteIC" autocomplete="off" class="text-upper" required />
                         <mat-error *ngIf="patenteIC.hasError('required')">requerido</mat-error>
@@ -53,7 +70,7 @@
             </div>
             <div class="row">
                 <div class="col-4">
-                    <mat-form-field appearance="legacy">
+                    <mat-form-field appearance="standard">
                         <mat-label>Capacidad</mat-label>
                         <input matInput [formControl]="capacidadIC" />
                         <mat-error *ngIf="capacidadIC.hasError('pattern')">capacidad invalida (1 a 99)</mat-error>
@@ -62,7 +79,7 @@
             </div>
             <div class="row">
                 <div class="col-4">
-                    <mat-form-field appearance="legacy">
+                    <mat-form-field appearance="standard">
                         <mat-label>Fecha de compra</mat-label>
                         <input matInput [formControl]="compraIC" [matDatepicker]="picker" autocomplete="off" />
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -71,15 +88,10 @@
                 </div>
             </div>
             <div class="row" *ngIf="id">
-                <div class="col-4">
+                <div class="col-6">
                     <mat-form-field appearance="standard">
                         <mat-label>Estado</mat-label>
-                        <input matInput [value]="colectivo?.estado" readonly="true" />
-                        <!-- <mat-select [formControl]="estadoIC">
-                            <mat-option *ngFor="let est of estados" [value]="est">
-                                {{ est  }}
-                            </mat-option>
-                        </mat-select> -->
+                        <input matInput [value]="colectivo?.estado" readonly />
                         <button mat-stroked-button class="border-danger ml-3" color="warn" matSuffix
                             (click)="bajaColectivo()" *ngIf="colectivo?.estado!='BAJA'">
                             <i class="bi bi-x-circle-fill"></i>
@@ -92,8 +104,8 @@
             <br>
             <div class="row">
                 <div class="d-flex justify-content-end">
-                    <button mat-stroked-button class="border-primary m-2" color="primary" (click)="guardarColectivo()"
-                        *ngIf="!id"
+                    <button mat-stroked-button class="border-primary m-2" color="primary"
+                        (click)="registrarNuevoColectivo()" *ngIf="!id"
                         [disabled]="unidadIC.hasError('required') || marcaIC.hasError('requred') || patenteIC.hasError('required')">
                         Guardar
                     </button>

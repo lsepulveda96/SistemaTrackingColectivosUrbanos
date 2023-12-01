@@ -31,8 +31,7 @@ public class ColectivoServiceImp implements ColectivoService {
     public Colectivo saveColectivo(Colectivo col) {
         try {
             return this.rep.save(col);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("++++++ ERROR guardano nuevo colectivo: " + ex);
             return null;
         }
@@ -51,6 +50,7 @@ public class ColectivoServiceImp implements ColectivoService {
                 colectivo.setPatente(col.getPatente());
                 colectivo.setFechaCompra(col.getFechaCompra());
                 colectivo.setEstado(col.getEstado());
+                colectivo.setImgpath(col.getImgpath());
                 return this.rep.save(colectivo);
             }
             return null;

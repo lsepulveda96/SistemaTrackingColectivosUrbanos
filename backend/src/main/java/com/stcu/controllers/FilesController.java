@@ -1,0 +1,95 @@
+package com.stcu.controllers;
+
+import java.util.stream.Collectors;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+
+import com.stcu.model.FileInfo;
+import com.stcu.services.FileStorageService;
+
+@RestController
+@RequestMapping("/api/files")
+public class FilesController {
+
+    @Autowired
+    FileStorageService storageService;
+
+    @PostMapping("/upload")
+    public ResponseEntity<Response<String>> uploadFile(@RequestParam("file") MultipartFile file) {
+        Response<String> response;
+        try {
+            String fn = storageService.save(file);
+            response = new Response<String>(false, 200, "Archivo cargado exitosamente", fn);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception ex) {
+            response = new Response<String>(true, 300, "No se puedo cargar archivo " + file.getOriginalFilename(),
+                    null);
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<FileInfo>> getListFiles() {
+        List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
+            String filename = path.getFileName().toString();
+            String url = MvcUriComponentsBuilder
+                    .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
+            return new FileInfo(filename, url);
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
+    }
+
+    @GetMapping("/download/{filename:.+}")
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        Resource file = storageService.load(filename);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                .body(file);
+    }
+
+    @DeleteMapping("/delete/{filename:.+}")
+    public ResponseEntity<Response> deleteFile(@PathVariable String filename) {
+        String message = "";
+        Response<String> response;
+        try {
+            boolean existed = storageService.delete(filename);
+            if (existed) {
+                message = "Archivo borrado" + filename + " exitosamente";
+                // return ResponseEntity.ok().body( message );
+                response = new Response<String>(false, 200,message, message);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                message = "El archivo " + filename + " no se encontro!";
+                // return ResponseEntity.ok().body( message );
+                response = new Response<String>(false, 200, message, message);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception ex) {
+            message = "No se pudo eliminar el archivo " + filename;
+            //message = "Could not delete the file " + filename + ", Error: " + ex.getMessage();
+            response = new Response<String>(true, 300, message, message );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+}

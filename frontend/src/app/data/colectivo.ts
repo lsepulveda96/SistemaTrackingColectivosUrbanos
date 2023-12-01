@@ -10,4 +10,5 @@ export interface Colectivo {
     estado: string;
     fechaBaja: Date;
     enCirculacion: boolean;
+    imgpath: string;
 }

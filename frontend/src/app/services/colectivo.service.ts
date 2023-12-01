@@ -31,4 +31,18 @@ export class ColectivoService {
   disableColectivo( id: number ): Observable<any> {
     return this.http.get( HTTPCONFIG.url + API + '/colectivo/baja/' + id );
   }
+
+  uploadImagen( img: any ): Observable<any> {
+    const formdata = new FormData();
+    formdata.append('file', img );
+    return this.http.post( HTTPCONFIG.url + API + '/files/upload', formdata );
+  }
+
+  downloadImagen( filename: string ):Observable<any> {
+    return this.http.get( HTTPCONFIG.url + API + '/files/download/'+filename, { responseType:'blob'} );
+  }
+
+  deleteImagen( filename: string ): Observable<any> {
+    return this.http.delete( HTTPCONFIG.url + API + '/files/delete/'+filename );
+  }
 }

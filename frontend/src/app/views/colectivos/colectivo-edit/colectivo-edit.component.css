@@ -28,3 +28,12 @@
 .text-upper {
   text-transform: uppercase;
 }
+
+.frame {
+  width: 205px;
+  height: 205px;
+  border: 1px solid gray;
+  background: #eee;
+  margin: auto;
+  padding: 2px;
+}
