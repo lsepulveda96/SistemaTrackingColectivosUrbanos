@@ -32,7 +32,10 @@ public class StcuApplication implements CommandLineRunner {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://localhost:4200", "http://localhost:50004/stcu2")
+						.allowedOrigins(
+								"http://localhost:4200",
+								"http://localhost:50004/stcu2",
+								"http://localhost:50004/stcu2service")
 						.allowedMethods("GET", "POST", "PUT", "DELETE");
 			}
 		};
