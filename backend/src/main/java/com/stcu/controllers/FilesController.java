@@ -41,6 +41,7 @@ public class FilesController {
             response = new Response<String>(false, 200, "Archivo cargado exitosamente", fn);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception ex) {
+            System.err.println("++++++++ Error upload file: " + ex.getMessage() );
             response = new Response<String>(true, 300, "No se puedo cargar archivo " + file.getOriginalFilename(),
                     null);
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
@@ -82,10 +83,11 @@ public class FilesController {
             } else {
                 message = "El archivo " + filename + " no se encontro!";
                 // return ResponseEntity.ok().body( message );
-                response = new Response<String>(false, 200, message, message);
+                response = new Response<String>(true, 300, message, message);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
         } catch (Exception ex) {
+            System.err.println("++++++++ Error intentando eliminar archivo " + filename + ": " + ex.getMessage() );
             message = "No se pudo eliminar el archivo " + filename;
             //message = "Could not delete the file " + filename + ", Error: " + ex.getMessage();
             response = new Response<String>(true, 300, message, message );

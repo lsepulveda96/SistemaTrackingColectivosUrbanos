@@ -62,7 +62,8 @@
                 <div class="col-4">
                     <mat-form-field appearance="standard">
                         <mat-label>Patente</mat-label>
-                        <input matInput [formControl]="patenteIC" autocomplete="off" class="text-upper" required />
+                        <input matInput [formControl]="patenteIC" autocomplete="off" class="text-upper" 
+                            required />
                         <mat-error *ngIf="patenteIC.hasError('required')">requerido</mat-error>
                         <mat-error *ngIf="patenteIC.hasError('pattern')">patente invalida</mat-error>
                     </mat-form-field>

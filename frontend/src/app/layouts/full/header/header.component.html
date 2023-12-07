@@ -10,12 +10,12 @@
     <img src="assets/images/users/usr_stcu.jpg" alt="user" class="profile-pic">    
 </button>
 <mat-menu #profile="matMenu" class="mymegamenu">
-    <button mat-menu-item *ngIf="isLoggedIn">
+    <button mat-menu-item *ngIf="false">
         <!-- <mat-icon>settings</mat-icon> -->
         <i class="bi bi-gear"></i>
         Configuracion
     </button>
-    <button mat-menu-item *ngIf="isLoggedIn">
+    <button mat-menu-item *ngIf="isLoggedIn" (click)="goToPerfil()">
         <!-- <mat-icon>account_box</mat-icon> -->
         <i class="bi bi-person-bounding-box"></i>
         Perfil

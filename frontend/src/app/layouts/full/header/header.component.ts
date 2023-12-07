@@ -42,4 +42,9 @@ export class AppHeaderComponent implements OnInit {
     this.router.navigate(['auth/login']);
   }
 
+  goToPerfil() {
+    console.log("got to perfil");
+    this.router.navigate( ['perfil'])
+  }
+
 }

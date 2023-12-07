@@ -1,8 +1,14 @@
 import { environment } from "src/environments/environment";
 
-export const HTTPCONFIG = {
-   url: environment.production ? 'http://localhost:50004/stcu2service': 'http://localhost:50000/stcu2'
-    //url: 'http://localhost:50000'
-}
+const PORT = '50004';
+const SERVICE = 'stcu2service';
 
 export const API = '/api';
+
+export const HTTPCONFIG = {
+    /* url: environment.production ? 
+    window.location.host+'/stcu2service': 
+    'http://localhost:50000/stcu2service' */
+
+    url: 'http://' + window.location.hostname + ':' + PORT + '/' + SERVICE
+}

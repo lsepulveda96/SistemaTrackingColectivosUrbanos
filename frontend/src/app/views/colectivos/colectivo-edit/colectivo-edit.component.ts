@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { UntypedFormControl, Validators } from "@angular/forms";
+import { FormControl, UntypedFormControl, Validators } from "@angular/forms";
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   MAT_MOMENT_DATE_FORMATS,
@@ -38,9 +38,9 @@ export class ColectivoEditComponent implements OnInit {
   colectivo: Colectivo | undefined;
 
   unidadIC = new UntypedFormControl("", Validators.required);
-  patenteIC = new UntypedFormControl("", [
+  patenteIC = new FormControl("", [
     Validators.required,
-    Validators.pattern("^[A-Z]{2}[0-9]{3}[A-Z]{2}$|^[A-Z]{3}[0-9]{3}$"),
+    Validators.pattern("^([A-Z]{2}[0-9]{3}[A-Z]{2})$|^([A-Z]{3}[0-9]{3})$") 
   ]);
   marcaIC = new UntypedFormControl("", Validators.required);
   modeloIC = new UntypedFormControl("");
@@ -123,7 +123,8 @@ export class ColectivoEditComponent implements OnInit {
   registrarNuevoColectivo() {
     if (this.imagen) {
       this.spin = true;
-      this.serviceColectivo.uploadImagen(this.imagen).subscribe((result) => {
+      this.serviceColectivo.uploadImagen(this.imagen).subscribe(
+        result => {
         this.spin = false;
         if (result.error) {
           this._snackbar.open(result.mensaje, "", {
@@ -135,6 +136,18 @@ export class ColectivoEditComponent implements OnInit {
         }
         const filename = !result.error ? result.data : null;
         this.cargarValores(filename);
+        this.guardar();
+      },
+      err => {
+        if (err.error) {
+          this._snackbar.open(err.error.mensaje, "", {
+            duration: 4500,
+            verticalPosition: "bottom", // 'top' | 'bottom'
+            horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+            panelClass: ["red-snackbar"],
+          });
+        }
+        this.cargarValores(null);
         this.guardar();
       });
     } else {
@@ -163,11 +176,18 @@ export class ColectivoEditComponent implements OnInit {
       // si se cargo una imagen
       if (this.colectivo.imgpath && this.colectivo.imgpath.length > 0) {
         // si habia una imagen anterior se elimina
-        this.serviceColectivo.deleteImagen(this.colectivo.imgpath).toPromise();
+        this.serviceColectivo.deleteImagen(this.colectivo.imgpath)
+          .subscribe( res => {
+            console.log("Delete imagen res: ", res );
+          },
+          error => {
+            console.log("Delete imagen error : ", error );
+          });
       }
       // Se carga la nueva imagen.
       this.spin = true;
       this.serviceColectivo.uploadImagen(this.imagen).subscribe((res) => {
+        console.log("Upload res: ", res );
         this.spin = false;
         if (res.error) {
           this._snackbar.open(res.mensaje, "", {
@@ -179,6 +199,18 @@ export class ColectivoEditComponent implements OnInit {
         }
         const filename = !res.error ? res.data : null;
         this.cargarValores(filename);
+        this.actualizar();
+      },
+      err => {
+        if (err.error) {
+          this._snackbar.open(err.error.mensaje, "", {
+            duration: 4500,
+            verticalPosition: "bottom", // 'top' | 'bottom'
+            horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+            panelClass: ["red-snackbar"],
+          });
+        }
+        this.cargarValores(null);
         this.actualizar();
       });
     } else {

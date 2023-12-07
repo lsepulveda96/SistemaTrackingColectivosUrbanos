@@ -45,11 +45,15 @@ const routes: Routes = [
         loadChildren: () => import('./principal/principal.module').then(m => m.PrincipalModule) 
       },
       { 
+        path: 'perfil', 
+        loadChildren: () => import('./perfil/perfil.module').then(m => m.PerfilModule) },
+      { 
         path:'map', component: MapComponent
       },
     ]
    },
   { path: 'misc', loadChildren: () => import('./misc/misc.module').then(m => m.MiscModule) },
+  
 ];
 
 @NgModule({
