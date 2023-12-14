@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -18,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.stcu.dto.request.LoginRequest;
 import com.stcu.dto.request.SignupRequest;
@@ -31,8 +35,6 @@ import com.stcu.repository.UsuarioRepository;
 import com.stcu.security.jwt.JwtUtils;
 import com.stcu.security.services.UserDetailsImpl;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -54,6 +56,8 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    static Logger log = Logger.getLogger(AuthController.class.getName());
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser( @Valid @RequestBody LoginRequest loginRequest ) {
         Authentication authentication = authenticationManager.authenticate(
@@ -67,6 +71,7 @@ public class AuthController {
             .map( item -> item.getAuthority())
             .collect( Collectors.toList() );
         
+        log.info("*** Authentication user id: " + userDetails.getId() );
         return ResponseEntity.ok( 
             new JwtResponse( jwt, 
                             userDetails.getId(), 
@@ -113,6 +118,7 @@ public class AuthController {
         }
         usuario.setRoles(roles);
         usuarioRepository.save(usuario);
+        log.info("*** Authentication usuario registrado: " + usuario.getNombre() );
         return ResponseEntity.ok( new MessageResponse("Usuario registrado exitosamente"));
     }
     

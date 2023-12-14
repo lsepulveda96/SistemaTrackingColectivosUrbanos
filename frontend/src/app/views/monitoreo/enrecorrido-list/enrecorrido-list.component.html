@@ -31,6 +31,6 @@
             <tr mat-header-row *matHeaderRowDef="['unidad','linea','recorrido','acciones']"></tr>
             <tr mat-row *matRowDef="let row; columns: ['unidad','linea','recorrido','acciones']"></tr>
         </table>
-        <mat-paginator #pag [pageSize]="10"></mat-paginator>
+        <mat-paginator #pag [pageSize]="10" [hidePageSize]="true" class="mt-3"></mat-paginator>
     </mat-card-content>
 </mat-card>

@@ -12,7 +12,7 @@
         <mat-spinner mode="indeterminate" diameter="50"></mat-spinner>
     </div>
     <mat-card-content>
-        <table mat-table [dataSource]="paradasDS" class="mat-elevation-z10">
+        <table mat-table [dataSource]="paradasDS" class="mat-elevation-z6">
 
             <ng-container matColumnDef="codigo">
                 <th mat-header-cell *matHeaderCellDef width="10%">Codigo</th>
@@ -71,5 +71,6 @@
             <tr mat-row *matRowDef="let row; columns: ['codigo','direccion','estado','acciones']"></tr>
 
         </table>
+        <mat-paginator #pag [pageSize]="10" [hidePageSize]="true" class="mt-3"></mat-paginator>
     </mat-card-content>
 </mat-card>

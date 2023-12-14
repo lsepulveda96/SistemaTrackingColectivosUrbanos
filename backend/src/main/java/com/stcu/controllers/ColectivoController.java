@@ -1,6 +1,7 @@
 package com.stcu.controllers;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.stcu.model.Colectivo;
 import com.stcu.services.ColectivoServiceImp;
@@ -21,8 +22,11 @@ public class ColectivoController {
     @Autowired
     ColectivoServiceImp service;
 
+    private static Logger log = Logger.getLogger(ColectivoController.class.getName());
+
     @GetMapping("/colectivos")
     public String findAllColectivos() {
+        log.info("*** findAllColectivos");
         List<Colectivo> list = service.getAllColectivos();
         Response<List<Colectivo>> response = new Response<List<Colectivo>>(false, 200, "Listado de colectivos", list);
         return Mapper.getResponseAsJson(response);
@@ -30,6 +34,7 @@ public class ColectivoController {
 
     @GetMapping("/colectivo/{id}")
     public String findColectivo(@PathVariable long id) {
+        log.info("*** findColectivo: " + id );
         Colectivo col = service.getColectivo(id);
         Response<Colectivo> response;
         if (col != null)
@@ -41,7 +46,7 @@ public class ColectivoController {
 
     @PostMapping("/colectivos")
     public String saveColectivo(@RequestBody Colectivo col) {
-
+        log.info("*** saveColectivo: " + col.getUnidad() );
         Colectivo colectivo = service.saveColectivo(col);
         Response<Colectivo> response;
         if (colectivo != null)
@@ -54,6 +59,7 @@ public class ColectivoController {
 
     @PutMapping("/colectivo/{id}")
     public String updateColectivo(@PathVariable long id, @RequestBody Colectivo col) {
+        log.info("*** updateColectivo: " + id  );
         Colectivo colectivo = service.updateColectivo(id, col);
         Response<Colectivo> response;
         if (colectivo != null)
@@ -65,6 +71,7 @@ public class ColectivoController {
 
     @GetMapping("/colectivo/baja/{id}")
     public String bajaColectivo(@PathVariable long id) {
+        log.info("*** bajaColectivo: " + id);
         boolean stat = service.bajaColectivo(id);
         Response<Boolean> resp = new Response<Boolean>(true, 200,
                 stat ? "Unidad " + id + " de baja" : "No se pudo dar de baja unidad " + id, stat);

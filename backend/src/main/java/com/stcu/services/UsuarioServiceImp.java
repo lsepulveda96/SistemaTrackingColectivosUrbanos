@@ -10,6 +10,7 @@ import com.stcu.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class UsuarioServiceImp implements UsuarioService {
@@ -19,7 +20,7 @@ public class UsuarioServiceImp implements UsuarioService {
 
     @Override
     public List<Usuario> getAllUsuarios() {
-        return this.rep.findAll();
+        return this.rep.findAll( Sort.by(Sort.Direction.DESC,"id") );
     }
 
     @Override

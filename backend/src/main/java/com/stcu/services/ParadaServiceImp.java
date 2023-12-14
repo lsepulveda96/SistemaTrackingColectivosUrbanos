@@ -17,7 +17,7 @@ public class ParadaServiceImp implements ParadaService {
 
     @Override
     public List<Parada> getAllParadas() {
-        List<Parada> paradas = repo.findAll( Sort.by(Sort.Direction.ASC,"codigo"));
+        List<Parada> paradas = repo.findAll( Sort.by(Sort.Direction.DESC,"codigo"));
         return paradas;
     }
 

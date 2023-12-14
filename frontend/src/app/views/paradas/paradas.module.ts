@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     MatIconModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatPaginatorModule
   ]
 })
 export class ParadasModule { }

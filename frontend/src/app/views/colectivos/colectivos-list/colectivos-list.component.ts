@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Colectivo } from 'src/app/data/colectivo';
@@ -10,13 +11,14 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
   templateUrl: './colectivos-list.component.html',
   styleUrls: ['./colectivos-list.component.css']
 })
-export class ColectivosListComponent implements OnInit {
+export class ColectivosListComponent implements OnInit, AfterViewInit {
 
   spin: boolean = false;
   colectivos: Colectivo[] = [];
   colectivosDS: MatTableDataSource<Colectivo> = new MatTableDataSource<Colectivo>([]);
 
   isadmin: boolean = false;
+  @ViewChild('pag') paginator: MatPaginator;
 
   constructor( 
     private serviceColectivo: ColectivoService,
@@ -26,6 +28,10 @@ export class ColectivosListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getColectivos();
+  }
+
+  ngAfterViewInit(): void {
+    this.colectivosDS.paginator = this.paginator;
   }
 
   getColectivos() {

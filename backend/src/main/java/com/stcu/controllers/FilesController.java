@@ -2,6 +2,7 @@ package com.stcu.controllers;
 
 import java.util.stream.Collectors;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +34,11 @@ public class FilesController {
     @Autowired
     FileStorageService storageService;
 
+    private static final Logger log = Logger.getLogger(FilesController.class.getName());
+
     @PostMapping("/upload")
     public ResponseEntity<Response<String>> uploadFile(@RequestParam("file") MultipartFile file) {
+        log.info("*** uploadFile: " + file.getOriginalFilename() );
         Response<String> response;
         try {
             String fn = storageService.save(file);
@@ -50,6 +54,7 @@ public class FilesController {
 
     @GetMapping("/list")
     public ResponseEntity<List<FileInfo>> getListFiles() {
+        log.info("*** getListFiles: " );
         List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
             String filename = path.getFileName().toString();
             String url = MvcUriComponentsBuilder
@@ -62,6 +67,7 @@ public class FilesController {
 
     @GetMapping("/download/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        log.info("*** getFile: " + filename );
         Resource file = storageService.load(filename);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
@@ -71,6 +77,7 @@ public class FilesController {
 
     @DeleteMapping("/delete/{filename:.+}")
     public ResponseEntity<Response> deleteFile(@PathVariable String filename) {
+        log.info("*** deleteFile: " + filename );
         String message = "";
         Response<String> response;
         try {

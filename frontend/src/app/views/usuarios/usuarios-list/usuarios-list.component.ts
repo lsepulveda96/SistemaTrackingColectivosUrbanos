@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,13 +7,14 @@ import { MessageService } from 'src/app/services/message.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { ConfirmComponent } from '../../misc/confirm/confirm.component';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-usuarios-list',
   templateUrl: './usuarios-list.component.html',
   styleUrls: ['./usuarios-list.component.css']
 })
-export class UsuariosListComponent implements OnInit {
+export class UsuariosListComponent implements OnInit, AfterViewInit {
 
   waiting: boolean = false;
   usuarios: Usuario[] = [];
@@ -21,6 +22,8 @@ export class UsuariosListComponent implements OnInit {
 
   isadmin: boolean;
 
+  @ViewChild('pag') paginator: MatPaginator;
+  
   constructor(
     private serviceUsuario: UsuarioService,
     private serviceMsg: MessageService,
@@ -34,6 +37,10 @@ export class UsuariosListComponent implements OnInit {
       this.getUsuarios();
   }
 
+  ngAfterViewInit(): void {
+      this.usuariosDS.paginator = this.paginator;
+  }
+  
   getUsuarios() {
     this.waiting = true;
     this.serviceUsuario.getUsuarios()

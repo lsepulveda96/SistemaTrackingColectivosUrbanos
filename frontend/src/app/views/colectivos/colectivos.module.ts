@@ -20,6 +20,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatSnackBarModule,
     MatDatepickerModule,
     MatTooltipModule,
-    MatSelectModule
+    MatSelectModule,
+    MatPaginatorModule
   ]
 })
 export class ColectivosModule { }

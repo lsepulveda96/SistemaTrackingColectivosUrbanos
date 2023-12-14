@@ -6,6 +6,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.time.Instant;
 
@@ -28,10 +29,12 @@ public class FileStorageServiceImp implements FileStorageService {
 
     private Path fileStoreLocation;
 
+    private static final Logger log = Logger.getLogger(FileStorageServiceImp.class.getName());
+
     @Override
     public void init() {
         try {
-            System.err.println("+++++++++  File storge value: " + path);
+            log.info("*** FileStorage value path: " + path );
             this.fileStoreLocation = Paths.get(path);
             //Files.createDirectories(this.fileStoreLocation);
         } catch (Exception ex) {
@@ -42,6 +45,7 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public String save(MultipartFile file) {
         try {
+            log.info("*** save file : " + file.getOriginalFilename() );
             long currentTimeMillis = System.currentTimeMillis();
             String name_file = currentTimeMillis + "-" + file.getOriginalFilename();
             Path targetLocation = this.fileStoreLocation.resolve(name_file);
@@ -57,8 +61,7 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public Resource load(String filename) {
         try {
-            // Path file = root.resolve(filename);
-            System.err.println("+++++++++ Archivo a descargar : " + filename);
+            log.info("*** load file: " + filename );
             Path file = this.fileStoreLocation.resolve(filename);
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
@@ -74,7 +77,7 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public boolean delete(String filename) {
         try {
-            // Path file = root.resolve(filename);
+            log.info("*** delete file: " + filename );
             Path file = this.fileStoreLocation.resolve(filename);
             return Files.deleteIfExists(file);
         } catch (IOException ex) {

@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatCheckboxModule,
     MatTooltipModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatPaginatorModule
   ]
 })
 export class UsuariosModule { }

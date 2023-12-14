@@ -28,6 +28,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ParadaQrComponent } from './parada-qr/parada-qr.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { QRCodeModule } from 'angularx-qrcode';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import { QRCodeModule } from 'angularx-qrcode';
     MatSelectModule,
     ScrollingModule,
     MatDialogModule,
-    QRCodeModule
+    QRCodeModule,
+    MatPaginatorModule
   ]
 })
 export class LineasModule { }
