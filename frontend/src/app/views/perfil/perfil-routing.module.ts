@@ -3,11 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { PerfilComponent } from './perfil.component';
 import { PerfilEditComponent } from './perfil-edit/perfil-edit.component';
 
-const routes: Routes = [{ 
-  path: '', 
+const routes: Routes = [{
+  path: '',
   component: PerfilComponent,
   children: [
-    { path:'', component: PerfilEditComponent }
+    { path: 'edit/:id', component: PerfilEditComponent }
   ]
 }];
 

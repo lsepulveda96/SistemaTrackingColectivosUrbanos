@@ -60,7 +60,7 @@ export class UsuarioEditComponent implements OnInit {
       .subscribe(result => {
         this.waiting = false;
         if (result.error) {
-          this.serviceMsg.showMessage( result.mensaje, 'ERROR ');
+          this.serviceMsg.showMessage(result.mensaje, 'ERROR ');
           this.router.navigate(['../..'], { relativeTo: this.route });
           return;
         }
@@ -72,45 +72,40 @@ export class UsuarioEditComponent implements OnInit {
         this.direccionIC.setValue(this.usuario.direccion);
         this.telefonoIC.setValue(this.usuario.telefono);
         this.emailIC.setValue(this.usuario.email);
-        const superusr = result.data.roles?.find( r => r == 'ROLE_ADMIN');
+        const superusr = result.data.roles?.find(r => r == 'ROLE_ADMIN');
         this.superusrIC.setValue(superusr);
       })
   }
 
   registrarUsuario() {
     if (this.passwdIC.value != this.passwd2IC.value) {
-      this.serviceMsg.showMessage( 'Las contraseñas no coinciden','ERROR');
+      this.serviceMsg.showMessage('Las contraseñas no coinciden', 'ERROR');
       return;
     }
     this.waiting = true;
-    this.servicioAuth.register( this.usuarioIC.value, this.passwdIC.value, this.superusrIC.value,
+    this.servicioAuth.register(this.usuarioIC.value, this.passwdIC.value, this.superusrIC.value,
       this.apellidoIC.value, this.nombreIC.value, this.emailIC.value,
-      this.dniIC.value, this.direccionIC.value, this.telefonoIC.value )
+      this.dniIC.value, this.direccionIC.value, this.telefonoIC.value)
       .subscribe(result => {
         this.waiting = false;
-        this.serviceMsg.showMessage( result.message, 'OK');
-        this.router.navigate( ['usuarios']);
+        this.serviceMsg.showMessage(result.message, 'OK');
+        this.router.navigate(['usuarios']);
       }, err => {
         this.waiting = false;
-        this.serviceMsg.showMessage( err.error.message, 'ERROR');
+        this.serviceMsg.showMessage(err.error.message, 'ERROR');
       });
   }
 
-  
-
-
   actualizarUsuario() {
     this.waiting = true;
-
-    this.servicioUsuario.updateUsuario(this.usuario.id, this.superusrIC.value, this.apellidoIC.value, 
-      this.nombreIC.value, this.emailIC.value, this.dniIC.value, this.direccionIC.value, this.telefonoIC.value )
+    this.servicioUsuario.updateUsuario(this.usuario.id, this.superusrIC.value, this.apellidoIC.value,
+      this.nombreIC.value, this.emailIC.value, this.dniIC.value, this.direccionIC.value, this.telefonoIC.value)
       .subscribe(result => {
         this.waiting = false;
-        this.serviceMsg.showMessage( result.mensaje, result.error ? 'ERROR':'EXITO')
+        this.serviceMsg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO')
         if (!result.error)
           this.router.navigate(['../..'], { relativeTo: this.route });
       });
   }
-
 
 }

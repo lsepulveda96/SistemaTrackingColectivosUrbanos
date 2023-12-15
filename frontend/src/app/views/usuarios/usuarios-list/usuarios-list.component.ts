@@ -23,7 +23,7 @@ export class UsuariosListComponent implements OnInit, AfterViewInit {
   isadmin: boolean;
 
   @ViewChild('pag') paginator: MatPaginator;
-  
+
   constructor(
     private serviceUsuario: UsuarioService,
     private serviceMsg: MessageService,
@@ -38,15 +38,15 @@ export class UsuariosListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-      this.usuariosDS.paginator = this.paginator;
+    this.usuariosDS.paginator = this.paginator;
   }
-  
+
   getUsuarios() {
     this.waiting = true;
     this.serviceUsuario.getUsuarios()
       .subscribe(result => {
         this.waiting = false;
-        this.usuarios = result.data;
+        this.usuarios = result.data.filter((usr: Usuario) => usr.id != this.tokenService.getUser().id);
         this.usuariosDS.data = this.usuarios;
       });
   }
@@ -76,11 +76,11 @@ export class UsuariosListComponent implements OnInit, AfterViewInit {
       if (response) {
         this.waiting = true;
         this.serviceUsuario.activateUsuario(id).subscribe(result => {
-          console.log("usuario activado: ", result );
+          console.log("usuario activado: ", result);
           this.serviceMsg.showMessage(result.message, 'OK');
           this.getUsuarios();
         }, err => {
-          console.log("ERROR activando usuario : ", err );
+          console.log("ERROR activando usuario : ", err);
           this.serviceMsg.showMessage(err.error.message, 'ERROR');
         }, () => {
           this.waiting = false;

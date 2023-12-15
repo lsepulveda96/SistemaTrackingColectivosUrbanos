@@ -77,6 +77,7 @@ public class UsuarioController {
         usrUpd.setDireccion(usrReq.getDireccion());
         usrUpd.setTelefono(usrReq.getTelefono());
         usrUpd.setEmail(usrReq.getEmail());
+
         Set<Rol> roles = new HashSet<>();
         Rol userRol = rolRepository.findByRol(ERole.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Error: rol no encontrado"));
@@ -120,10 +121,9 @@ public class UsuarioController {
         log.info("*** activateUsuario : " + id);
         boolean stat = this.service.activateUsuario(id);
         if (stat) {
-            log.info("*** Usuario " + id + " activado" );
+            log.info("*** Usuario " + id + " activado");
             return ResponseEntity.ok(new MessageResponse("Usuario activado"));
-        }
-        else {
+        } else {
             log.info("*** No se pudo activar usuario " + id);
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("No se pudo activar usuario"));

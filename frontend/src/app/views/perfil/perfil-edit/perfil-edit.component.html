@@ -1,1 +1,167 @@
-<p>perfil-edit works!</p>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <div layout-align="bottom left">
+                <!-- <mat-icon>supervisor_account</mat-icon> -->
+                <i class="bi bi-person-bounding-box"></i>
+                &nbsp; Perfil usuario
+            </div>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <div class="loading-indicator" *ngIf="waiting">
+        <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+    </div>
+    <mat-card-content>
+        <div class="container">
+            <div class="row">
+                <div class="col-5">
+                    <div class="row my-2 px-3">
+                        <div class="col-12">
+                            <mat-form-field class="input-without-underline" style="width: 100%;">
+                                <mat-label>Nombre de usuario</mat-label>
+                                <input matInput [value]="usuario?.usuario" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row my-2 px-3">
+                        <div class="col-12 d-flex align-items-center">
+                            <mat-icon *ngIf="usuario?.superusuario" style="color: blue;">check_circle_outline</mat-icon>
+                            <mat-icon *ngIf="!usuario?.superusuario" style="color: red;">cancel</mat-icon>
+                            <span class="px-2">Superusuario</span>
+                        </div>
+                    </div>
+                    <div class="row my-2 px-3">
+                        <div class="col mt-4 px-0" *ngIf="!panelCambioPass">
+                            <button mat-stroked-button class="button-border" (click)="modoCambiarPass()">
+                                cambiar contraseña
+                            </button>
+                        </div>
+                        <div class="card mt-4 px-2" *ngIf="panelCambioPass">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    Cambio contraseña
+                                </div>
+                            </div>
+                            <div class="card-body px-2">
+                                <div class="row">
+                                    <div class="col">
+                                        <mat-form-field appearance="standard" style="width: 100%;">
+                                            <mat-label>Contraseña actual</mat-label>
+                                            <input matInput [formControl]="actualPass" autocomplete="off" required
+                                                type="password" />
+                                            <mat-error *ngIf="actualPass.hasError('required')">requerido</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <mat-form-field appearance="standard" style="width: 100%;">
+                                            <mat-label>Nueva contraseña</mat-label>
+                                            <input matInput [formControl]="newPass1" autocomplete="off" required
+                                                type="password" />
+                                            <mat-error *ngIf="newPass1.hasError('required')">requerido</mat-error>
+                                            <mat-error *ngIf="newPass1.hasError('minlength')">
+                                                8 caracteres minimo
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <mat-form-field appearance="standard" style="width: 100%;">
+                                            <mat-label>Repetir nueva contraseña</mat-label>
+                                            <input matInput [formControl]="newPass2" autocomplete="off" required
+                                                type="password" />
+                                            <mat-error *ngIf="newPass2.hasError('required')">requerido</mat-error>
+                                            <mat-error *ngIf="newPass2.hasError('minlength')">
+                                                8 caracteres minimo
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <button mat-stroked-button class="button-border" (click)="cambiarPass()" [disabled]="actualPass.hasError('required') || 
+                                                newPass1.hasError('required') || newPass1.hasError('min') || 
+                                                newPass2.hasError('required') || newPass2.hasError('min')">
+                                        cambiar</button>
+                                    <button mat-stroked-button class="button-border" (click)="modoCambiarPass()">
+                                        cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-7">
+                    <mat-card>
+                        <mat-card-content class="pt-0">
+                            <div class="row">
+                                <div class="col-6">
+                                    <mat-form-field appearance="standard" style="width: 100%;">
+                                        <mat-label>Nombre</mat-label>
+                                        <input matInput [formControl]="nombreIC" autocomplete="off" required />
+                                        <mat-error *ngIf="nombreIC.hasError('required')">requerido</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-6">
+                                    <mat-form-field appearance="standard" style="width: 100%;">
+                                        <mat-label>apellido</mat-label>
+                                        <input matInput [formControl]="apellidoIC" autocomplete="off" required />
+                                        <mat-error *ngIf="apellidoIC.hasError('required')">requerido</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <mat-form-field appearance="standard" style="width: 100%;">
+                                        <mat-label>Email</mat-label>
+                                        <input matInput [formControl]="emailIC" autocomplete="off" />
+                                        <mat-error *ngIf="emailIC.hasError('email')">email incorrecto</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <mat-form-field appearance="standard" style="width: 100%;">
+                                        <mat-label>DNI</mat-label>
+                                        <input matInput [formControl]="dniIC" autocomplete="off" />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <mat-form-field appearance="standard" style="width: 100%;">
+                                        <mat-label>Direccion</mat-label>
+                                        <input matInput [formControl]="direccionIC" autocomplete="off" />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <mat-form-field appearance="standard" style="width: 100%;">
+                                        <mat-label>Telefono</mat-label>
+                                        <input matInput [formControl]="telefonoIC" autocomplete="off" />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="d-flex justify-content-end">
+                <button mat-stroked-button color="primary" (click)="actualizar()" class="button-border"
+                    [disabled]="emailIC.invalid || nombreIC.invalid || apellidoIC.invalid">
+                    Actualizar datos
+                </button>
+                <button mat-stroked-button color="primary" class="button-border" (click)="cerrar()">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+
+    </mat-card-content>
+</mat-card>

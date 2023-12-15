@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 
 @Component({
@@ -13,19 +13,19 @@ export class AppHeaderComponent implements OnInit {
   isLoggedIn: boolean;
   private authListenerSubs: Subscription;
 
-  constructor( 
+  constructor(
     private tokenService: TokenStorageService,
-    private router: Router ) {
+    private router: Router) {
   }
 
   ngOnInit() {
     this.isLoggedIn = !!this.tokenService.getToken();
     this.username = this.tokenService.getUser()?.username;
 
-    this.authListenerSubs = this.tokenService.getAuthStatusListener().subscribe( isauth => {
+    this.authListenerSubs = this.tokenService.getAuthStatusListener().subscribe(isauth => {
       this.isLoggedIn = isauth;
       const usr = this.tokenService.getUser();
-      this.username = usr ? usr.username: null;
+      this.username = usr ? usr.username : null;
     });
   }
 
@@ -43,8 +43,8 @@ export class AppHeaderComponent implements OnInit {
   }
 
   goToPerfil() {
-    console.log("got to perfil");
-    this.router.navigate( ['perfil'])
+    const idusr = this.tokenService.getUser().id;
+    this.router.navigate(['perfil/edit', idusr])
   }
 
 }

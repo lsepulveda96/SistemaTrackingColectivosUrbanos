@@ -20,7 +20,7 @@ public class UsuarioServiceImp implements UsuarioService {
 
     @Override
     public List<Usuario> getAllUsuarios() {
-        return this.rep.findAll( Sort.by(Sort.Direction.DESC,"id") );
+        return this.rep.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
     @Override
@@ -28,15 +28,15 @@ public class UsuarioServiceImp implements UsuarioService {
         return this.rep.findById(id);
     }
 
-    public Optional<Usuario> getUsuario( String usr ) {
-        return this.rep.findByUsuario( usr );
+    public Optional<Usuario> getUsuario(String usr) {
+        return this.rep.findByUsuario(usr);
     }
 
     @Override
     public Usuario saveUsuario(Usuario usuario) {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); // Encripta password
-        usuario.setPasswd( encoder.encode( usuario.getPasswd() ) );
+        usuario.setPasswd(encoder.encode(usuario.getPasswd()));
 
         return this.rep.save(usuario);
     }
@@ -51,19 +51,19 @@ public class UsuarioServiceImp implements UsuarioService {
         usr.setEmail(usuario.getEmail());
         usr.setSuperusuario(usuario.isSuperusuario());
         usr.setTelefono(usuario.getTelefono());
-        usr.setRoles( usuario.getRoles() );
+
+        usr.setRoles(usuario.getRoles());
 
         return this.rep.save(usr);
     }
 
-    
     @Override
-    public boolean validateUsuario( String username, String pwd ) {
+    public boolean validateUsuario(String username, String pwd) {
 
         Usuario usuario = this.rep.findByUsuario(username).get();
         if (usuario != null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            return encoder.matches( pwd, usuario.getPasswd() );
+            return encoder.matches(pwd, usuario.getPasswd());
         }
         return false;
     }
@@ -73,28 +73,28 @@ public class UsuarioServiceImp implements UsuarioService {
         Usuario usuario = this.rep.findById(id);
         if (usuario != null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            if (encoder.matches( pass, usuario.getPasswd() ) )
+            if (encoder.matches(pass, usuario.getPasswd()))
                 return false;
-            usuario.setPasswd( encoder.encode( newpass ));
-            this.rep.save( usuario );
+            usuario.setPasswd(encoder.encode(newpass));
+            this.rep.save(usuario);
         }
         return false;
     }
 
     @Override
-    public boolean deactivateUsuario( long id ) {
+    public boolean deactivateUsuario(long id) {
         Usuario usuario = this.rep.findById(id);
         if (usuario != null) {
             usuario.setEstado("NO_ACTIVO");
-            usuario.setBaja( Calendar.getInstance());
+            usuario.setBaja(Calendar.getInstance());
             this.rep.save(usuario);
             return true;
         }
         return false;
-    }    
+    }
 
-    @Override 
-    public boolean activateUsuario( long id ) {
+    @Override
+    public boolean activateUsuario(long id) {
         Usuario usuario = this.rep.findById(id);
         if (usuario != null) {
             usuario.setEstado("ACTIVO");
@@ -103,5 +103,5 @@ public class UsuarioServiceImp implements UsuarioService {
         }
         return false;
     }
-    
+
 }
