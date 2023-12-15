@@ -42,10 +42,11 @@ public class FilesController {
         Response<String> response;
         try {
             String fn = storageService.save(file);
+            log.info("*** Archivo cargado exitosamente" );
             response = new Response<String>(false, 200, "Archivo cargado exitosamente", fn);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception ex) {
-            System.err.println("++++++++ Error upload file: " + ex.getMessage() );
+            log.warning("*** No se pudo cargar archivo, ex: " + ex.getMessage() );
             response = new Response<String>(true, 300, "No se puedo cargar archivo " + file.getOriginalFilename(),
                     null);
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
@@ -83,18 +84,20 @@ public class FilesController {
         try {
             boolean existed = storageService.delete(filename);
             if (existed) {
+                log.info("*** archivo eliminado: " + filename );
                 message = "Archivo borrado" + filename + " exitosamente";
                 // return ResponseEntity.ok().body( message );
                 response = new Response<String>(false, 200,message, message);
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
+                log.info("*** no se encontro archivo  " + filename );
                 message = "El archivo " + filename + " no se encontro!";
                 // return ResponseEntity.ok().body( message );
                 response = new Response<String>(true, 300, message, message);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
         } catch (Exception ex) {
-            System.err.println("++++++++ Error intentando eliminar archivo " + filename + ": " + ex.getMessage() );
+            log.warning("*** Error intentando eliminar archivo " + filename + ", ex: " + ex.getMessage() );
             message = "No se pudo eliminar el archivo " + filename;
             //message = "Could not delete the file " + filename + ", Error: " + ex.getMessage();
             response = new Response<String>(true, 300, message, message );

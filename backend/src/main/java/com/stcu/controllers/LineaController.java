@@ -1,6 +1,7 @@
 package com.stcu.controllers;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.stcu.controllers.dto.RecorridoDTO;
 import com.stcu.model.Linea;
@@ -23,8 +24,11 @@ public class LineaController {
 
     @Autowired
     LineaServiceImp service;
+    
     @Autowired
     private RecorridoService recService;
+
+    private static final Logger log = Logger.getLogger(LineaController.class.getName());
 
     /**
      * Recupera todas las lineas 
@@ -32,7 +36,9 @@ public class LineaController {
      */
     @GetMapping("/lineas")
     public String findAllLineas() {
+        log.info("*** findAllLineas");
         List<Linea> lineas = service.getAllLineas();
+        log.info("*** lineas length: " + lineas.size() );
         Response<List<Linea>> response = new Response<List<Linea>>( false,200,"Lineas", lineas );
         return Mapper.getResponseAsJson(response);
     }
@@ -44,12 +50,16 @@ public class LineaController {
      */
     @GetMapping("/linea/{id}")
     public String findLinea( @PathVariable long id ){
+        log.info("*** findLinea: " + id );
         Linea linea = service.getLinea( id );
         Response<Linea> response;
-        if (linea != null) 
+        if (linea != null) {
+            log.info("*** Linea recuperada " + linea.getDenominacion() );
             response = new Response<Linea>( false,200,"Linea " + id, linea );
-        else
+        }else{
+            log.info("*** No se encontrol linea " + id );
             response = new Response<Linea>( true,400,"No se encontro linea " + id, null );
+        }
         return Mapper.getResponseAsJson(response);
     }    
 
@@ -60,16 +70,21 @@ public class LineaController {
      */
     @PostMapping("/lineas")
     public String saveLinea( @RequestBody Linea linea ) {
+        log.info("*** saveLinea : " + linea.getDenominacion() );
         Response<Linea> response;
         try {
             Linea nlinea = service.saveLinea(linea);
-            if (nlinea != null)
+            if (nlinea != null) {
+                log.info("*** Nueva linea registrada");
                 response = new Response<Linea>( false,200,"Nueva linea registrada", nlinea );
-            else    
+            }
+            else {    
+                log.info("*** No se pudo registrar nueva linea ");
                 response = new Response<Linea>( true,400,"No se pudo registrar nueva Linea", null );
+            }
         }
         catch( org.hibernate.exception.ConstraintViolationException ex ) {
-            System.err.println( "++++ Error guardando linea: "+ ex );
+            log.warning("*** Error registrando nueva linea , ex: " + ex);
             response = new Response<Linea>( true,400,"Ya existe Linea con misma denominacion", null );
         }
         return Mapper.getResponseAsJson(response);
@@ -83,12 +98,17 @@ public class LineaController {
      */
     @PutMapping("/linea/{id}")
     public String updateLinea( @PathVariable long id, @RequestBody Linea linea ) {
+        log.info("*** updateLinea : " + linea.getDenominacion() );
         Linea ulinea = service.updateLinea(id, linea);
         Response<Linea> response;
-        if (ulinea != null)
+        if (ulinea != null) {
+            log.info("*** Linea actualizada");
             response = new Response<Linea>( false, 200, "Linea " + ulinea.getDenominacion() + " actualizada", ulinea );
-        else
+        }
+        else {
+            log.info("*** No se pudo actualizar Linea");
             response = new Response<Linea>( true, 400, "No se pudo actualizar Linea " + id, null );
+        }
         return Mapper.getResponseAsJson(response);
     }
 
@@ -146,14 +166,18 @@ public class LineaController {
 
      @GetMapping( value="/linea/recorrido/{idrecorrido}")
      public String getRecorrido( @PathVariable long idrecorrido ) {
+        log.info("*** getRecorrido : " + idrecorrido );
          Recorrido recorrido = recService.getRecorrido(idrecorrido);
          Response<RecorridoDTO> resp;
 
-        if (recorrido != null)
+        if (recorrido != null) {
+            log.info("*** Recorridg15o recuperado " + recorrido.getDenominacion() );
             resp = new Response<RecorridoDTO>( false, 200,"Recorrido " + idrecorrido, new RecorridoDTO(recorrido));
-        else    
+        }
+        else {
+            log.info("*** No se encontro recorrido " + idrecorrido );
             resp = new Response<RecorridoDTO>( true, 300, "No se encontro recorrido " + idrecorrido, null );
-        
+        }
         return Mapper.getResponseAsJson(resp);
      }
      

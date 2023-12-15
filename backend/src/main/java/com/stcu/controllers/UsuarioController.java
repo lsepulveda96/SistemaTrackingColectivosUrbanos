@@ -3,6 +3,7 @@ package com.stcu.controllers;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.validation.Valid;
 
@@ -35,10 +36,14 @@ public class UsuarioController {
     @Autowired
     RolRepository rolRepository;
 
+    private static final Logger log = Logger.getLogger(UsuarioController.class.getName());
+
     @GetMapping("/usuarios")
     public String getUsuarios() {
+        log.info("*** getUsuarios");
         List<Usuario> usrs = service.getAllUsuarios();
 
+        log.info("*** Lista de usuarios length " + usrs.size());
         Response<List<UsuarioDTO>> response = new Response<List<UsuarioDTO>>(false, 200, "Lista de usuarios",
                 UsuarioDTO.toListUsuarioDTO(usrs));
 
@@ -47,21 +52,24 @@ public class UsuarioController {
 
     @GetMapping("/usuario/{id}")
     public String getUsuario(@PathVariable long id) {
+        log.info("*** getUsuario : " + id);
         Usuario usr = service.getUsuario(id);
         Response<UsuarioDTO> response;
 
         if (usr != null) {
+            log.info("*** Usuario " + id + " recuperado: " + usr.getNombre());
             usr.getRoles();
             response = new Response<UsuarioDTO>(false, 200, "Usuario " + id, new UsuarioDTO(usr));
-        } else
+        } else {
+            log.info("*** No se pudo recuperar usuario " + id);
             response = new Response<UsuarioDTO>(true, 400, "No se pudo encontrar usuario " + id, null);
-
+        }
         return Mapper.getResponseAsJson(response);
     }
 
-
     @PutMapping("/usuario/{id}")
     public String updateUsuario(@PathVariable long id, @Valid @RequestBody UsuarioRequest usrReq) {
+        log.info("*** updateUsuario : " + id);
         Usuario usrUpd = new Usuario();
         usrUpd.setApellido(usrReq.getApellido());
         usrUpd.setNombre(usrReq.getNombre());
@@ -83,31 +91,42 @@ public class UsuarioController {
 
         Response<UsuarioDTO> response;
 
-        if (usuario != null)
+        if (usuario != null) {
+            log.info("*** Usuario " + id + " actualizado");
             response = new Response<UsuarioDTO>(false, 200, "Usuario " + id + " actualizado", new UsuarioDTO(usuario));
-        else
+        } else {
+            log.info("*** No se pudo actualizar Usuario " + id);
             response = new Response<UsuarioDTO>(true, 400, "No se pudo actualizar usuario " + id, null);
-
+        }
         return Mapper.getResponseAsJson(response);
     }
 
     @DeleteMapping("/usuario/{id}")
-    public ResponseEntity<?> deactivateUsuario( @PathVariable long id ) {
+    public ResponseEntity<?> deactivateUsuario(@PathVariable long id) {
+        log.info("*** deactivateUsuario : " + id);
         boolean stat = this.service.deactivateUsuario(id);
-        if (stat)
-            return ResponseEntity.ok( new MessageResponse("Usuario desactivado"));
-        else
-        return ResponseEntity.badRequest()
-                             .body(new MessageResponse("No se pudo desactivar usuario"));
+        if (stat) {
+            log.info("*** Usuario " + id + " desactivado");
+            return ResponseEntity.ok(new MessageResponse("Usuario desactivado"));
+        } else {
+            log.info("*** No se pudo desactivar usuario " + id);
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("No se pudo desactivar usuario"));
+        }
     }
 
     @GetMapping("/usuario/activate/{id}")
-    public ResponseEntity<?> activateUsuario( @PathVariable long id ){
+    public ResponseEntity<?> activateUsuario(@PathVariable long id) {
+        log.info("*** activateUsuario : " + id);
         boolean stat = this.service.activateUsuario(id);
-        if (stat)
-            return ResponseEntity.ok( new MessageResponse("Usuario activado"));
-        else
-        return ResponseEntity.badRequest()
-                             .body(new MessageResponse("No se pudo activar usuario"));
+        if (stat) {
+            log.info("*** Usuario " + id + " activado" );
+            return ResponseEntity.ok(new MessageResponse("Usuario activado"));
+        }
+        else {
+            log.info("*** No se pudo activar usuario " + id);
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("No se pudo activar usuario"));
+        }
     }
 }

@@ -34,10 +34,11 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public void init() {
         try {
-            log.info("*** FileStorage value path: " + path );
+            log.info("*** Upload path: " + path );
             this.fileStoreLocation = Paths.get(path);
             //Files.createDirectories(this.fileStoreLocation);
         } catch (Exception ex) {
+            log.warning("*** No se pudo iniciar path " + path + ", ex: " + ex.getMessage()  );
             throw new RuntimeException("Could not initialize folder " + path + "  to upload!");
         }
     }
@@ -52,6 +53,7 @@ public class FileStorageServiceImp implements FileStorageService {
             Files.copy(file.getInputStream(), targetLocation);
             return name_file;
         } catch (Exception ex) {
+            log.warning("*** No se pudo guardar archivo, ex: " + ex.getMessage() );
             if (ex instanceof FileAlreadyExistsException)
                 throw new RuntimeException("A file of that name already exists.");
             throw new RuntimeException(ex.getMessage());
@@ -67,9 +69,11 @@ public class FileStorageServiceImp implements FileStorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
+                log.warning("*** No se pudo cargar archivo");
                 throw new RuntimeException("Could not read the file!");
             }
         } catch (MalformedURLException ex) {
+            log.warning("*** No se pudo cargar archivo, ex: " + ex.getMessage() );
             throw new RuntimeException("Error: " + ex.getMessage());
         }
     }
@@ -81,6 +85,7 @@ public class FileStorageServiceImp implements FileStorageService {
             Path file = this.fileStoreLocation.resolve(filename);
             return Files.deleteIfExists(file);
         } catch (IOException ex) {
+            log.warning("*** No se pudo eliminar archivo, ex: " + ex.getMessage() );
             throw new RuntimeException("Error: " + ex.getMessage());
         }
     }

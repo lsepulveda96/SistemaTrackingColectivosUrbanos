@@ -56,7 +56,7 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    static Logger log = Logger.getLogger(AuthController.class.getName());
+    private static final Logger log = Logger.getLogger(AuthController.class.getName());
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser( @Valid @RequestBody LoginRequest loginRequest ) {
@@ -71,7 +71,7 @@ public class AuthController {
             .map( item -> item.getAuthority())
             .collect( Collectors.toList() );
         
-        log.info("*** Authentication user id: " + userDetails.getId() );
+        log.info("*** Login user id: " + userDetails.getId() );
         return ResponseEntity.ok( 
             new JwtResponse( jwt, 
                             userDetails.getId(), 
@@ -118,7 +118,7 @@ public class AuthController {
         }
         usuario.setRoles(roles);
         usuarioRepository.save(usuario);
-        log.info("*** Authentication usuario registrado: " + usuario.getNombre() );
+        log.info("*** Usuario registrado: " + usuario.getNombre() );
         return ResponseEntity.ok( new MessageResponse("Usuario registrado exitosamente"));
     }
     
