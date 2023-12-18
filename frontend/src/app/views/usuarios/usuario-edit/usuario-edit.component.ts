@@ -72,8 +72,8 @@ export class UsuarioEditComponent implements OnInit {
         this.direccionIC.setValue(this.usuario.direccion);
         this.telefonoIC.setValue(this.usuario.telefono);
         this.emailIC.setValue(this.usuario.email);
-        const superusr = result.data.roles?.find(r => r == 'ROLE_ADMIN');
-        this.superusrIC.setValue(superusr);
+        const superusr = result.data.roles?.find((r: any) => r == 'ROLE_ADMIN');
+        this.superusrIC.setValue(superusr ? true : false);
       })
   }
 

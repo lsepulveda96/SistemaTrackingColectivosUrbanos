@@ -26,8 +26,8 @@
                     </div>
                     <div class="row my-2 px-3">
                         <div class="col-12 d-flex align-items-center">
-                            <mat-icon *ngIf="usuario?.superusuario" style="color: blue;">check_circle_outline</mat-icon>
-                            <mat-icon *ngIf="!usuario?.superusuario" style="color: red;">cancel</mat-icon>
+                            <mat-icon *ngIf="super" style="color: blue;">check_circle_outline</mat-icon>
+                            <mat-icon *ngIf="!super" style="color: red;">cancel</mat-icon>
                             <span class="px-2">Superusuario</span>
                         </div>
                     </div>
@@ -84,8 +84,8 @@
                             <div class="card-footer bg-transparent">
                                 <div class="d-flex align-items-center justify-content-end">
                                     <button mat-stroked-button class="button-border" (click)="cambiarPass()" [disabled]="actualPass.hasError('required') || 
-                                                newPass1.hasError('required') || newPass1.hasError('min') || 
-                                                newPass2.hasError('required') || newPass2.hasError('min')">
+                                                newPass1.hasError('required') || newPass1.hasError('minlength') || 
+                                                newPass2.hasError('required') || newPass2.hasError('minlength')">
                                         cambiar</button>
                                     <button mat-stroked-button class="button-border" (click)="modoCambiarPass()">
                                         cancelar

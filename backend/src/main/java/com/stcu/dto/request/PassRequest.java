@@ -7,11 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginRequest {
+public class PassRequest {
 
     @NotBlank
-    private String username;
+    private String actualPass;
     @NotBlank
-    private String password;
-
+    private String newPass;
 }

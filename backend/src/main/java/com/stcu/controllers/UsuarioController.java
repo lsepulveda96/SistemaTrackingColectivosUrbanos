@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import com.stcu.controllers.dto.UsuarioDTO;
 import com.stcu.dto.request.UsuarioRequest;
+import com.stcu.dto.request.PassRequest;
 import com.stcu.dto.response.MessageResponse;
 import com.stcu.model.ERole;
 import com.stcu.model.Rol;
@@ -58,7 +59,6 @@ public class UsuarioController {
 
         if (usr != null) {
             log.info("*** Usuario " + id + " recuperado: " + usr.getNombre());
-            usr.getRoles();
             response = new Response<UsuarioDTO>(false, 200, "Usuario " + id, new UsuarioDTO(usr));
         } else {
             log.info("*** No se pudo recuperar usuario " + id);
@@ -128,5 +128,21 @@ public class UsuarioController {
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("No se pudo activar usuario"));
         }
+    }
+
+    @PutMapping("/usuario/changepass/{id}")
+    public ResponseEntity<?> changePasswd(@PathVariable long id,
+            @Valid @RequestBody PassRequest pass) {
+        log.info("*** Cambiar password usuario " + id);
+        boolean status = this.service.changePass(id, pass.getActualPass(), pass.getNewPass());
+        if (status) {
+            log.info("*** Password actualizado Usuario " + id);
+            return ResponseEntity.ok(new MessageResponse("passwod cambiado"));
+        } else {
+            log.info("*** No se pudo actualizar password usuario " + id);
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("No se pudo cambiar password usuario"));
+        }
+
     }
 }
