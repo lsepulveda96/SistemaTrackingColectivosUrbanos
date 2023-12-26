@@ -1,4 +1,4 @@
-package com.stcu.controllers.dto;
+package com.stcu.dto.response;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class RecorridoDTO implements Serializable {
         List<ParadaRecorrido> paradasRecorrido = new ArrayList<ParadaRecorrido>();
         for (ParadaRecorridoDTO prd : paradas) {
             ParadaRecorrido pr = new ParadaRecorrido();
-            pr.setParada(prd.getParada() != null ? prd.getParada().ToParada(): null);
+            pr.setParada(prd.getParada() != null ? prd.getParada().ToParada() : null);
             pr.setId(prd.getId());
             pr.setRecorrido(rec);
             pr.setOrden(prd.getOrden());

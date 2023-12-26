@@ -35,7 +35,6 @@ import com.stcu.repository.UsuarioRepository;
 import com.stcu.security.jwt.JwtUtils;
 import com.stcu.security.services.UserDetailsImpl;
 
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -58,28 +57,39 @@ public class AuthController {
 
     private static final Logger log = Logger.getLogger(AuthController.class.getName());
 
+    /**
+     * Verifica usuario y contraseña,
+     * 
+     * @param loginRequest usuario y contraseña
+     * @return token si existoso
+     */
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser( @Valid @RequestBody LoginRequest loginRequest ) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword() )
-        );
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl)authentication.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-            .map( item -> item.getAuthority())
-            .collect( Collectors.toList() );
-        
-        log.info("*** Login user id: " + userDetails.getId() );
-        return ResponseEntity.ok( 
-            new JwtResponse( jwt, 
-                            userDetails.getId(), 
-                            userDetails.getUsername(), 
-                            userDetails.getEmail(), 
-                            roles ));
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        log.info("*** Login user id: " + userDetails.getId());
+        return ResponseEntity.ok(
+                new JwtResponse(jwt,
+                        userDetails.getId(),
+                        userDetails.getUsername(),
+                        userDetails.getEmail(),
+                        roles));
     }
 
+    /**
+     * Registra nuevo usuario y asigna roles
+     * 
+     * @param signupRequest: datos de usuario a registrar
+     * @return
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
         if (usuarioRepository.existsByUsuario(signupRequest.getUsername())) {
@@ -95,7 +105,7 @@ public class AuthController {
         usuario.setDni(signupRequest.getDni());
         usuario.setDireccion(signupRequest.getDireccion());
         usuario.setTelefono(signupRequest.getTelefono());
-        usuario.setAlta( Calendar.getInstance() );
+        usuario.setAlta(Calendar.getInstance());
 
         Set<String> strRoles = signupRequest.getRoles();
         Set<Rol> roles = new HashSet<>();
@@ -111,15 +121,15 @@ public class AuthController {
                     roles.add(adminRol);
                 } else {
                     Rol userRol = rolRepository.findByRol(ERole.ROLE_USER)
-                            .orElseThrow( () -> new RuntimeException("Error: rol no encontrado"));
+                            .orElseThrow(() -> new RuntimeException("Error: rol no encontrado"));
                     roles.add(userRol);
                 }
             });
         }
         usuario.setRoles(roles);
         usuarioRepository.save(usuario);
-        log.info("*** Usuario registrado: " + usuario.getNombre() );
-        return ResponseEntity.ok( new MessageResponse("Usuario registrado exitosamente"));
+        log.info("*** Usuario registrado: " + usuario.getNombre());
+        return ResponseEntity.ok(new MessageResponse("Usuario registrado exitosamente"));
     }
-    
+
 }

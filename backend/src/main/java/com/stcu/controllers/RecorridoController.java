@@ -3,8 +3,8 @@ package com.stcu.controllers;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.stcu.controllers.dto.ParadaRecorridoDTO;
-import com.stcu.controllers.dto.RecorridoDTO;
+import com.stcu.dto.response.ParadaRecorridoDTO;
+import com.stcu.dto.response.RecorridoDTO;
 import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
 import com.stcu.services.RecorridoServiceImp;
@@ -28,6 +28,12 @@ public class RecorridoController {
 
     private static final Logger log = Logger.getLogger(RecorridoController.class.getName());
 
+    /**
+     * Busca y encuentra todos los recorridos registrado de un linea.
+     * 
+     * @param idlinea
+     * @return
+     */
     @GetMapping("/recorridos/{idlinea}")
     public String findAllRecorridos(@PathVariable long idlinea) {
         log.info("*** findAllRecorridos, linea : " + idlinea);
@@ -38,6 +44,12 @@ public class RecorridoController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Busca y retorna los recorridos activos de una linea.
+     * 
+     * @param idlinea
+     * @return
+     */
     @GetMapping("/recorridos/activo/{idlinea}")
     public String findRecorridosActivos(@PathVariable long idlinea) {
         log.info("*** findRecorridosActivos, linea : " + idlinea);
@@ -49,6 +61,12 @@ public class RecorridoController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Busca y retorna los recorridos no activos para una linea.
+     * 
+     * @param idlinea
+     * @return
+     */
     @GetMapping("/recorridos/noactivo/{idlinea}")
     public String findRecorridosNoActivos(@PathVariable long idlinea) {
         log.info("*** findRecorridosNoActivos, linea : " + idlinea);
@@ -60,6 +78,12 @@ public class RecorridoController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Busca y retorna la lista de paradas para un recorrido.
+     * 
+     * @param idrecorrido
+     * @return
+     */
     @GetMapping("/recorrido/paradas/{idrecorrido}")
     public String findParadasRecorrido(@PathVariable long idrecorrido) {
         log.info("*** findParadasRecorrido, recorrido : " + idrecorrido);
@@ -78,6 +102,12 @@ public class RecorridoController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Busca y retorn un recorrido por su id.
+     * 
+     * @param id
+     * @return
+     */
     @GetMapping("/recorrido/{id}")
     public String findRecorrido(@PathVariable long id) {
         log.info("*** findRecorrido : " + id);
@@ -93,6 +123,12 @@ public class RecorridoController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Registra un nuevo recoorido.
+     * 
+     * @param drec
+     * @return
+     */
     @PostMapping("/recorridos")
     public String saveRecorrido(@RequestBody RecorridoDTO drec) {
         log.info("*** saveRecorrido : " + drec.getDenominacion() + ", linea: " + drec.getLinea().getDenominacion());
@@ -116,6 +152,13 @@ public class RecorridoController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Actualiza un recorrido.
+     * 
+     * @param idrec
+     * @param drec
+     * @return
+     */
     @PutMapping("/recorrido/{idrec}")
     public String updateRecorrido(@PathVariable long idrec, @RequestBody RecorridoDTO drec) {
         log.info("*** updateRecorrido : " + idrec);
@@ -142,6 +185,12 @@ public class RecorridoController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Desactiva un recorrido activo.
+     * 
+     * @param idrec
+     * @return
+     */
     @DeleteMapping("/recorrido/{idrec}")
     public String deactivateRecorrido(@PathVariable long idrec) {
         log.info("*** deactivateRecorrido : " + idrec);
@@ -151,8 +200,7 @@ public class RecorridoController {
             log.info("*** Recorrido " + idrec + " desactivado");
             response = new Response<RecorridoDTO>(false, 200, "Recorrido " + idrec + " desactivado ",
                     new RecorridoDTO(rec));
-        }
-        else {
+        } else {
             log.info("*** No se pudo desactivar Recorrido " + idrec);
             response = new Response<RecorridoDTO>(true, 400, "No se pudo desctivar recorrido", null);
         }

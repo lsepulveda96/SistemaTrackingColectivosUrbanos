@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import javax.validation.Valid;
 
-import com.stcu.controllers.dto.UsuarioDTO;
+import com.stcu.dto.response.UsuarioDTO;
 import com.stcu.dto.request.UsuarioRequest;
 import com.stcu.dto.request.PassRequest;
 import com.stcu.dto.response.MessageResponse;
@@ -39,6 +39,11 @@ public class UsuarioController {
 
     private static final Logger log = Logger.getLogger(UsuarioController.class.getName());
 
+    /**
+     * Busca y retorna la lista de usuarios registrados.
+     * 
+     * @return
+     */
     @GetMapping("/usuarios")
     public String getUsuarios() {
         log.info("*** getUsuarios");
@@ -51,6 +56,12 @@ public class UsuarioController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Busca y retorna un usuario por su id.
+     * 
+     * @param id
+     * @return
+     */
     @GetMapping("/usuario/{id}")
     public String getUsuario(@PathVariable long id) {
         log.info("*** getUsuario : " + id);
@@ -67,6 +78,13 @@ public class UsuarioController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Actualiza los datos de informacion de un usuario, a partir de un id.
+     * 
+     * @param id
+     * @param usrReq
+     * @return
+     */
     @PutMapping("/usuario/{id}")
     public String updateUsuario(@PathVariable long id, @Valid @RequestBody UsuarioRequest usrReq) {
         log.info("*** updateUsuario : " + id);
@@ -102,6 +120,12 @@ public class UsuarioController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Desactiva un usuario activo.
+     * 
+     * @param id
+     * @return
+     */
     @DeleteMapping("/usuario/{id}")
     public ResponseEntity<?> deactivateUsuario(@PathVariable long id) {
         log.info("*** deactivateUsuario : " + id);
@@ -116,6 +140,12 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Activa un usuario desactivado.
+     * 
+     * @param id
+     * @return
+     */
     @GetMapping("/usuario/activate/{id}")
     public ResponseEntity<?> activateUsuario(@PathVariable long id) {
         log.info("*** activateUsuario : " + id);
@@ -130,19 +160,30 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Realiza el cambio de contraseña para un usuario.
+     * 
+     * @param id
+     * @param pass
+     * @return
+     */
     @PutMapping("/usuario/changepass/{id}")
     public ResponseEntity<?> changePasswd(@PathVariable long id,
             @Valid @RequestBody PassRequest pass) {
         log.info("*** Cambiar password usuario " + id);
-        boolean status = this.service.changePass(id, pass.getActualPass(), pass.getNewPass());
-        if (status) {
-            log.info("*** Password actualizado Usuario " + id);
-            return ResponseEntity.ok(new MessageResponse("passwod cambiado"));
-        } else {
-            log.info("*** No se pudo actualizar password usuario " + id);
+        int status = this.service.changePass(id, pass.getActualPass(), pass.getNewPass());
+        if (status == -1) {
+            log.info("*** No se pudo actualizar password usuario " + id + ", no se encontro usuario");
             return ResponseEntity.badRequest()
-                    .body(new MessageResponse("No se pudo cambiar password usuario"));
+                    .body(new MessageResponse(
+                            "Falló al intentar cambiar contraseña: usuario " + id + " no encontrado"));
+        } else if (status == -2) {
+            log.info("*** No se pudo actualizar password usuario " + id + ", password invalida");
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Falló al intentar cambiar contraseña: contraseña incorrecta"));
+        } else { // status ==1
+            log.info("*** Password usuario " + id + " actualizado correctamente");
+            return ResponseEntity.ok(new MessageResponse("password usuario " + id + " actualizado correctamente"));
         }
-
     }
 }

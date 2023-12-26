@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 
+import java.util.logging.Logger;
+
 @Service
 public class UsuarioServiceImp implements UsuarioService {
 
@@ -68,17 +70,28 @@ public class UsuarioServiceImp implements UsuarioService {
         return false;
     }
 
+    /**
+     * Chanbia la password para un usuario con id.
+     * 
+     * @param id      identificador de usuario
+     * @param pass    password actual
+     * @param newpass nueva password a actualizar
+     * @return codido de respuesta: -1 si no se encontro usuario, -2 si el password
+     *         actual es incorrecto, 1 si se actualizo correctamente.
+     */
     @Override
-    public boolean changePass(long id, String pass, String newpass) {
+    public int changePass(long id, String pass, String newpass) {
         Usuario usuario = this.rep.findById(id);
         if (usuario != null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            if (encoder.matches(pass, usuario.getPasswd()))
-                return false;
-            usuario.setPasswd(encoder.encode(newpass));
-            this.rep.save(usuario);
+            if (encoder.matches(pass, usuario.getPasswd())) {
+                usuario.setPasswd(encoder.encode(newpass));
+                this.rep.save(usuario);
+                return 1;
+            } else
+                return -2;
         }
-        return false;
+        return -1;
     }
 
     @Override

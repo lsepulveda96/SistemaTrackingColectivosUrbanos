@@ -1,4 +1,4 @@
-package com.stcu.controllers.dto;
+package com.stcu.dto.response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +10,14 @@ import com.stcu.model.Usuario;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class UsuarioDTO {
-    
+
     private long id;
 
     private String usuario;
-    
+
     private String nombre;
 
     private String apellido;
@@ -35,9 +36,10 @@ public class UsuarioDTO {
 
     private List<ERole> roles;
 
-    public UsuarioDTO() {}  
-    
-    public UsuarioDTO( Usuario usr ) {
+    public UsuarioDTO() {
+    }
+
+    public UsuarioDTO(Usuario usr) {
         id = usr.getId();
         usuario = usr.getUsuario();
         nombre = usr.getNombre();
@@ -48,29 +50,28 @@ public class UsuarioDTO {
         email = usr.getEmail();
         superusuario = usr.isSuperusuario();
         estado = usr.getEstado();
-        roles = usr.getRoles().stream().map( item -> item.getRol() ).collect( Collectors.toList() );
+        roles = usr.getRoles().stream().map(item -> item.getRol()).collect(Collectors.toList());
     }
 
-    
-    public static List<UsuarioDTO> toListUsuarioDTO( List<Usuario> listUsuarios ) {
+    public static List<UsuarioDTO> toListUsuarioDTO(List<Usuario> listUsuarios) {
         List<UsuarioDTO> list = new ArrayList<UsuarioDTO>();
-        listUsuarios.forEach( usr -> {
-            list.add( toDTO( usr ) );
+        listUsuarios.forEach(usr -> {
+            list.add(toDTO(usr));
         });
         return list;
     }
 
-    private static UsuarioDTO toDTO( Usuario usr ) {
+    private static UsuarioDTO toDTO(Usuario usr) {
         UsuarioDTO usrDto = new UsuarioDTO();
-        usrDto.setId( usr.getId() );
-        usrDto.setUsuario( usr.getUsuario() );
-        usrDto.setNombre(usr.getNombre() );
-        usrDto.setApellido( usr.getApellido() );
-        usrDto.setDni( usr.getDni() );
-        usrDto.setDireccion( usr.getDireccion() );
-        usrDto.setTelefono(usr.getTelefono() );
+        usrDto.setId(usr.getId());
+        usrDto.setUsuario(usr.getUsuario());
+        usrDto.setNombre(usr.getNombre());
+        usrDto.setApellido(usr.getApellido());
+        usrDto.setDni(usr.getDni());
+        usrDto.setDireccion(usr.getDireccion());
+        usrDto.setTelefono(usr.getTelefono());
         usrDto.setEmail(usr.getEmail());
-        usrDto.setSuperusuario( usr.isSuperusuario() );
+        usrDto.setSuperusuario(usr.isSuperusuario());
         usrDto.setEstado(usr.getEstado());
 
         return usrDto;
@@ -82,5 +83,5 @@ public class UsuarioDTO {
                 + ", estado=" + estado + ", id=" + id + ", nombre=" + nombre + ", superusuario=" + superusuario
                 + ", telefono=" + telefono + ", usuario=" + usuario + "]";
     }
-    
+
 }

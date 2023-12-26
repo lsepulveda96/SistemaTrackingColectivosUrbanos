@@ -8,17 +8,17 @@ public interface UsuarioService {
 
     public List<Usuario> getAllUsuarios();
 
-    public Usuario getUsuario( long id );
+    public Usuario getUsuario(long id);
 
-    public Usuario saveUsuario( Usuario usuario );
+    public Usuario saveUsuario(Usuario usuario);
 
-    public Usuario updateUsuario( long id, Usuario usuario );
+    public Usuario updateUsuario(long id, Usuario usuario);
 
-    public boolean validateUsuario( String username, String pwd );
+    public boolean validateUsuario(String username, String pwd);
 
-    public boolean changePass( long id, String pass, String newpass );
+    public int changePass(long id, String pass, String newpass);
 
-    public boolean deactivateUsuario( long id );
-    
-    public boolean activateUsuario( long id );
+    public boolean deactivateUsuario(long id);
+
+    public boolean activateUsuario(long id);
 }

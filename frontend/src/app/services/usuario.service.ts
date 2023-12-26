@@ -39,10 +39,9 @@ export class UsuarioService {
   }
 
   changePasswd(id: number, actual: string, nueva: string): Observable<any> {
-    console.log("change pass service: actual: ", actual, ", nueva: ", nueva);
     const httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) }
     return this.http.put(HTTPCONFIG.url + API + '/usuario/changepass/' + id,
-      { actualpass: actual, newpass: nueva }, httpOptions
+      { actualPass: actual, newPass: nueva }, httpOptions
     );
   }
 }

@@ -87,10 +87,13 @@ export class PerfilEditComponent implements OnInit {
     this.serviceUsuario.changePasswd(this.usuario.id, this.actualPass.value, this.newPass1.value)
       .subscribe(
         result => {
-          console.log("result; ", result);
+          this.waiting = false
+          this.serviceMsg.showMessage(result.message, 'OK');
+          this.panelCambioPass = false;
         },
         err => {
-          console.log("error: ", err);
+          this.waiting = false;
+          this.serviceMsg.showMessage(err.error.message, 'ERROR');
         });
   }
 

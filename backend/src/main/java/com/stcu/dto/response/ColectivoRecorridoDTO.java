@@ -1,4 +1,4 @@
-package com.stcu.controllers.dto;
+package com.stcu.dto.response;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.stcu.controllers.dto.ColectivoRecorridoDTO;
+import com.stcu.dto.response.ColectivoRecorridoDTO;
 import com.stcu.model.ColectivoRecorrido;
 import com.stcu.services.MonitorService;
 
@@ -22,6 +22,11 @@ public class MonitorController {
 
     private static final Logger log = Logger.getLogger(MonitorController.class.getName());
 
+    /**
+     * Busca la lista de colectivos en trasito en el momento.
+     * 
+     * @return
+     */
     @GetMapping("/transito/unidades")
     public String findColectivosTransito() {
         log.info("*** findColectivosTransito ");
@@ -32,6 +37,12 @@ public class MonitorController {
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Busca y recupera un colectivo en transito, a partir de su id.
+     * 
+     * @param id
+     * @return
+     */
     @GetMapping("/transito/unidad/{id}")
     public String findColectivoRecorridoTransito(@PathVariable long id) {
         log.info("*** findColectivoRecorridoTransito");
@@ -39,19 +50,24 @@ public class MonitorController {
 
         Response<ColectivoRecorridoDTO> response;
         if (colRec != null) {
-            log.info("*** Colectivo en transito: " + colRec.getColectivo().getUnidad() );
+            log.info("*** Colectivo en transito: " + colRec.getColectivo().getUnidad());
             response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo recorrido",
                     new ColectivoRecorridoDTO(colRec));
-        }
-        else {
-            log.info("*** No se encontro colectivo en transito " + id );
+        } else {
+            log.info("*** No se encontro colectivo en transito " + id);
             response = new Response<ColectivoRecorridoDTO>(true, 400, "No se encontro colectivo recorrido", null);
         }
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Busca y retorna la ultima ubicacion registrada de un colectivo en transito.
+     * 
+     * @param id
+     * @return
+     */
     @GetMapping("/transito/ubicacion/{id}")
-    public String findUltimaUbicacionTransito( @PathVariable long id ) {
+    public String findUltimaUbicacionTransito(@PathVariable long id) {
         log.info("*** findUltimaUbicacionTransito");
         return "";
     }
