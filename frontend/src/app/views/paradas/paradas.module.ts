@@ -38,7 +38,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatIconModule,
     MatInputModule,
     MatTooltipModule,
-    MatPaginatorModule
+    MatPaginatorModule,
   ]
 })
 export class ParadasModule { }

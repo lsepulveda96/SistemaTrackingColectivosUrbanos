@@ -34,7 +34,7 @@ import { AuthInterceptor } from './helpers/auth.interceptor';
     DemoMaterialModule,
     HttpClientModule,
     SharedModule,
-    RouterModule.forRoot(AppRoutes, { useHash:true })
+    RouterModule.forRoot(AppRoutes, { useHash: true })
   ],
   providers: [
     {
@@ -49,4 +49,4 @@ import { AuthInterceptor } from './helpers/auth.interceptor';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

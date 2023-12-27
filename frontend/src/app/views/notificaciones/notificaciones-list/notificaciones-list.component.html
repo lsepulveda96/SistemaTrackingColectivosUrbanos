@@ -30,7 +30,8 @@
             <ng-container matColumnDef="linea_red">
                 <th mat-header-cell *matHeaderCellDef>Linea recorrido</th>
                 <td mat-cell *matCellDef="let not">
-                    {{ not.colectivoRecorrido.Recorrido.Linea.denominacion +' - ' + not.colectivoRecorrido.Recorrido.denominacion }}
+                    {{ not.colectivoRecorrido.Recorrido.Linea.denominacion +' - ' +
+                    not.colectivoRecorrido.Recorrido.denominacion }}
                 </td>
             </ng-container>
             <ng-container matColumnDef="acciones">

@@ -1,11 +1,13 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-notificaciones-list',
   templateUrl: './notificaciones-list.component.html',
-  styleUrls: ['./notificaciones-list.component.css']
+  styleUrls: ['./notificaciones-list.component.css'],
 })
 export class NotificacionesListComponent implements OnInit, AfterViewInit {
 
@@ -24,13 +26,13 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-      this.notificacionesDS.paginator = this.paginator;
+    this.notificacionesDS.paginator = this.paginator;
   }
 
   getNotificaciones() {
     const data = [
       {
-        fecha: '2023-11-31 15:35:00', descripcion: 'sin mivimiento', tipo: 'parada',
+        fecha: '2023-11-29 15:35:00', descripcion: 'sin mivimiento', tipo: 'parada',
         colectivoRecorrido: { Colectivo: { unidad: '10' }, Recorrido: { denominacion: 'IDA', Linea: { denominacion: 'LINEA 2' } } },
       },
       {
