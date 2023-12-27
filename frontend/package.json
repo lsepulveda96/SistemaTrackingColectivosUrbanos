@@ -5,10 +5,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration=production --base-href .",
+    "build": "npm run clean && ng build --configuration=production --base-href .",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "clean": "rm -rf dist"
   },
   "private": true,
   "dependencies": {

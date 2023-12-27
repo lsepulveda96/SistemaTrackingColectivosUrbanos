@@ -15,7 +15,11 @@
               "rxjs-compat",
               "rxjs",
               "hammerjs",
-              "chartist"              
+              "chartist",
+              "moment",
+              "@cordobo/qrcode",
+              "leaflet",
+              "esri-leaflet-geocoder"           
             ],
             "outputPath": "dist",
             "index": "src/index.html",
