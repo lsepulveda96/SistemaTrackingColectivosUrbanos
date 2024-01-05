@@ -34,11 +34,11 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public void init() {
         try {
-            log.info("*** Upload path: " + path );
+            log.info("*** Upload path: " + path);
             this.fileStoreLocation = Paths.get(path);
-            //Files.createDirectories(this.fileStoreLocation);
+            // Files.createDirectories(this.fileStoreLocation);
         } catch (Exception ex) {
-            log.warning("*** No se pudo iniciar path " + path + ", ex: " + ex.getMessage()  );
+            log.warning("*** No se pudo iniciar path " + path + ", ex: " + ex.getMessage());
             throw new RuntimeException("Could not initialize folder " + path + "  to upload!");
         }
     }
@@ -46,14 +46,14 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public String save(MultipartFile file) {
         try {
-            log.info("*** save file : " + file.getOriginalFilename() );
+            log.info("*** save file : " + file.getOriginalFilename());
             long currentTimeMillis = System.currentTimeMillis();
             String name_file = currentTimeMillis + "-" + file.getOriginalFilename();
             Path targetLocation = this.fileStoreLocation.resolve(name_file);
             Files.copy(file.getInputStream(), targetLocation);
             return name_file;
         } catch (Exception ex) {
-            log.warning("*** No se pudo guardar archivo, ex: " + ex.getMessage() );
+            log.warning("*** No se pudo guardar archivo, ex: " + ex.toString());
             if (ex instanceof FileAlreadyExistsException)
                 throw new RuntimeException("A file of that name already exists.");
             throw new RuntimeException(ex.getMessage());
@@ -63,7 +63,7 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public Resource load(String filename) {
         try {
-            log.info("*** load file: " + filename );
+            log.info("*** load file: " + filename);
             Path file = this.fileStoreLocation.resolve(filename);
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
@@ -73,7 +73,7 @@ public class FileStorageServiceImp implements FileStorageService {
                 throw new RuntimeException("Could not read the file!");
             }
         } catch (MalformedURLException ex) {
-            log.warning("*** No se pudo cargar archivo, ex: " + ex.getMessage() );
+            log.warning("*** No se pudo cargar archivo, ex: " + ex.getMessage());
             throw new RuntimeException("Error: " + ex.getMessage());
         }
     }
@@ -81,11 +81,11 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public boolean delete(String filename) {
         try {
-            log.info("*** delete file: " + filename );
+            log.info("*** delete file: " + filename);
             Path file = this.fileStoreLocation.resolve(filename);
             return Files.deleteIfExists(file);
         } catch (IOException ex) {
-            log.warning("*** No se pudo eliminar archivo, ex: " + ex.getMessage() );
+            log.warning("*** No se pudo eliminar archivo, ex: " + ex.getMessage());
             throw new RuntimeException("Error: " + ex.getMessage());
         }
     }

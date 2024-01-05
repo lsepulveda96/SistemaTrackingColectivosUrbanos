@@ -37,25 +37,25 @@ export class ColectivoEditComponent implements OnInit {
   id: any;
   colectivo: Colectivo | undefined;
 
-  unidadIC = new UntypedFormControl("", Validators.required);
+  unidadIC = new FormControl("", Validators.required);
   patenteIC = new FormControl("", [
     Validators.required,
-    Validators.pattern("^([A-Z]{2}[0-9]{3}[A-Z]{2})$|^([A-Z]{3}[0-9]{3})$") 
+    Validators.pattern("^([A-Z]{2}[0-9]{3}[A-Z]{2})$|^([A-Z]{3}[0-9]{3})$")
   ]);
-  marcaIC = new UntypedFormControl("", Validators.required);
-  modeloIC = new UntypedFormControl("");
-  anioIC = new UntypedFormControl(
+  marcaIC = new FormControl("", Validators.required);
+  modeloIC = new FormControl("");
+  anioIC = new FormControl(
     null,
     Validators.pattern("^[12]{1}[09]{1}[0-9]{2}$")
   ); // 19xx o 20xx
-  capacidadIC = new UntypedFormControl(
+  capacidadIC = new FormControl(
     null,
     Validators.pattern("^[1-9][0-9]?$")
   ); // numero entre 1 y 100
-  compraIC = new UntypedFormControl(null);
+  compraIC = new FormControl(null);
 
   estados: string[] = ["HABILITADO", "NO HABILITADO"];
-  estadoIC = new UntypedFormControl("");
+  estadoIC = new FormControl("");
 
   imagen: any;
   url: any;
@@ -125,31 +125,31 @@ export class ColectivoEditComponent implements OnInit {
       this.spin = true;
       this.serviceColectivo.uploadImagen(this.imagen).subscribe(
         result => {
-        this.spin = false;
-        if (result.error) {
-          this._snackbar.open(result.mensaje, "", {
-            duration: 4500,
-            verticalPosition: "bottom", // 'top' | 'bottom'
-            horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-            panelClass: ["red-snackbar"],
-          });
-        }
-        const filename = !result.error ? result.data : null;
-        this.cargarValores(filename);
-        this.guardar();
-      },
-      err => {
-        if (err.error) {
-          this._snackbar.open(err.error.mensaje, "", {
-            duration: 4500,
-            verticalPosition: "bottom", // 'top' | 'bottom'
-            horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-            panelClass: ["red-snackbar"],
-          });
-        }
-        this.cargarValores(null);
-        this.guardar();
-      });
+          this.spin = false;
+          if (result.error) {
+            this._snackbar.open(result.mensaje, "", {
+              duration: 4500,
+              verticalPosition: "bottom", // 'top' | 'bottom'
+              horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+              panelClass: ["red-snackbar"],
+            });
+          }
+          const filename = !result.error ? result.data : null;
+          this.cargarValores(filename);
+          this.guardar();
+        },
+        err => {
+          if (err.error) {
+            this._snackbar.open(err.error.mensaje, "", {
+              duration: 4500,
+              verticalPosition: "bottom", // 'top' | 'bottom'
+              horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+              panelClass: ["red-snackbar"],
+            });
+          }
+          this.cargarValores(null);
+          this.guardar();
+        });
     } else {
       this.cargarValores(null);
       this.guardar();
@@ -177,17 +177,17 @@ export class ColectivoEditComponent implements OnInit {
       if (this.colectivo.imgpath && this.colectivo.imgpath.length > 0) {
         // si habia una imagen anterior se elimina
         this.serviceColectivo.deleteImagen(this.colectivo.imgpath)
-          .subscribe( res => {
-            console.log("Delete imagen res: ", res );
+          .subscribe(res => {
+            console.log("Delete imagen res: ", res);
           },
-          error => {
-            console.log("Delete imagen error : ", error );
-          });
+            error => {
+              console.log("Delete imagen error : ", error);
+            });
       }
       // Se carga la nueva imagen.
       this.spin = true;
       this.serviceColectivo.uploadImagen(this.imagen).subscribe((res) => {
-        console.log("Upload res: ", res );
+        console.log("Upload res: ", res);
         this.spin = false;
         if (res.error) {
           this._snackbar.open(res.mensaje, "", {
@@ -201,18 +201,18 @@ export class ColectivoEditComponent implements OnInit {
         this.cargarValores(filename);
         this.actualizar();
       },
-      err => {
-        if (err.error) {
-          this._snackbar.open(err.error.mensaje, "", {
-            duration: 4500,
-            verticalPosition: "bottom", // 'top' | 'bottom'
-            horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-            panelClass: ["red-snackbar"],
-          });
-        }
-        this.cargarValores(null);
-        this.actualizar();
-      });
+        err => {
+          if (err.error) {
+            this._snackbar.open(err.error.mensaje, "", {
+              duration: 4500,
+              verticalPosition: "bottom", // 'top' | 'bottom'
+              horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+              panelClass: ["red-snackbar"],
+            });
+          }
+          this.cargarValores(null);
+          this.actualizar();
+        });
     } else {
       this.cargarValores(null);
       this.actualizar();

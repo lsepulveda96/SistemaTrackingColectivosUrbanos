@@ -27,12 +27,18 @@
                     </mat-form-field>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12">
+            <div class="row align-items-center">
+                <div class="col-6">
                     <mat-form-field appearance="legacy" style="width: 100%;">
                         <mat-label>Descripcion</mat-label>
                         <input matInput [formControl]="descripcionIC" autocomplete="off" />
                     </mat-form-field>
+                </div>
+                <div class="col-3">
+                    <span>Lat: {{ lat!=0 ? lat:'' }}</span>
+                </div>
+                <div class="col-3">
+                    <span>Lng: {{ lng!=0 ? lng: '' }}</span>
                 </div>
             </div>
             <div class="map-container">
@@ -45,10 +51,16 @@
     <mat-divider></mat-divider>
     <mat-card-actions align="end">
         <div class="my-2 mx-4">
-            <button mat-stroked-button color="primary" *ngIf="!codigo" class="button-border" (click)="guardarParada()"
+            <button mat-button [matMenuTriggerFor]="menu" color="primary" *ngIf="!codigo" class="button-border"
+                [disabled]="direccionIC.hasError('required')">Guardar</button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="guardarParada(false)">Guardar y registrar nueva</button>
+                <button mat-menu-item (click)="guardarParada(true)">Guardar y salir</button>
+            </mat-menu>
+            <!-- <button mat-stroked-button color="primary" *ngIf="!codigo" class="button-border" (click)="guardarParada()"
                 [disabled]="direccionIC.hasError('required')">
                 Guardar
-            </button>
+            </button> -->
             <button mat-stroked-button color="primary" *ngIf="codigo" class="button-border" (click)="actualizarParada()"
                 [disabled]="direccionIC.hasError('required')">
                 Actualizar
