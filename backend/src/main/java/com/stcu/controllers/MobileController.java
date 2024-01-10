@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/mobile")
+@RequestMapping("/v1/mobile")
 public class MobileController {
 
     private static final Logger log = Logger.getLogger(MobileController.class.getName());

@@ -57,22 +57,22 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> {
-                try {
-                    cors.and().csrf(csrf -> csrf.disable());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            })
-            .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler))
-            .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authRequest -> authRequest
-                .antMatchers("/").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/test/**").permitAll()
-                .antMatchers("/api/mobile/**").permitAll()
-                //.antMatchers("/api/files/**").permitAll()
-                .anyRequest().authenticated());
+                .cors(cors -> {
+                    try {
+                        cors.and().csrf(csrf -> csrf.disable());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                })
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authRequest -> authRequest
+                        .antMatchers("/").permitAll()
+                        .antMatchers("/api/auth/**").permitAll()
+                        .antMatchers("/api/test/**").permitAll()
+                        .antMatchers("/v1/mobile/**").permitAll()
+                        // .antMatchers("/api/files/**").permitAll()
+                        .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
