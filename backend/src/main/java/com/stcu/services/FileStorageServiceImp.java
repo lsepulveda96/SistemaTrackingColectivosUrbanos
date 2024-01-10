@@ -2,6 +2,7 @@ package com.stcu.services;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,9 +35,9 @@ public class FileStorageServiceImp implements FileStorageService {
     @Override
     public void init() {
         try {
-            log.info("*** Upload path: " + path);
             this.fileStoreLocation = Paths.get(path);
-            // Files.createDirectories(this.fileStoreLocation);
+
+            log.info("*** Upload absolute path: " + this.fileStoreLocation.toAbsolutePath());
         } catch (Exception ex) {
             log.warning("*** No se pudo iniciar path " + path + ", ex: " + ex.getMessage());
             throw new RuntimeException("Could not initialize folder " + path + "  to upload!");
