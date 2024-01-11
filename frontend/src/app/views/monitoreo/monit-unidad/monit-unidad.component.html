@@ -2,12 +2,29 @@
     <mat-card-header>
         <mat-card-title>
             <mat-icon>departure_board</mat-icon>
-             {{ 'Unidad ' + colectivo?.unidad + ': Monitoreo'  }}
+             {{ 'Unidad ' + colectivoRecorrido?.colectivo.unidad + ': Monitoreo' + 'Recorrido' +  colectivoRecorrido?.colectivo.patente  }}
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
         
+        <div class="container">   
+            
+            <div class="map-container">
+                <div class="map-frame">
+                    <div id="map"></div>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+            <br>
+            <div class="d-flex justify-content-end">
+                <button mat-stroked-button color="primary" [routerLink]="['../..']" class="button-border">
+                    Cerrar
+                </button>
+            </div>
+        
+        </div>
+
+        
     </mat-card-content>
 </mat-card>
-

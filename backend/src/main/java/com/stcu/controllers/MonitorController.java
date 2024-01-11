@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.stcu.dto.response.ColectivoRecorridoDTO;
+import com.stcu.dto.response.CoordenadaDTO;
 import com.stcu.model.ColectivoRecorrido;
+import com.stcu.model.Ubicacion;
 import com.stcu.services.MonitorService;
 
 @RestController
@@ -42,7 +44,7 @@ public class MonitorController {
      * 
      * @param id
      * @return
-     */
+    
     @GetMapping("/transito/unidad/{id}")
     public String findColectivoRecorridoTransito(@PathVariable long id) {
         log.info("*** findColectivoRecorridoTransito");
@@ -59,16 +61,51 @@ public class MonitorController {
         }
         return Mapper.getResponseAsJson(response);
     }
+     */
+
 
     /**
      * Busca y retorna la ultima ubicacion registrada de un colectivo en transito.
      * 
      * @param id
      * @return
-     */
+     
     @GetMapping("/transito/ubicacion/{id}")
     public String findUltimaUbicacionTransito(@PathVariable long id) {
         log.info("*** findUltimaUbicacionTransito");
         return "";
+    }
+    */
+
+
+    @GetMapping("/transito/unidad/{id}")
+    public String findColectivoRecorridoTransito(@PathVariable long id) {
+        ColectivoRecorrido colRec = this.service.getColectivoRecorrido(id);
+        Response<ColectivoRecorridoDTO> response;
+        if (colRec != null)
+            response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo recorrido",
+                    new ColectivoRecorridoDTO(colRec));
+        else
+            response = new Response<ColectivoRecorridoDTO>(true, 400, "No se encontro colectivo recorrido", null);
+        return Mapper.getResponseAsJson(response);
+    }
+
+
+     @GetMapping("/transito/coordenadas/unidad/{id}")
+    public String getCoordenadasColectivosTransito(@PathVariable long id) {
+
+        Ubicacion coordColeRec = this.service.getLastUbicacion(id);    
+
+        Response<CoordenadaDTO> response;
+        if (coordColeRec != null){
+            response = new Response<CoordenadaDTO>(false, 200, "Coordenada colectivo recorrido",
+                    new CoordenadaDTO(coordColeRec.getCoordenada().getX(),coordColeRec.getCoordenada().getY()));
+                    System.out.println("+++++++++++++++++++++++ Coordenada colectivo recorrido");
+                    }
+        else{
+            response = new Response<CoordenadaDTO>(true, 400, "No se encontraron coordenadas colectivo recorrido", null);
+            System.out.println("+++++++++++++++++++++++ No se encontraron coordenadas colectivo recorrido");
+        }
+        return Mapper.getResponseAsJson(response);
     }
 }

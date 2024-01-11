@@ -12,4 +12,7 @@ public interface LineaService {
     public Linea saveLinea( Linea linea );
 
     public Linea updateLinea( long id, Linea linea );
+
+    // para app pasajero
+    public List<Linea> getLineasActivas();
 }

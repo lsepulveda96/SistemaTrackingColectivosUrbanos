@@ -13,24 +13,29 @@
             </ng-container>
             <ng-container matColumnDef="linea">
                 <th mat-header-cell *matHeaderCellDef>Linea</th>
-                <td mat-cell *matCellDef="let transit">{{ transit.linea.denominacion }}</td>
+                <td mat-cell *matCellDef="let transit">{{ transit.lineaDenominacion }}</td>
             </ng-container>
             <ng-container matColumnDef="recorrido">
                 <th mat-header-cell *matHeaderCellDef>Recorrido</th>
-                <td mat-cell *matCellDef="let transit">{{ transit.recorrido.denominacion }}</td>
+                <td mat-cell *matCellDef="let transit">{{ transit.recorridoDenominacion }}</td>
             </ng-container>
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let transit">
-                    <button mat-icon-button color="primary" [routerLink]="['monit', transit.colectivo.id ]" 
+                    <button mat-icon-button color="primary" [routerLink]="['monit', transit.id ]" 
                         matTooltip="monitorear" matTooltipPosition="right">
                         <mat-icon>departure_board</mat-icon>
                     </button>
+                    <button mat-icon-button color="primary" matTooltip="baja"
+                        matTooltip="detener" matTooltipPosition="right" (click)="detenerColRec(transit.id, transit.lineaId)"
+                        *ngIf="transit.transito"> 
+                        <mat-icon><i class="bi bi-toggle-on"></i></mat-icon>
+                    </button>
                 </td>
             </ng-container>
-            <tr mat-header-row *matHeaderRowDef="['unidad','linea','recorrido','acciones']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['unidad','linea','recorrido','acciones']"></tr>
+            <tr mat-header-row *matHeaderRowDef="['unidad','recorrido','linea','acciones']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['unidad','recorrido','linea','acciones']"></tr>
         </table>
-        <mat-paginator #pag [pageSize]="10" [hidePageSize]="true" class="mt-3"></mat-paginator>
+        <mat-paginator #pag [pageSize]="10"></mat-paginator>
     </mat-card-content>
 </mat-card>

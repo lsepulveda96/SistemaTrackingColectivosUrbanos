@@ -44,4 +44,12 @@ public class LineaServiceImp implements LineaService {
         return updLinea;
     }
 
+
+      // para AppPasajero
+      @Override
+      public List<Linea> getLineasActivas() {
+          List<Linea> lineasActivas = repo.findLineasActivas();
+          return lineasActivas;
+      }
+      
 }

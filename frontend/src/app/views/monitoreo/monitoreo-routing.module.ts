@@ -9,7 +9,7 @@ const routes: Routes = [{
   children: [
     { path:'', component: EnrecorridoListComponent },
     { path:'list', component: EnrecorridoListComponent },
-    { path: 'monit/:unidad', component: MonitUnidadComponent }
+    { path: 'monit/:id', component: MonitUnidadComponent }
   ]
 }];
 
