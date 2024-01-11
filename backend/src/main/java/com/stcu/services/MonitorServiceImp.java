@@ -38,6 +38,10 @@ public class MonitorServiceImp implements MonitorService {
 
     @Override
     public ColectivoRecorrido saveColectivoRecorrido(ColectivoRecorrido cr) {
+        cr.getColectivo().setEnCirculacion(true);
+        cr.setTransito(true);
+        cr.setDesde(Calendar.getInstance());
+        cr.setHasta(null);
         return this.repoColRec.save( cr );
     }
 

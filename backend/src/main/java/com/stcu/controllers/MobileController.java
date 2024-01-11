@@ -273,11 +273,17 @@ public class MobileController {
       // si no esta en recorrido
       Notificacion respNotificacion = new Notificacion();
       if (!enRecorrido) {
+        try{ // ver que parametro usar para atrapar el error
         respNotificacion = serviceMonitor.notificacionDesvio(cr, latitud, longitud, true);
         System.out.println(" ++++++++++++++++ notificacion enviada, el colectivo esta fuera del trayecto");
         response = new Response<NotificacionDTO>(false, 200,
             "Notificacion enviada, el colectivo esta fuera del trayecto!",
             NotificacionDTO.toDTO(respNotificacion));
+        }catch(NullPointerException e){ // si da error por colectivo nulo
+          response = new Response<NotificacionDTO>(true, 400,
+            "Error al enviar notificacion!",
+            null);
+        }
       } else {
         // si esta en recorrido, verifica que no haya estado desviado, si lo esta setea
         // colectivo en false
