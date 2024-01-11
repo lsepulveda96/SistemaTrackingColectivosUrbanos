@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.stcu.dto.response.ColectivoRecorridoDTO;
 import com.stcu.dto.response.CoordenadaDTO;
+import com.stcu.dto.response.NotificacionDTO;
 import com.stcu.model.ColectivoRecorrido;
+import com.stcu.model.Notificacion;
 import com.stcu.model.Ubicacion;
 import com.stcu.services.MonitorService;
 
@@ -106,6 +109,33 @@ public class MonitorController {
             response = new Response<CoordenadaDTO>(true, 400, "No se encontraron coordenadas colectivo recorrido", null);
             System.out.println("+++++++++++++++++++++++ No se encontraron coordenadas colectivo recorrido");
         }
+        return Mapper.getResponseAsJson(response);
+    }
+
+    
+
+    @DeleteMapping("/transito/detener/unidad/{idColRec}/{idLinea}/{disabled}")
+    public String detenerColectivoRecorrido(@PathVariable long idColRec, @PathVariable long idLinea, @PathVariable boolean disabled) {
+     
+     //continuar aca, reemplazar por valores de detener colectivo rec
+        ColectivoRecorrido colRec = service.detenerColectivoRecorrido(idColRec, idLinea, disabled);
+        Response<ColectivoRecorridoDTO> response;
+        if (colRec != null) {
+            response = new Response<ColectivoRecorridoDTO>( false, 200, "Colectivo-Recorrido " + idColRec + " detenido", null );
+        }
+        else {
+            response = new Response<ColectivoRecorridoDTO>( true, 400, "No se pudo detener unidad " + idColRec, null );
+        }
+        return Mapper.getResponseAsJson(response);
+    }
+
+
+    // para pantalla notificaciones activas
+    @GetMapping("/notificacion/activas")
+    public String findNotificacionesActivas() {
+        List<Notificacion> list = service.findNotificacionesActivas();
+        Response<List<NotificacionDTO>> response = new Response<List<NotificacionDTO>>(false, 200,
+                "Notificaciones activas ", NotificacionDTO.toListNotificacionDTO(list));
         return Mapper.getResponseAsJson(response);
     }
 }

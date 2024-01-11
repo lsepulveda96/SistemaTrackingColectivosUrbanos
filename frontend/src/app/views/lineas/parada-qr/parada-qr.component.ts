@@ -28,13 +28,23 @@ export class ParadaQrComponent implements OnInit {
 
     this.width = this.dialogRef.componentInstance.width;
 
-    this.qrdata = JSON.stringify({
+    /*this.qrdata = JSON.stringify({
       linea: this.linea.id,
       parada: this.parada.codigo,
       par: this.parada.direccion,
       recorrido: this.recorrido.id,
       rec2: this.recorrido.denominacion,
+    });*/
+
+    this.qrdata = JSON.stringify({
+      lineaId: this.linea.id,
+      linea: this.linea.denominacion,
+      paradaId: this.parada.codigo,
+      direccion: this.parada.direccion,
+      recorridoId: this.recorrido.id,
+      recoridoDenom: this.recorrido.denominacion
     });
+    this.qrdata = this.qrdata.slice(1,-1); // para eliminar corchetes al inicio y al final 
   }
 
   cerrar() {

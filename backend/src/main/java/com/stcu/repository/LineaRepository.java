@@ -16,4 +16,8 @@ public interface LineaRepository extends JpaRepository<Linea, Long> {
     // para AppPasajero
     @Query("SELECT l FROM Linea l WHERE l.estado LIKE 'ACTIVA'")
     List<Linea> findLineasActivas();
+
+    //para AppPasajero
+    @Query("SELECT l FROM Linea l WHERE l.denominacion = ?1")
+    Linea findLineaByDenom(String denom);
 }

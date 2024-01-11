@@ -51,5 +51,11 @@ public class LineaServiceImp implements LineaService {
           List<Linea> lineasActivas = repo.findLineasActivas();
           return lineasActivas;
       }
-      
+
+    // para AppPasajero
+    @Override
+    public Linea getLineaByDenom(String denom) {
+        Linea linea = repo.findLineaByDenom(denom);
+        return linea;
+    }
 }

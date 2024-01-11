@@ -97,6 +97,8 @@ public class RecorridoDTO implements Serializable {
             pr.setId(prd.getId());
             pr.setRecorrido(rec);
             pr.setOrden(prd.getOrden());
+            pr.setTiempo(prd.getTiempo());
+            pr.setDistancia(prd.getDistancia());
             paradasRecorrido.add(pr);
         }
         rec.setParadas(paradasRecorrido);

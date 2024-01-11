@@ -71,4 +71,18 @@ public class ColectivoServiceImp implements ColectivoService {
         return false;
     }
 
+
+    @Override
+    public Colectivo getColectivoByUnidad( String unidad ){
+        return this.rep.findByUnidad(unidad);
+    }
+
+    @Override
+    public List<Colectivo> getAllColectivosSinCircular() {
+        List<Colectivo> cols = this.rep.findAllColectivosSinCircular();
+        return cols;
+    }
+
+
+
 }

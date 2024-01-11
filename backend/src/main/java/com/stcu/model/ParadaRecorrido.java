@@ -16,7 +16,8 @@ import lombok.ToString;
 
 @Entity
 @Table(name="PARADA_RECORRIDO")
-@Getter @Setter @ToString
+//saque @ToString sino daba error 
+@Getter @Setter 
 public class ParadaRecorrido {
  
     @Id @GeneratedValue( strategy=GenerationType.IDENTITY)

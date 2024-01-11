@@ -18,6 +18,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.locationtech.jts.geom.Point;
+
+import com.bedatadriven.jackson.datatype.jts.serialization.GeometryDeserializer;
+import com.bedatadriven.jackson.datatype.jts.serialization.GeometrySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 @Entity
 @Table(name = "NOTIFICACIONES")
 @Getter
@@ -41,13 +48,19 @@ public class Notificacion {
     private String tipo;
 
     @Column(name = "activa")
-    private boolean activa;
+    private Boolean activa;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "col_rec_id")
     private ColectivoRecorrido colectivoRecorrido;
 
-    private Notificacion() {
+    // agregado para app colectivo
+    @Column(name = "COORDENADAS", columnDefinition = "Geometry")
+    @JsonSerialize(using = GeometrySerializer.class)
+    @JsonDeserialize(using = GeometryDeserializer.class)
+    private Point coordenadas;
+
+    public Notificacion() {
     }
 
 }
