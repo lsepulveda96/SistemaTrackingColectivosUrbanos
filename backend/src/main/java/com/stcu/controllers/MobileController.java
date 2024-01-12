@@ -634,7 +634,7 @@ public class MobileController {
         // por si hay colectivos que no alcanzaron a llegar a una parada y estan desviados/detenidos
         System.out.println("+++++++++++++++++++++++++ ---------------------- +++++++++++++++++++++++");
         System.out.println("+++++++++++++++++++++++++ ---------------------- +++++++++++++++++++++++entro al catch de colectivos sin parada");
-         response = new Response<ColectivoRecorridoDTO>(true, 200, "No hay colectivos cercanos", null);
+         response = new Response<ColectivoRecorridoDTO>(true, 400, "No hay colectivos cercanos", null);
         return Mapper.getResponseAsJson(response);
       }
   
@@ -664,7 +664,7 @@ public class MobileController {
       seg = segundos - ((hor * 3600) + (min * 60));
   
       if (tiempoAcc == 0) {
-        response = new Response<ColectivoRecorridoDTO>(true, 200, "No hay colectivos cercanos", null);
+        response = new Response<ColectivoRecorridoDTO>(true, 400, "No hay colectivos cercanos", null);
         return Mapper.getResponseAsJson(response);
       }
   
