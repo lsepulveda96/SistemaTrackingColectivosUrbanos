@@ -11,6 +11,7 @@ import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 import 'esri-leaflet-geocoder';
+import 'leaflet-geometryutil';
 
 import { Parada } from 'src/app/data/parada';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
@@ -42,6 +43,11 @@ export class RecorridoEditComponent implements OnInit {
   paradasRecorrido: any[]; // lista de paradas en el recorrido.
   paradaIC = new FormControl(null); // Parada seleccionada de la lista de disponibles.
   denominacionIC = new FormControl('', [Validators.required, Validators.maxLength(20)]);
+
+  primeraParada: Boolean = false; // para saber si es primera parada
+  rutaEntreParadas: any[]; // aux rutas entre paradas
+  distancia = 0;
+  tiempo = 0;
 
   // Icono de parada general.
   iconDiv = L.divIcon({
@@ -229,8 +235,38 @@ export class RecorridoEditComponent implements OnInit {
       return;
     if (!this.paradasRecorrido) // Si el arreglo de parada es null se inicializa.
       this.paradasRecorrido = [];
+
+      const paradaRecAux = { id: null, parada: this.paradaIC.value, orden: this.paradasRecorrido.length, distancia: null, tiempo: null };
+    
+      if (!this.rutaEntreParadas) // Si el arreglo de parada es null se inicializa.
+        this.rutaEntreParadas = [];
+        
+        this.rutaEntreParadas.push(paradaRecAux);
+        console.log("++++++++++++++++++++++++++ this.rutaEntreParadas.length: "+ this.rutaEntreParadas.length);
+          
+        // para distancia entre paradas
+        var paradaOrigen;
+        var paradaSiguiente;
+        
+        if(this.primeraParada){ 
+        
+          const len = this.rutaEntreParadas.length;
+          console.log("++++++++++++++++++++++++++ paradasRecorrido.length: "+ this.rutaEntreParadas.length);
+          console.log("++++++++++++++++++++++++++ parada origen lng: "+ this.rutaEntreParadas[len-2].parada.coordenada.lng);      
+          console.log("++++++++++++++++++++++++++ parada destino lng: "+this.rutaEntreParadas[len-1].parada.coordenada.lng);
+          paradaOrigen = L.latLng(this.rutaEntreParadas[len-2].parada.coordenada.lat, this.rutaEntreParadas[len-2].parada.coordenada.lng);
+          paradaSiguiente = L.latLng(this.rutaEntreParadas[len-1].parada.coordenada.lat, this.rutaEntreParadas[len-1].parada.coordenada.lng);
+          this.distancia = L.GeometryUtil.length([paradaOrigen,paradaSiguiente]);
+          
+          console.log("la distancia entre paradas: " + this.distancia.toFixed(0));
+        }else{
+          this.primeraParada = true;
+        }
+
+        
     // Se agrega la parada al arreglo de paradas.
-    const paradaRec = { id: null, parada: this.paradaIC.value, orden: this.paradasRecorrido.length, distancia: null, tiempo: null };
+    const paradaRec = { id: null, parada: this.paradaIC.value, orden: this.paradasRecorrido.length, distancia: this.distancia.toFixed(0), tiempo: null };
+    //const paradaRec = { id: null, parada: this.paradaIC.value, orden: this.paradasRecorrido.length, distancia: null, tiempo: null };
     this.paradasRecorrido.push(paradaRec);
     // se elimina la parada de la lista de paradas disponibles
     this.paradasDisponibles = this.paradasDisponibles.filter(par => par.codigo != this.paradaIC.value.codigo);
@@ -248,9 +284,16 @@ export class RecorridoEditComponent implements OnInit {
   quitarParada(paradaRec: any) {
     if (paradaRec) {
       this.paradasRecorrido = this.paradasRecorrido.filter(pr => pr.parada.codigo != paradaRec.parada.codigo);
+      this.rutaEntreParadas = this.paradasRecorrido;
       this.loadParadaToMap(false, paradaRec);
       this.addParadaToDisponibles(paradaRec.parada);
       this.removeTrayectoRecorrido();
+        // si la lista queda vacia, se vuelve a resetar bandera de primeraParada
+        if(this.paradasRecorrido.length == 0){
+          this.primeraParada = false;
+          this.rutaEntreParadas = []; // vacia el arreglo auxiliar
+          this.distancia = 0;
+       }
     }
   }
 

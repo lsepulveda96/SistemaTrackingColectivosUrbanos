@@ -46,6 +46,12 @@ public class ColectivoRecorrido {
     @JoinColumn(name="colectivo_id")
     private Colectivo colectivo;
 
+    // para app colectivo
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="parada_id")
+    private Parada paradaActual;
+   
+
     public ColectivoRecorrido() {}
     
     public ColectivoRecorrido( Colectivo col, Recorrido rec ) {

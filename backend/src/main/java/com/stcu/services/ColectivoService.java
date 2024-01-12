@@ -15,4 +15,8 @@ public interface ColectivoService {
     public Colectivo updateColectivo( long id, Colectivo col );
 
     public boolean bajaColectivo( long id );
+
+    public Colectivo getColectivoByUnidad( String unidad );
+
+    public List<Colectivo> getAllColectivosSinCircular();
 }

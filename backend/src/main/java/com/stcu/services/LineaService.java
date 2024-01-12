@@ -15,4 +15,7 @@ public interface LineaService {
 
     // para app pasajero
     public List<Linea> getLineasActivas();
+
+    //agregado para AppPasajero
+    public Linea getLineaByDenom(String denom);
 }

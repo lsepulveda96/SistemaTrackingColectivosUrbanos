@@ -24,6 +24,9 @@ public class RecorridoServiceImp implements RecorridoService {
     @Autowired
     private ParadaRepository paradaRepo;
 
+    private static final int VEL_PROMEDIO = 25000;
+
+
     @Override
     public Recorrido getRecorrido(long id) {
         return this.recorridoRepo.findById(id);
@@ -53,6 +56,9 @@ public class RecorridoServiceImp implements RecorridoService {
                 Parada par = this.paradaRepo.findByCodigo(pr.getParada().getCodigo());
                 ParadaRecorrido newPR = new ParadaRecorrido(par, newRec);
                 newPR.setOrden(pr.getOrden());
+                newPR.setDistancia(pr.getDistancia());
+                Double distDoubleAux = Double.valueOf(pr.getDistancia());
+                newPR.setTiempo(((distDoubleAux/VEL_PROMEDIO) * 60 * 60));
                 this.paradaRecRepo.save(newPR);
             }
             return newRec;
@@ -79,6 +85,8 @@ public class RecorridoServiceImp implements RecorridoService {
                         Parada par = this.paradaRepo.findByCodigo(pr.getParada().getCodigo());
                         ParadaRecorrido newPR = new ParadaRecorrido(par, rec);
                         newPR.setOrden(pr.getOrden());
+                        newPR.setDistancia(pr.getDistancia());
+                        newPR.setTiempo(pr.getDistancia()/VEL_PROMEDIO);
                         this.paradaRecRepo.save(newPR);
                     } else if (pr.getId() > 0) { // actualizar o eliminar parada recorrido.
                         if (pr.getParada() != null) { // actualizar
@@ -120,4 +128,56 @@ public class RecorridoServiceImp implements RecorridoService {
         }
         return null;
     }
+
+    //para App colectivo
+
+    @Override
+    public List<Recorrido> getRecorridosActivosByDenomLinea(String denomLinea) {
+        return this.recorridoRepo.findActivosByDenomLinea(denomLinea);
+    }
+
+    // este esta causando error. reemplazarlo por otro
+    @Override
+    public Recorrido getRecorridoByDenom(String denomRecorrido){
+        return this.recorridoRepo.findRecorridoByDenom(denomRecorrido);
+    }
+
+    @Override  
+    public List<ParadaRecorrido> getParadasRecorridoByLineaDenomYRecorridoDenom( String lineaDenom, String recorridoDenom ){
+               List<ParadaRecorrido> prs = this.paradaRecRepo.findParadasRecorridoByLineaDenomYRecorridoDenom(lineaDenom,recorridoDenom);
+        return prs;
+    }
+
+    @Override  
+    public Recorrido getRecorridoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido){
+        return this.recorridoRepo.findRecorridoByLineaDenomYRecorridoDenom(denomLinea,denomRecorrido);
+    }
+
+    public Boolean verificarUnidadEnRecorrido(String latitud, String longitud, long idRec) {
+        return this.recorridoRepo.verificarUnidadEnRecorrido(latitud,longitud,idRec);
+    }
+
+    // Para app Pasajero
+    @Override
+    public List<Recorrido> getRecorridosActivosByIdLinea(int idLinea) {
+        return this.recorridoRepo.findActivosByIdLinea(idLinea);
+    }
+    
+
+    // Para app Pasajero
+    @Override  
+    public List<ParadaRecorrido> getParadasRecorridoByLineaIdYRecorridoId( long idLinea, long idRecorrido ){
+               List<ParadaRecorrido> prs = this.paradaRecRepo.getParadasRecorridoByLineaIdYRecorridoId(idLinea,idRecorrido);
+        return prs;
+    }
+
+
+    // para traer todas paradas app pasajero (recorridos activos)
+    // Para app Pasajero
+    @Override  
+    public List<ParadaRecorrido> getParadasRecorridoByLineaDenom( String lineaDenom ){
+               List<ParadaRecorrido> prs = this.paradaRecRepo.getParadasRecorridoByLineaDenom(lineaDenom);
+        return prs;
+    }
+
 }

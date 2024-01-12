@@ -52,4 +52,10 @@ public class Ubicacion {
 
     public Ubicacion() {
     }
+
+    public Ubicacion(Calendar fecha, Point coordenada, ColectivoRecorrido cr) {
+        this.fecha = fecha;
+        this.coordenada = coordenada;
+        this.colectivoRecorrido = cr;
+    }
 }

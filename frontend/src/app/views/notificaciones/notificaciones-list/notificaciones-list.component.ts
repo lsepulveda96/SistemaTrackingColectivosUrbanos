@@ -3,6 +3,10 @@ import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAda
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmComponent } from '../../misc/confirm/confirm.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MonitorService } from 'src/app/services/monitor.service';
 
 @Component({
   selector: 'app-notificaciones-list',
@@ -11,36 +15,39 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class NotificacionesListComponent implements OnInit, AfterViewInit {
 
-  spin: boolean;
-  notificacionesDS: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  spin: boolean = false;
+  waiting: boolean;
+  transito: any[];
+  notifDS: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  @ViewChild('pag') pag: MatPaginator;
 
-  @ViewChild('pag') paginator: MatPaginator;
-
-  constructor(
-  ) { }
+  constructor(private servicioMonitor: MonitorService,
+    private dialog: MatDialog,
+    private _snackbar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.spin = true;
-    this.getNotificaciones();
-    this.spin = false;
+    this.getNotificacionesActivas();
   }
 
   ngAfterViewInit(): void {
-    this.notificacionesDS.paginator = this.paginator;
+    this.notifDS.paginator = this.pag;
   }
 
-  getNotificaciones() {
-    const data = [
-      {
-        fecha: '2023-11-29 15:35:00', descripcion: 'sin mivimiento', tipo: 'parada',
-        colectivoRecorrido: { Colectivo: { unidad: '10' }, Recorrido: { denominacion: 'IDA', Linea: { denominacion: 'LINEA 2' } } },
-      },
-      {
-        fecha: '2023-11-30 10:11:00', descripcion: 'sin mivimiento', tipo: 'ROTURA',
-        colectivoRecorrido: { Colectivo: { unidad: '15' }, Recorrido: { denominacion: 'VUELTA', Linea: { denominacion: 'LINEA 1' } } },
-      }
-    ];
-    this.notificacionesDS.data = data;
+  getNotificacionesActivas() {
+    console.log("notificaciones activas: ");
+    this.waiting = true;
+    this.servicioMonitor.getNotificacionesActivas().subscribe(result => {
+      this.waiting = false;
+      this.notifDS.data = result.data
 
+      this.notifDS.data.forEach((item) => item.fecha = new Date(item.fecha).toLocaleDateString('en-US', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) ); 
+     
+    });
   }
 }

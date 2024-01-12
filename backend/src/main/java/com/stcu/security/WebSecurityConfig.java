@@ -71,6 +71,7 @@ public class WebSecurityConfig {
                         .antMatchers("/api/auth/**").permitAll()
                         .antMatchers("/api/test/**").permitAll()
                         .antMatchers("/v1/mobile/**").permitAll()
+                        .antMatchers("/api/**").permitAll()
                         // .antMatchers("/api/files/**").permitAll()
                         .anyRequest().authenticated());
 

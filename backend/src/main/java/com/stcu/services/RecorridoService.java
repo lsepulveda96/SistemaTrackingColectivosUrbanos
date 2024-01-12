@@ -24,4 +24,27 @@ public interface RecorridoService {
     public long existDenominacion( long idlinea, String denom );
 
     public Recorrido deactivateRecorrido( long id );
+
+
+    //Para app colectivo
+    public List<Recorrido> getRecorridosActivosByDenomLinea(String denomLinea);
+
+    //Para app colectivo
+    public Recorrido getRecorridoByDenom(String denomRecorrido);
+
+    //Para app colectivo
+    public List<ParadaRecorrido> getParadasRecorridoByLineaDenomYRecorridoDenom( String lineaDenom, String recorridoDenom );
+
+    //Para app colectivo
+    public Recorrido getRecorridoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido);
+
+    // Para app pasajero
+    public List<Recorrido> getRecorridosActivosByIdLinea(int idLinea);
+
+    // Para app pasajero
+    public List<ParadaRecorrido> getParadasRecorridoByLineaIdYRecorridoId( long idLinea, long idRecorrido );
+
+    // Para traer todas paradas app pasajero
+    public List<ParadaRecorrido> getParadasRecorridoByLineaDenom( String lineaDenom );
+
 }

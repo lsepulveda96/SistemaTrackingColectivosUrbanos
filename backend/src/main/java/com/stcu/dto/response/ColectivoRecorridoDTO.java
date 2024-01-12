@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.stcu.model.Colectivo;
 import com.stcu.model.ColectivoRecorrido;
+import com.stcu.model.Parada;
 import com.stcu.model.Recorrido;
 
 import lombok.Getter;
@@ -23,6 +24,13 @@ public class ColectivoRecorridoDTO {
     private long recorridoId;
     private String recorridoDenominacion;
 
+        //para mostrar en pantalla monitoreo
+    private String lineaDenominacion;
+    private long lineaId;
+
+    //para App colectivo
+    private Parada paradaActual;
+
     public ColectivoRecorridoDTO() {
     }
 
@@ -35,6 +43,11 @@ public class ColectivoRecorridoDTO {
         this.colectivo = new Colectivo(col.getId(), col.getUnidad(), col.getPatente());
         this.recorridoId = cr.getRecorrido().getId();
         this.recorridoDenominacion = cr.getRecorrido().getDenominacion();
+        Parada par =cr.getParadaActual();
+        this.paradaActual = new Parada(par.getCodigo(),par.getDireccion(),par.getCoordenadas());
+        this.lineaDenominacion = cr.getRecorrido().getLinea().getDenominacion();
+        this.lineaId = cr.getRecorrido().getLinea().getId();
+  
     }
 
     public static List<ColectivoRecorridoDTO> toListColectivoRecorridoDTO(List<ColectivoRecorrido> list) {
@@ -45,7 +58,7 @@ public class ColectivoRecorridoDTO {
         return prList;
     }
 
-    private static ColectivoRecorridoDTO toColectivoRecorridoDTO(ColectivoRecorrido cr) {
+    public static ColectivoRecorridoDTO toColectivoRecorridoDTO(ColectivoRecorrido cr) {
         ColectivoRecorridoDTO ncr = new ColectivoRecorridoDTO();
         ncr.setId(cr.getId());
         ncr.setDesde(cr.getDesde());
@@ -55,6 +68,11 @@ public class ColectivoRecorridoDTO {
         ncr.setColectivo(new Colectivo(col.getId(), col.getUnidad(), col.getPatente()));
         ncr.setRecorridoId(cr.getRecorrido().getId());
         ncr.setRecorridoDenominacion(cr.getRecorrido().getDenominacion());
+        ncr.setLineaDenominacion(cr.getRecorrido().getLinea().getDenominacion());
+        ncr.setLineaId(cr.getRecorrido().getLinea().getId());
+        Parada par =cr.getParadaActual();
+        if(par != null)
+            ncr.setParadaActual(new Parada(par.getCodigo(),par.getDireccion(),par.getCoordenadas()));
         return ncr;
     }
 
