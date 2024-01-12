@@ -5,21 +5,19 @@ import { ColectivoRecorrido } from 'src/app/data/colectivoRecorrido';
 import * as L from 'leaflet';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Coordenada } from 'src/app/data/coordenada';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-monit-unidad',
   templateUrl: './monit-unidad.component.html',
   styleUrls: ['./monit-unidad.component.css']
 })
-
-
 export class MonitUnidadComponent implements OnInit {
 
   waiting: boolean;
   colectivoRecorrido: ColectivoRecorrido;
   coordenadaColeRec: Coordenada;
   id: number;
-
   map: any;
   marker: any;
   iconParada: any = L.icon({
@@ -27,44 +25,32 @@ export class MonitUnidadComponent implements OnInit {
     iconSize: [45, 50],
     iconAnchor: [45, 50],
     popupAnchor: [-8, -37]
-  });;
+  });
 
+  time = new Observable<string>(observer => {
+    setInterval(() => observer.next(new Date().toString()), 1000);
+  });
 
   constructor(
     private serviceMonitor: MonitorService,
-    private router: Router,
     private route: ActivatedRoute,
     private _snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-
-    this.route.url.subscribe((u) => {
-
-      let listaParams = this.route.snapshot.params;
-      console.log("undef?" + JSON.stringify(this.route.snapshot.params));
-
-      for (let i = 0; i < listaParams.length; i++) {
-        console.log("data params: " + JSON.stringify(listaParams[i]));
-      }
-
-    });
-
-
-    const idUnidad = this.route.snapshot.paramMap.get('id');
-    this.getColectivoEnTransito(parseInt(idUnidad));
-    console.log("unidad: " + this.route.snapshot.paramMap.get('id'));
-    this.getCoordenadasColectivoEnTransito(parseInt(idUnidad));
+    const id = this.route.snapshot.paramMap.get('id');
+    this.getColectivoEnTransito(parseInt(id));
+    this.getCoordenadasColectivoEnTransito(parseInt(id));
     this.initMap();
   }
 
-  getColectivoEnTransito(idUnidad: number) {
+  getColectivoEnTransito(idtransito: number) {
     this.waiting = true;
-    this.serviceMonitor.getUnidadRecorridoTransito(idUnidad)
+    this.serviceMonitor.getUnidadRecorridoTransito(idtransito)
       .subscribe(result => {
         this.waiting = false;
         this.colectivoRecorrido = result.data;
-        console.log("lo que trae getColectivoEnTransito: "+ JSON.stringify(this.colectivoRecorrido));
+        console.log("lo que trae getColectivoEnTransito: " + JSON.stringify(this.colectivoRecorrido));
       });
   }
 
@@ -83,7 +69,7 @@ export class MonitUnidadComponent implements OnInit {
   private initMap() {
     this.map = L.map('map', {
       center: [-42.775935, -65.038144],
-      zoom: 14
+      zoom: 17
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -93,12 +79,9 @@ export class MonitUnidadComponent implements OnInit {
     }).addTo(this.map);
   }
 
-
-
-
-  getCoordenadasColectivoEnTransito(idUnidad: number) {
+  getCoordenadasColectivoEnTransito(idtransito: number) {
     this.waiting = true;
-    this.serviceMonitor.getCoordenadasColectivoRecorrido(idUnidad)
+    this.serviceMonitor.getCoordenadasColectivoRecorrido(idtransito)
       .subscribe(result => {
         this.waiting = false;
         if (result.error) {
@@ -108,12 +91,14 @@ export class MonitUnidadComponent implements OnInit {
             horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
             panelClass: ['red-snackbar'],
           });
-          this.router.navigate(['../..'], { relativeTo: this.route });
+          //this.router.navigate(['../..'], { relativeTo: this.route });
         }
-        this.coordenadaColeRec = result.data;
-        this.marker = L.marker([this.coordenadaColeRec.lat, this.coordenadaColeRec.lng], { icon: this.iconParada, draggable: false })
-          .addTo(this.map)
-          .openPopup();
+        else {
+          this.coordenadaColeRec = result.data;
+          this.marker = L.marker([this.coordenadaColeRec.lat, this.coordenadaColeRec.lng], { icon: this.iconParada, draggable: false })
+            .addTo(this.map)
+            .openPopup();
+        }
       });
   }
 

@@ -1,4 +1,3 @@
-
 <div class="container">
   <div class="row">
     <span class="h5">{{ titulo }}</span>
@@ -9,11 +8,12 @@
     </span>
   </div>
   <div class="row mt-4">
-    <div class="d-flex justify-content-around">
+    <div class="d-flex justify-content-between px-4">
       <button mat-stroked-button class="border-danger" color="warn" (click)="onAceptar()">
         <i class="bi bi-check"></i>
         Aceptar
       </button>
+      &nbsp;&nbsp;
       <button mat-stroked-button class="border-primary" color="primary" (click)="onCancelar()">
         <i class="bi bi-x"></i>
         Cancelar

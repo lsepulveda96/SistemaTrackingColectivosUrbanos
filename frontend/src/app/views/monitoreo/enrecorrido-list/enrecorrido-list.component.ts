@@ -32,59 +32,37 @@ export class EnrecorridoListComponent implements OnInit, AfterViewInit {
   }
 
   getUnidadesEnRecorrido() {
-    console.log("Unidades en recorrido: ");
     this.waiting = true;
-    this.servicioMonitor.getUnidadesTransito().subscribe(result => {
-      this.waiting = false;
-      this.transitoDS.data = result.data;
+    this.servicioMonitor.getUnidadesTransito().
+      subscribe(result => {
+        this.waiting = false;
+        this.transitoDS.data = result.data;
+      });
+  }
 
-      const list = document.getElementById("list");
 
-      for (let i = 0; i < result.data.length; i++) {
-        console.log("data: " + JSON.stringify(result.data[i]));
+  detenerColRec(idUnidad: number, idLinea: number) {
+    console.log("cole rec que se va a detener" + idUnidad)
+    const ref = this.dialog.open(ConfirmComponent, {
+      data:
+        { titulo: 'Detener servicio', mensaje: 'Confirma detener unidad ?' }
+    });
+    ref.afterClosed().subscribe(aceptar => {
+      if (aceptar) {
+        this.spin = true;
+        this.servicioMonitor.detenerColRec(idUnidad, idLinea, false).subscribe(result => {
+          this.spin = false;
+          this._snackbar.open(result.mensaje, '',
+            {
+              duration: 4500,
+              verticalPosition: 'top', // 'top' | 'bottom'
+              horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
+              panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar']
+            });
+          if (!result.error)
+            this.getUnidadesEnRecorrido();
+        });
       }
     });
-
-
-      
-
-    /*this.transito = [
-      { colectivo: {id: 1, unidad: 'colectivo 3', }, linea: {id: 2, denominacion:'linea 2', }, recorrido: {id: 1, denominacion: 'IDA'} },
-      { colectivo: {id: 1, unidad: 'colectivo 4', }, linea: {id: 2, denominacion:'linea 2', }, recorrido: {id: 2, denominacion: 'REGRESO'} },
-      { colectivo: {id: 1, unidad: 'colectivo 1', }, linea: {id: 2, denominacion:'linea 1', }, recorrido: {id: 2, denominacion: 'IDA'} },
-      { colectivo: {id: 1, unidad: 'colectivo 5', }, linea: {id: 2, denominacion:'linea 5', }, recorrido: {id: 2, denominacion: 'IDA'} },
-      { colectivo: {id: 1, unidad: 'colectivo 6', }, linea: {id: 2, denominacion:'linea 3', }, recorrido: {id: 2, denominacion: 'REGRESO'} },
-      { colectivo: {id: 1, unidad: 'colectivo 22',}, linea: {id: 2, denominacion:'linea 1',}, recorrido: {id: 2,  denominacion: 'REGRESO'} }
-    ]; */
-    //this.transitoDS.data = this.transito;
   }
-
-
-  detenerColRec(idUnidad: number, idLinea: number){
-    
-    console.log("cole rec que se va a detener"+ idUnidad)
-      const ref = this.dialog.open(ConfirmComponent, {
-        data:
-          { titulo: 'Detener servicio', mensaje: 'Confirma detener unidad ?' }
-      });
-      ref.afterClosed().subscribe(aceptar => {
-        if (aceptar) {
-          this.spin = true;
-          this.servicioMonitor.detenerColRec(idUnidad,idLinea, false).subscribe(result => {
-            this.spin = false;
-            this._snackbar.open(result.mensaje, '',
-              {
-                duration: 4500,
-                verticalPosition: 'top', // 'top' | 'bottom'
-                horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
-                panelClass: result.error ? ['red-snackbar'] : ['blue-snackbar']
-              });
-            if (!result.error)
-              this.getUnidadesEnRecorrido();
-          });
-        }
-      });
-    
-  }
-
 }

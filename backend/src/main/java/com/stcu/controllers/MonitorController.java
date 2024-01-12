@@ -31,7 +31,6 @@ public class MonitorController {
      */
     @GetMapping("/transito/unidades")
     public String findColectivosTransito() {
-        log.info("*** findColectivosTransito ");
         List<ColectivoRecorrido> list = service.getColectivosTransito();
         log.info("*** Colectivos en transito: " + list.size());
         Response<List<ColectivoRecorridoDTO>> response = new Response<List<ColectivoRecorridoDTO>>(false, 200,
@@ -44,39 +43,40 @@ public class MonitorController {
      * 
      * @param id
      * @return
-    
-    @GetMapping("/transito/unidad/{id}")
-    public String findColectivoRecorridoTransito(@PathVariable long id) {
-        log.info("*** findColectivoRecorridoTransito");
-        ColectivoRecorrido colRec = this.service.getColectivoRecorrido(id);
-
-        Response<ColectivoRecorridoDTO> response;
-        if (colRec != null) {
-            log.info("*** Colectivo en transito: " + colRec.getColectivo().getUnidad());
-            response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo recorrido",
-                    new ColectivoRecorridoDTO(colRec));
-        } else {
-            log.info("*** No se encontro colectivo en transito " + id);
-            response = new Response<ColectivoRecorridoDTO>(true, 400, "No se encontro colectivo recorrido", null);
-        }
-        return Mapper.getResponseAsJson(response);
-    }
+     * 
+     *         @GetMapping("/transito/unidad/{id}")
+     *         public String findColectivoRecorridoTransito(@PathVariable long id) {
+     *         log.info("*** findColectivoRecorridoTransito");
+     *         ColectivoRecorrido colRec = this.service.getColectivoRecorrido(id);
+     * 
+     *         Response<ColectivoRecorridoDTO> response;
+     *         if (colRec != null) {
+     *         log.info("*** Colectivo en transito: " +
+     *         colRec.getColectivo().getUnidad());
+     *         response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo
+     *         recorrido",
+     *         new ColectivoRecorridoDTO(colRec));
+     *         } else {
+     *         log.info("*** No se encontro colectivo en transito " + id);
+     *         response = new Response<ColectivoRecorridoDTO>(true, 400, "No se
+     *         encontro colectivo recorrido", null);
+     *         }
+     *         return Mapper.getResponseAsJson(response);
+     *         }
      */
-
 
     /**
      * Busca y retorna la ultima ubicacion registrada de un colectivo en transito.
      * 
      * @param id
      * @return
-     
-    @GetMapping("/transito/ubicacion/{id}")
-    public String findUltimaUbicacionTransito(@PathVariable long id) {
-        log.info("*** findUltimaUbicacionTransito");
-        return "";
-    }
-    */
-
+     * 
+     *         @GetMapping("/transito/ubicacion/{id}")
+     *         public String findUltimaUbicacionTransito(@PathVariable long id) {
+     *         log.info("*** findUltimaUbicacionTransito");
+     *         return "";
+     *         }
+     */
 
     @GetMapping("/transito/unidad/{id}")
     public String findColectivoRecorridoTransito(@PathVariable long id) {
@@ -90,20 +90,17 @@ public class MonitorController {
         return Mapper.getResponseAsJson(response);
     }
 
-
-     @GetMapping("/transito/coordenadas/unidad/{id}")
+    @GetMapping("/transito/coordenadas/unidad/{id}")
     public String getCoordenadasColectivosTransito(@PathVariable long id) {
-
-        Ubicacion coordColeRec = this.service.getLastUbicacion(id);    
-
+        Ubicacion coordColeRec = this.service.getLastUbicacion(id);
         Response<CoordenadaDTO> response;
-        if (coordColeRec != null){
+        if (coordColeRec != null) {
             response = new Response<CoordenadaDTO>(false, 200, "Coordenada colectivo recorrido",
-                    new CoordenadaDTO(coordColeRec.getCoordenada().getX(),coordColeRec.getCoordenada().getY()));
-                    System.out.println("+++++++++++++++++++++++ Coordenada colectivo recorrido");
-                    }
-        else{
-            response = new Response<CoordenadaDTO>(true, 400, "No se encontraron coordenadas colectivo recorrido", null);
+                    new CoordenadaDTO(coordColeRec.getCoordenada().getX(), coordColeRec.getCoordenada().getY()));
+            System.out.println("+++++++++++++++++++++++ Coordenada colectivo recorrido");
+        } else {
+            response = new Response<CoordenadaDTO>(true, 400, "No se encontraron coordenadas colectivo recorrido",
+                    null);
             System.out.println("+++++++++++++++++++++++ No se encontraron coordenadas colectivo recorrido");
         }
         return Mapper.getResponseAsJson(response);
