@@ -42,47 +42,14 @@ public class MonitorController {
     }
 
     /**
-     * Busca y recupera un colectivo en transito, a partir de su id.
+     * Recupera info de una unidad en recorrido a partir de su id de transito
      * 
      * @param id
      * @return
-     * 
-     *         @GetMapping("/transito/unidad/{id}")
-     *         public String findColectivoRecorridoTransito(@PathVariable long id) {
-     *         log.info("*** findColectivoRecorridoTransito");
-     *         ColectivoRecorrido colRec = this.service.getColectivoRecorrido(id);
-     * 
-     *         Response<ColectivoRecorridoDTO> response;
-     *         if (colRec != null) {
-     *         log.info("*** Colectivo en transito: " +
-     *         colRec.getColectivo().getUnidad());
-     *         response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo
-     *         recorrido",
-     *         new ColectivoRecorridoDTO(colRec));
-     *         } else {
-     *         log.info("*** No se encontro colectivo en transito " + id);
-     *         response = new Response<ColectivoRecorridoDTO>(true, 400, "No se
-     *         encontro colectivo recorrido", null);
-     *         }
-     *         return Mapper.getResponseAsJson(response);
-     *         }
      */
-
-    /**
-     * Busca y retorna la ultima ubicacion registrada de un colectivo en transito.
-     * 
-     * @param id
-     * @return
-     * 
-     *         @GetMapping("/transito/ubicacion/{id}")
-     *         public String findUltimaUbicacionTransito(@PathVariable long id) {
-     *         log.info("*** findUltimaUbicacionTransito");
-     *         return "";
-     *         }
-     */
-
     @GetMapping("/transito/unidad/{id}")
     public String findColectivoRecorridoTransito(@PathVariable long id) {
+        log.info("*** Colectivo recorrido en transito: " + id);
         ColectivoRecorrido colRec = this.service.getColectivoRecorrido(id);
         Response<ColectivoRecorridoDTO> response;
         if (colRec != null)
@@ -90,42 +57,46 @@ public class MonitorController {
                     new ColectivoRecorridoDTO(colRec));
         else
             response = new Response<ColectivoRecorridoDTO>(true, 400, "No se encontro colectivo recorrido", null);
+        log.info("*** Colectivos en transito response: " + response.getMensaje());
         return Mapper.getResponseAsJson(response);
     }
 
+    /**
+     * Recupera ultima coordenada de una unidad en recorrido.
+     * 
+     * @param id
+     * @return
+     */
     @GetMapping("/transito/coordenadas/unidad/{id}")
     public String getCoordenadasColectivosTransito(@PathVariable long id) {
+        log.info("*** Coordenadas colectivo en transito: " + id);
         Ubicacion coordColeRec = this.service.getLastUbicacion(id);
         Response<CoordenadaDTO> response;
-        if (coordColeRec != null) {
+        if (coordColeRec != null)
             response = new Response<CoordenadaDTO>(false, 200, "Coordenada colectivo recorrido",
                     new CoordenadaDTO(coordColeRec.getCoordenada().getX(), coordColeRec.getCoordenada().getY()));
-            System.out.println("+++++++++++++++++++++++ Coordenada colectivo recorrido");
-        } else {
+        else
             response = new Response<CoordenadaDTO>(true, 400, "No se encontraron coordenadas colectivo recorrido",
                     null);
-            System.out.println("+++++++++++++++++++++++ No se encontraron coordenadas colectivo recorrido");
-        }
+        log.info("*** Coordenadas colectivo en transito response: " + response.getMensaje());
         return Mapper.getResponseAsJson(response);
     }
 
-    
-
     @DeleteMapping("/transito/detener/unidad/{idColRec}/{idLinea}/{disabled}")
-    public String detenerColectivoRecorrido(@PathVariable long idColRec, @PathVariable long idLinea, @PathVariable boolean disabled) {
-     
-     //continuar aca, reemplazar por valores de detener colectivo rec
+    public String detenerColectivoRecorrido(@PathVariable long idColRec, @PathVariable long idLinea,
+            @PathVariable boolean disabled) {
+
+        // continuar aca, reemplazar por valores de detener colectivo rec
         ColectivoRecorrido colRec = service.detenerColectivoRecorrido(idColRec, idLinea, disabled);
         Response<ColectivoRecorridoDTO> response;
         if (colRec != null) {
-            response = new Response<ColectivoRecorridoDTO>( false, 200, "Colectivo-Recorrido " + idColRec + " detenido", null );
-        }
-        else {
-            response = new Response<ColectivoRecorridoDTO>( true, 400, "No se pudo detener unidad " + idColRec, null );
+            response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo-Recorrido " + idColRec + " detenido",
+                    null);
+        } else {
+            response = new Response<ColectivoRecorridoDTO>(true, 400, "No se pudo detener unidad " + idColRec, null);
         }
         return Mapper.getResponseAsJson(response);
     }
-
 
     // para pantalla notificaciones activas
     @GetMapping("/notificacion/activas")

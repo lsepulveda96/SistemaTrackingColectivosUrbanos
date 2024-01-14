@@ -22,19 +22,18 @@ public class CoordenadaDTO implements Serializable {
         this.lng = y;
     }
 
-
-    //Coordenada2
+    // Coordenada2
     private String direccion;
     private int codigo;
 
-    //Coordenada3
+    // Coordenada3
     private Date fechaNotificacion;
 
-    //Coordenada4
+    // Coordenada4
     private int orden;
 
-     public CoordenadaDTO(Object[] columns) {
-        switch(columns.length){
+    public CoordenadaDTO(Object[] columns) {
+        switch (columns.length) {
             case 2:
                 // Coordenada1
                 this.lat = (double) columns[0];
@@ -56,22 +55,52 @@ public class CoordenadaDTO implements Serializable {
         }
     }
 
-   public double getLat() { return this.lat; }
-    public void setLat( double l ) { this.lat = l; }
+    public double getLat() {
+        return this.lat;
+    }
 
-    public double getLng() { return this.lng; }
-    public void setLng( double l ) { this.lng = l; }
+    public void setLat(double l) {
+        this.lat = l;
+    }
 
-    public String getDireccion() { return direccion; }
-    public void setDireccion( String direccion ) { this.direccion = direccion; }
+    public double getLng() {
+        return this.lng;
+    }
 
-    public int getCodigo() { return this.codigo; }
-    public void setCodigo( int cod ) { this.codigo = cod; }
+    public void setLng(double l) {
+        this.lng = l;
+    }
 
-    public Date getFechaNotificacion() { return this.fechaNotificacion; }
-    public void setFechaNotificacion( Date fn ) { this.fechaNotificacion = fn; }
+    public String getDireccion() {
+        return direccion;
+    }
 
-    public int getOrden() { return this.orden; }
-    public void setOrden( int orden ) { this.orden = orden; }
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public int getCodigo() {
+        return this.codigo;
+    }
+
+    public void setCodigo(int cod) {
+        this.codigo = cod;
+    }
+
+    public Date getFechaNotificacion() {
+        return this.fechaNotificacion;
+    }
+
+    public void setFechaNotificacion(Date fn) {
+        this.fechaNotificacion = fn;
+    }
+
+    public int getOrden() {
+        return this.orden;
+    }
+
+    public void setOrden(int orden) {
+        this.orden = orden;
+    }
 
 }

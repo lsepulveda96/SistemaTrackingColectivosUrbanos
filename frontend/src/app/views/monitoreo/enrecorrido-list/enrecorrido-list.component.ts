@@ -15,7 +15,7 @@ export class EnrecorridoListComponent implements OnInit, AfterViewInit {
 
   spin: boolean = false;
   waiting: boolean;
-  transito: any[];
+  transito: any[] = [];
   transitoDS: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   @ViewChild('pag') pag: MatPaginator;
 
@@ -36,7 +36,8 @@ export class EnrecorridoListComponent implements OnInit, AfterViewInit {
     this.servicioMonitor.getUnidadesTransito().
       subscribe(result => {
         this.waiting = false;
-        this.transitoDS.data = result.data;
+        this.transito = result.data;
+        this.transitoDS.data = this.transito;
       });
   }
 
