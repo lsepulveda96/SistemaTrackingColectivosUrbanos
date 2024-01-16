@@ -3,12 +3,13 @@
         <mat-card-title>
             <mat-icon>departure_board</mat-icon>
             {{ 'Monitoreo: ' + colectivoRecorrido?.colectivo.unidad + ' - Linea 2 - IDA' }}
-
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
+    <div class="loading-indicator" *ngIf="waiting">
+        <mat-spinner mode="indeterminate" diameter="50"></mat-spinner>
+    </div>
     <mat-card-content>
-        <div>Obserbable async, Time {{ time | async }}</div>
         <div class="container">
 
             <div class="map-container">

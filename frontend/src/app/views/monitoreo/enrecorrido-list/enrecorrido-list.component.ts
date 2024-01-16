@@ -13,7 +13,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class EnrecorridoListComponent implements OnInit, AfterViewInit {
 
-  spin: boolean = false;
   waiting: boolean;
   transito: any[] = [];
   transitoDS: MatTableDataSource<any> = new MatTableDataSource<any>([]);
@@ -50,9 +49,9 @@ export class EnrecorridoListComponent implements OnInit, AfterViewInit {
     });
     ref.afterClosed().subscribe(aceptar => {
       if (aceptar) {
-        this.spin = true;
+        this.waiting = true;
         this.servicioMonitor.detenerColRec(idUnidad, idLinea, false).subscribe(result => {
-          this.spin = false;
+          this.waiting = false;
           this._snackbar.open(result.mensaje, '',
             {
               duration: 4500,

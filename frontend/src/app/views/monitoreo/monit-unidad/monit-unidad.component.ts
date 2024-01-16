@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MonitorService } from 'src/app/services/monitor.service';
 import { ColectivoRecorrido } from 'src/app/data/colectivoRecorrido';
 import * as L from 'leaflet';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Coordenada } from 'src/app/data/coordenada';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-monit-unidad',
@@ -21,15 +22,12 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
   map: any;
   marker: any;
   iconParada: any = L.icon({
-    iconUrl: 'assets/images/bus-stop-pin.png',
+    iconUrl: 'assets/images/buspin.png',
     iconSize: [45, 50],
     iconAnchor: [45, 50],
     popupAnchor: [-25, -45]
   });
 
-  time = new Observable<string>(observer => {
-    setInterval(() => observer.next(new Date().toString()), 1000);
-  });
 
   coordenadaSubs: Subscription;
   trace: Coordenada[];
@@ -49,12 +47,11 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id');
     this.getColectivoEnTransito(parseInt(id));
     this.getCoordenadasLoop(parseInt(id));
-    //this.getCoordenadasColectivoEnTransito(parseInt(id));
   }
 
   ngOnDestroy(): void {
-    console.log("On destroy")
-    this.serviceMonitor.stopTimerCoordenadas();
+    if (this.coordenadaSubs)
+      this.coordenadaSubs.unsubscribe();
   }
 
   getColectivoEnTransito(idtransito: number) {
@@ -62,6 +59,7 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
     this.serviceMonitor.getUnidadRecorridoTransito(idtransito)
       .subscribe(result => {
         this.waiting = false;
+        console.log("colectivo en transito: ", result );
         this.colectivoRecorrido = result.data;
       });
   }
@@ -81,15 +79,24 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
 
   getCoordenadasLoop(idtransito: number) {
     this.trace = [];
-    this.coordenadaSubs = this.serviceMonitor.startTimerCoordenadas(idtransito).subscribe(data => {
-      console.log("ultima coordenada: ", data);
-      this.ultimaCoordenada = data;
-      if (this.ultimaCoordenada) {
-        this.trace.push(this.ultimaCoordenada);
-        this.showPosicion();
-        this.showRecorrido();
-      }
-    });
+    this.ultimaCoordenada = null;
+    this.coordenadaSubs = timer(0,3000).pipe( 
+      map( () => {
+        this.serviceMonitor.getUltimaCoordenadaColectivoRecorrido(idtransito)
+        .subscribe( (result: any) => {
+          console.log("result : ", result );
+          if (result && !result.error && !this.equalCoordenada( result.data )) {
+            this.ultimaCoordenada = result.data;
+            if (this.ultimaCoordenada) {
+              this.trace.push(this.ultimaCoordenada);
+              this.showPosicion();
+              this.showRecorrido();
+            }
+          }
+          else 
+              console.log("No hay coordenada o es misma coordenada: ", this.ultimaCoordenada, ", ", result ); 
+        });
+      })).subscribe();
   }
 
   showPosicion() {
@@ -127,28 +134,14 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
     //this.map.fitBounds(trays);
   }
 
-  getCoordenadasColectivoEnTransito(idtransito: number) {
-    this.waiting = true;
-    this.serviceMonitor.getCoordenadasColectivoRecorrido(idtransito)
-      .subscribe(result => {
-        this.waiting = false;
-        console.log("get coordenada colectivo transito: ", result);
-        if (result.error) {
-          this._snackbar.open(result.mensaje, '', {
-            duration: 4500,
-            verticalPosition: 'bottom', // 'top' | 'bottom'
-            horizontalPosition: 'end', //'start' | 'center' | 'end' | 'left' | 'right'
-            panelClass: ['red-snackbar'],
-          });
-          //this.router.navigate(['../..'], { relativeTo: this.route });
-        }
-        else {
-          /* this.coordenadaColeRec = result.data;
-          this.marker = L.marker([this.coordenadaColeRec.lat, this.coordenadaColeRec.lng], { icon: this.iconParada, draggable: false })
-            .addTo(this.map)
-            .openPopup(); */
-        }
-      });
+  
+
+  private equalCoordenada(newCoordenada: Coordenada): boolean {
+    if (!this.ultimaCoordenada)
+      return false;
+    if (this.ultimaCoordenada.lat == newCoordenada.lat && this.ultimaCoordenada.lng == newCoordenada.lng)
+      return true;
+    return false;
   }
 }
 

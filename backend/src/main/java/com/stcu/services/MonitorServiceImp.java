@@ -33,7 +33,8 @@ public class MonitorServiceImp implements MonitorService {
 
     @Override
     public List<ColectivoRecorrido> getColectivosTransito() {
-        return this.repoColRec.findByTransitoTrue();
+        //return this.repoColRec.findByTransitoTrue();
+        return this.repoColRec.findByTransitoTrueOrderByIdDesc();
     }
 
     @Override

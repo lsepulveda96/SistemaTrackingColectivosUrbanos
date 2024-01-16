@@ -5,12 +5,15 @@
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
+    <div class="loading-indicator" *ngIf="waiting">
+        <mat-spinner mode="indeterminate" diameter="50"></mat-spinner>
+    </div>
     <mat-card-content>
-        <div *ngIf="transito.length==0">
+        <div *ngIf="!waiting && transito.length==0">
             <i class="bi bi-info-circle" style="color:blue;"></i>&nbsp;
             <span>No existen unidades en recorrido actualmente</span>
         </div>
-        <div *ngIf="transito.length > 0">
+        <div [hidden]="!transito || transito.length==0">
             <table mat-table [dataSource]="transitoDS">
                 <ng-container matColumnDef="unidad">
                     <th mat-header-cell *matHeaderCellDef>Unidad</th>

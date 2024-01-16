@@ -40,14 +40,20 @@ public class ColectivoRecorridoDTO {
         this.hasta = cr.getHasta();
         this.transito = cr.isTransito();
         Colectivo col = cr.getColectivo();
-        this.colectivo = new Colectivo(col.getId(), col.getUnidad(), col.getPatente());
-        this.recorridoId = cr.getRecorrido().getId();
-        this.recorridoDenominacion = cr.getRecorrido().getDenominacion();
+        if (col != null )
+            this.colectivo = new Colectivo(col.getId(), col.getUnidad(), col.getPatente());
+        Recorrido rec = cr.getRecorrido();
+        if (rec != null) {
+            this.recorridoId = rec.getId();
+            this.recorridoDenominacion = rec.getDenominacion();
+            if (rec.getLinea() != null) {
+                this.lineaDenominacion = rec.getLinea().getDenominacion();
+                this.lineaId = rec.getLinea().getId();
+            }
+        }
         Parada par =cr.getParadaActual();
-        this.paradaActual = new Parada(par.getCodigo(),par.getDireccion(),par.getCoordenadas());
-        this.lineaDenominacion = cr.getRecorrido().getLinea().getDenominacion();
-        this.lineaId = cr.getRecorrido().getLinea().getId();
-  
+        if (par != null)
+            this.paradaActual = new Parada(par.getCodigo(),par.getDireccion(),par.getCoordenadas());
     }
 
     public static List<ColectivoRecorridoDTO> toListColectivoRecorridoDTO(List<ColectivoRecorrido> list) {

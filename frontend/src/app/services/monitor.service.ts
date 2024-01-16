@@ -44,43 +44,28 @@ export class MonitorService {
     { lat: -42.772762, lng: -65.047423 },
   ]
   last: number = 0;
-  timer = null;
 
   constructor(private http: HttpClient) { }
 
 
   getUnidadesTransito(): Observable<any> {
-    return of({ error: false, codigo: 200, mensaje: 'lista de unidades en recorrido', data: this.data });
-    //return this.http.get(HTTPCONFIG.url + API + '/transito/unidades');
+    //return of({ error: false, codigo: 200, mensaje: 'lista de unidades en recorrido', data: this.data });
+    return this.http.get(HTTPCONFIG.url + API + '/transito/unidades');
   }
 
   getUnidadRecorridoTransito(idTransito: number): Observable<any> {
-    const transit = this.data.find((it: any) => it.id == idTransito);
-    return of({ error: false, codigo: 200, mensaje: 'transito ', data: transit })
+    //const transit = this.data.find((it: any) => it.id == idTransito);
+    //return of({ error: false, codigo: 200, mensaje: 'transito ', data: transit })
 
-    //return this.http.get(HTTPCONFIG.url + API + '/transito/unidad/' + idTransito);
+    return this.http.get(HTTPCONFIG.url + API + '/transito/unidad/' + idTransito);
   }
 
-  startTimerCoordenadas(idColRec: number): Observable<any> {
-    return new Observable<any>(observer => {
-      this.timer = setInterval(() => {
-        if (this.last < this.coordenadas.length)
-          observer.next(this.coordenadas[this.last++]);
-      }, 3000);
-    });
-  }
-
-  stopTimerCoordenadas() {
-    if (this.timer)
-      clearInterval(this.timer);
-  }
-  s
-
-  getCoordenadasColectivoRecorrido(idColRec: number): Observable<any> {
-    if (this.last == this.coordenadas.length)
-      this.last = 0;
-    return of({ error: false, codigo: 200, mensaje: 'ultima coordenada', data: this.coordenadas[this.last++] });
-    //return this.http.get(HTTPCONFIG.url + API + '/transito/coordenadas/unidad/' + idColRec);
+  getUltimaCoordenadaColectivoRecorrido(idColRec: number): Observable<any> {
+    /* if (this.last < this.coordenadas.length)
+      return of( {error:false, codigo:200, mensaje:'ultima coordenada', data: this.coordenadas[this.last++]});
+    else 
+      return of( {error:false, codigo:200, mensaje:'ultima coordenada', data: this.coordenadas[this.last-1]}); */
+    return this.http.get(HTTPCONFIG.url + API + '/transito/coordenadas/unidad/' + idColRec);
   }
 
   detenerColRec(idColRec: number, idLinea: number, disabled: boolean): Observable<any> {
