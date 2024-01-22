@@ -1,5 +1,8 @@
 package com.stcu.repository;
 
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,8 +29,8 @@ public interface RecorridoRepository extends JpaRepository<Recorrido,Long> {
 
 
 
-    //para App Colectivo
-    @Query("SELECT r FROM Recorrido r WHERE r.linea.denominacion = ?1 AND r.activo is ACTIVO")
+    //para App Colectivo. se cambio, decia r.activo is ACTIVO (?)
+    @Query("SELECT r FROM Recorrido r WHERE r.linea.denominacion = ?1 AND r.activo is TRUE")
     List<Recorrido> findActivosByDenomLinea( String denomLinea);
     
     //OJO con este metodo, si hay dos denom iguales va a traer las dos, tiene que estar asociado si o si con la linea.
@@ -35,10 +38,14 @@ public interface RecorridoRepository extends JpaRepository<Recorrido,Long> {
     @Query("SELECT r FROM Recorrido r WHERE r.denominacion = ?1")
     Recorrido findRecorridoByDenom( String denomRecorrido);
 
-    //para App Colectivo
+    //para App Colectivo. obsoleto
     @Query("SELECT r FROM Recorrido r WHERE r.linea.denominacion = ?1 AND r.denominacion = ?2")
     Recorrido findRecorridoByLineaDenomYRecorridoDenom( String lineaDenom, String recorridoDenom);
 
+    //para App Colectivo. nuevo. trae waypoints recorrido activo
+    @Query("SELECT r FROM Recorrido r WHERE r.linea.denominacion = ?1 AND r.denominacion = ?2 AND r.activo is TRUE")
+    Recorrido findRecorridoActivoByLineaDenomYRecorridoDenom( String lineaDenom, String recorridoDenom);
+   
 
     //para App Colectivo
     //@Query(value = "SELECT ST_DWithin(('POINT(?1"+" "+"?2)'),(SELECT ST_AsText(ST_MakeLine(trayectos)) AS ge FROM recorridos WHERE recorrido_id = ?3 ),0.001);", nativeQuery = true)
@@ -55,4 +62,10 @@ public interface RecorridoRepository extends JpaRepository<Recorrido,Long> {
     @Query("SELECT r FROM Recorrido r WHERE r.linea.id = ?1 AND r.activo is ACTIVO")
     List<Recorrido> findActivosByIdLinea( int idLinea);
 
+
+    // prueba punto intermedio
+    //@Query(value = "SELECT ST_AsEWKT(ST_LineInterpolatePoint( ?1 ,0.5))", nativeQuery=true)
+    @Query(value = "SELECT ST_AsEWKT(ST_LineInterpolatePoint( ?1 ,0.5))", nativeQuery=true)
+    String crearPuntoIntermedioTrayecto(LineString lineStringIntermedio);
+    
 }

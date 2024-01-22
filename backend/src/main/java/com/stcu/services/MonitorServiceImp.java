@@ -141,12 +141,12 @@ public class MonitorServiceImp implements MonitorService {
             Notificacion notificacion = this.repoNotificacion.findDesvioActivo(idcr);
 
             if(notificacion != null){
-            System.out.println("+++++++++++++++++++++ La notificacion que estaba desviada ");
-            System.out.println("notificacion: " + notificacion.getDescripcion() +" "+ notificacion.getId() +" " + notificacion.getTipo());
-            System.out.println("+++++++++++++++++++++ hay desvio activo ");
+            //System.out.println("+++++++++++++++++++++ La notificacion que estaba desviada ");
+            //System.out.println("notificacion: " + notificacion.getDescripcion() +" "+ notificacion.getId() +" " + notificacion.getTipo());
+            //System.out.println("+++++++++++++++++++++ hay desvio activo ");
             return true;   
             }else{
-                System.out.println("+++++++++++++++++++++ No hay desvio activo ");
+               // System.out.println("+++++++++++++++++++++ No hay desvio activo ");
                 return false;
             }
            

@@ -4,11 +4,19 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.stcu.model.Coordenada;
+import com.stcu.model.ParadaRecorrido;
 
 @Getter
 @Setter
 public class CoordenadaDTO implements Serializable {
+
+    private long id;
 
     private double lat;
 
@@ -17,9 +25,27 @@ public class CoordenadaDTO implements Serializable {
     public CoordenadaDTO() {
     }
 
+    //ver si poner id
     public CoordenadaDTO(double x, double y) {
         this.lat = x;
         this.lng = y;
+    }
+
+    public static List<CoordenadaDTO> toListCoordenadaDTO(List<Coordenada> list) {
+        List<CoordenadaDTO> cList = new ArrayList<CoordenadaDTO>();
+        list.forEach(item -> {
+            cList.add(toCoordenadaDTO(item));
+        });
+        return cList;
+    }
+
+    private static CoordenadaDTO toCoordenadaDTO(Coordenada coor) {
+        CoordenadaDTO ncoor = new CoordenadaDTO();
+        ncoor.setId(coor.getId());
+        ncoor.setLat(coor.getLat());
+        ncoor.setLng(coor.getLng());
+        //ver si necesito otros datos mas
+        return ncoor;
     }
 
     // Coordenada2

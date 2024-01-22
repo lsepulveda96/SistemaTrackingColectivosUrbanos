@@ -2,6 +2,9 @@ package com.stcu.services;
 
 import java.util.List;
 
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
+
 import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
 
@@ -35,8 +38,11 @@ public interface RecorridoService {
     //Para app colectivo
     public List<ParadaRecorrido> getParadasRecorridoByLineaDenomYRecorridoDenom( String lineaDenom, String recorridoDenom );
 
-    //Para app colectivo
+    //Para app colectivo. obsoleto, no traia activos
     public Recorrido getRecorridoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido);
+
+    // nuevo, para simulacion recorrido, trae activos
+    public Recorrido getRecorridoActivoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido);
 
     // Para app pasajero
     public List<Recorrido> getRecorridosActivosByIdLinea(int idLinea);
@@ -47,4 +53,6 @@ public interface RecorridoService {
     // Para traer todas paradas app pasajero
     public List<ParadaRecorrido> getParadasRecorridoByLineaDenom( String lineaDenom );
 
+    // prueba punto intermedio
+    public String crearPuntoIntermedio( LineString lineStringIntermedio );
 }

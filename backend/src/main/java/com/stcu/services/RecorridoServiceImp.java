@@ -2,6 +2,8 @@ package com.stcu.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Calendar;
@@ -148,9 +150,16 @@ public class RecorridoServiceImp implements RecorridoService {
         return prs;
     }
 
+    //obsoleto, no traia activos
     @Override  
     public Recorrido getRecorridoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido){
         return this.recorridoRepo.findRecorridoByLineaDenomYRecorridoDenom(denomLinea,denomRecorrido);
+    }
+
+    // nuevo metodo usado para waypoints recorrido simulacion. trae solo activos
+    @Override  
+    public Recorrido getRecorridoActivoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido){
+        return this.recorridoRepo.findRecorridoActivoByLineaDenomYRecorridoDenom(denomLinea,denomRecorrido);
     }
 
     public Boolean verificarUnidadEnRecorrido(String latitud, String longitud, long idRec) {
@@ -178,6 +187,13 @@ public class RecorridoServiceImp implements RecorridoService {
     public List<ParadaRecorrido> getParadasRecorridoByLineaDenom( String lineaDenom ){
                List<ParadaRecorrido> prs = this.paradaRecRepo.getParadasRecorridoByLineaDenom(lineaDenom);
         return prs;
+    }
+
+
+    @Override  
+    public String crearPuntoIntermedio( LineString lineStringIntermedio ){
+               String puntoIntermedio = this.recorridoRepo.crearPuntoIntermedioTrayecto(lineStringIntermedio);
+        return puntoIntermedio;
     }
 
 }
