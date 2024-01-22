@@ -1,5 +1,6 @@
 package com.stcu.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -51,10 +52,21 @@ public class MonitorController {
     public String findColectivoRecorridoTransito(@PathVariable long id) {
         log.info("*** Colectivo recorrido en transito: " + id);
         ColectivoRecorrido colRec = this.service.getColectivoRecorrido(id);
+        List<Ubicacion> ubicaciones;
         Response<ColectivoRecorridoDTO> response;
-        if (colRec != null)
+        if (colRec != null) { // Si existe el colectivo recorrido recupera todas las coordenadas registradas hasta el momento
+            ubicaciones = this.service.findUbicaciones(id);
+            List<CoordenadaDTO> coordenadas = new ArrayList<CoordenadaDTO>();
+            for (Ubicacion ubicacion: ubicaciones) {
+                CoordenadaDTO coor = new CoordenadaDTO( ubicacion.getCoordenada().getX(), ubicacion.getCoordenada().getY() );
+                coordenadas.add(coor);
+            }
+            ColectivoRecorridoDTO crDto = new ColectivoRecorridoDTO( colRec );
+            crDto.setCoordenadas(coordenadas);
+
             response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo recorrido",
-                    new ColectivoRecorridoDTO(colRec));
+                    crDto);
+        }
         else
             response = new Response<ColectivoRecorridoDTO>(true, 400, "No se encontro colectivo recorrido", null);
         log.info("*** Colectivos en transito response: " + response.getMensaje());

@@ -8,15 +8,6 @@ import { HTTPCONFIG, API } from './httpconfig';
 })
 export class MonitorService {
 
-  data = [
-    { id: 23, colectivo: { id: 1, unidad: 'colectivo 3', }, lineaDenominacion: 'linea 2', recorridoDenominacion: 'IDA', transito: true },
-    { id: 25, colectivo: { id: 1, unidad: 'colectivo 4', }, lineaDenominacion: 'linea 2', recorridoDenominacion: 'REGRESO', transito: true },
-    { id: 26, colectivo: { id: 1, unidad: 'colectivo 1', }, lineaDenominacion: 'linea 1', recorridoDenominacion: 'IDA', transito: true },
-    { id: 55, colectivo: { id: 1, unidad: 'colectivo 5', }, lineaDenominacion: 'linea 5', recorridoDenominacion: 'IDA', transito: true },
-    { id: 77, colectivo: { id: 1, unidad: 'colectivo 6', }, lineaDenominacion: 'linea 3', recorridoDenominacion: 'REGRESO', transito: true },
-    { id: 83, colectivo: { id: 1, unidad: 'colectivo 22', }, lineaDenominacion: 'linea 1', recorridoDenominacion: 'REGRESO', transito: true }
-  ];
-
   coordenadas = [
     { lat: -42.773298, lng: -65.052403 },
     { lat: -42.773161, lng: -65.052030 },
@@ -43,29 +34,42 @@ export class MonitorService {
     { lat: -42.772851, lng: -65.047695 },
     { lat: -42.772762, lng: -65.047423 },
   ]
-  last: number = 0;
+  data = [
+    { 
+      id: 23, colectivo: { id: 1, unidad: 'colectivo 3', }, 
+      lineaDenominacion: 'linea 2', recorridoDenominacion: 'IDA', transito: true,
+      coordenadas: this.coordenadas.slice(0,10)
+    },
+    { id: 25, colectivo: { id: 1, unidad: 'colectivo 4', }, lineaDenominacion: 'linea 2', recorridoDenominacion: 'REGRESO', transito: true },
+    { id: 26, colectivo: { id: 1, unidad: 'colectivo 1', }, lineaDenominacion: 'linea 1', recorridoDenominacion: 'IDA', transito: true },
+    { id: 55, colectivo: { id: 1, unidad: 'colectivo 5', }, lineaDenominacion: 'linea 5', recorridoDenominacion: 'IDA', transito: true },
+    { id: 77, colectivo: { id: 1, unidad: 'colectivo 6', }, lineaDenominacion: 'linea 3', recorridoDenominacion: 'REGRESO', transito: true },
+    { id: 83, colectivo: { id: 1, unidad: 'colectivo 22', }, lineaDenominacion: 'linea 1', recorridoDenominacion: 'REGRESO', transito: true }
+  ];
+  
+  last: number = 9;
 
   constructor(private http: HttpClient) { }
 
 
   getUnidadesTransito(): Observable<any> {
-    //return of({ error: false, codigo: 200, mensaje: 'lista de unidades en recorrido', data: this.data });
-    return this.http.get(HTTPCONFIG.url + API + '/transito/unidades');
+    return of({ error: false, codigo: 200, mensaje: 'lista de unidades en recorrido', data: this.data });
+    //return this.http.get(HTTPCONFIG.url + API + '/transito/unidades');
   }
 
   getUnidadRecorridoTransito(idTransito: number): Observable<any> {
-    //const transit = this.data.find((it: any) => it.id == idTransito);
-    //return of({ error: false, codigo: 200, mensaje: 'transito ', data: transit })
+    const transit = this.data.find((it: any) => it.id == idTransito);
+    return of({ error: false, codigo: 200, mensaje: 'transito ', data: transit })
 
-    return this.http.get(HTTPCONFIG.url + API + '/transito/unidad/' + idTransito);
+    //return this.http.get(HTTPCONFIG.url + API + '/transito/unidad/' + idTransito);
   }
 
   getUltimaCoordenadaColectivoRecorrido(idColRec: number): Observable<any> {
-    /* if (this.last < this.coordenadas.length)
+    if (this.last < this.coordenadas.length)
       return of( {error:false, codigo:200, mensaje:'ultima coordenada', data: this.coordenadas[this.last++]});
     else 
-      return of( {error:false, codigo:200, mensaje:'ultima coordenada', data: this.coordenadas[this.last-1]}); */
-    return this.http.get(HTTPCONFIG.url + API + '/transito/coordenadas/unidad/' + idColRec);
+      return of( {error:false, codigo:200, mensaje:'ultima coordenada', data: this.coordenadas[this.last-1]}); 
+    //return this.http.get(HTTPCONFIG.url + API + '/transito/coordenadas/unidad/' + idColRec);
   }
 
   detenerColRec(idColRec: number, idLinea: number, disabled: boolean): Observable<any> {

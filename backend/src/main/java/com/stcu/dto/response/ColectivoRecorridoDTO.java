@@ -24,9 +24,10 @@ public class ColectivoRecorridoDTO {
     private long recorridoId;
     private String recorridoDenominacion;
 
-        //para mostrar en pantalla monitoreo
+    //para mostrar en pantalla monitoreo
     private String lineaDenominacion;
     private long lineaId;
+    private List<CoordenadaDTO> coordenadas;
 
     //para App colectivo
     private Parada paradaActual;

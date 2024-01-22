@@ -46,12 +46,14 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
     this.initMap();
     const id = this.route.snapshot.paramMap.get('id');
     this.getColectivoEnTransito(parseInt(id));
-    this.getCoordenadasLoop(parseInt(id));
+    //this.getCoordenadasLoop(parseInt(id));
   }
 
   ngOnDestroy(): void {
-    if (this.coordenadaSubs)
+    if (this.coordenadaSubs) {
+      this.serviceMonitor.last = 9; // solo prueba
       this.coordenadaSubs.unsubscribe();
+    }
   }
 
   getColectivoEnTransito(idtransito: number) {
@@ -59,8 +61,9 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
     this.serviceMonitor.getUnidadRecorridoTransito(idtransito)
       .subscribe(result => {
         this.waiting = false;
-        console.log("colectivo en transito: ", result );
         this.colectivoRecorrido = result.data;
+        this.initCoordenadas(this.colectivoRecorrido.coordenadas);
+        this.getCoordenadasLoop(idtransito);
       });
   }
 
@@ -77,25 +80,43 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
     }).addTo(this.map);
   }
 
-  getCoordenadasLoop(idtransito: number) {
+  // Inicializa el trayecto recorrido hasta el momente de inicio de monitoreo
+  initCoordenadas(coordenadas: any[]) {
     this.trace = [];
     this.ultimaCoordenada = null;
-    this.coordenadaSubs = timer(0,3000).pipe( 
-      map( () => {
-        this.serviceMonitor.getUltimaCoordenadaColectivoRecorrido(idtransito)
-        .subscribe( (result: any) => {
-          console.log("result : ", result );
-          if (result && !result.error && !this.equalCoordenada( result.data )) {
-            this.ultimaCoordenada = result.data;
-            if (this.ultimaCoordenada) {
-              this.trace.push(this.ultimaCoordenada);
-              this.showPosicion();
-              this.showRecorrido();
-            }
+    if (coordenadas) {
+      for (let coord of coordenadas) {
+        if (!this.equalCoordenada(coord)) {
+          this.ultimaCoordenada = coord;
+          if (this.ultimaCoordenada) {
+            this.trace.push(this.ultimaCoordenada);
+            this.showPosicion();
+            this.showRecorrido();
           }
-          else 
-              console.log("No hay coordenada o es misma coordenada: ", this.ultimaCoordenada, ", ", result ); 
-        });
+        }
+      }
+    }
+  }
+
+  // Comienza a recuperar coordenadas actualizadas cada 3 segundos
+  getCoordenadasLoop(idtransito: number) {
+    //this.trace = [];
+    this.ultimaCoordenada = null;
+    this.coordenadaSubs = timer(0, 3000).pipe(
+      map(() => {
+        this.serviceMonitor.getUltimaCoordenadaColectivoRecorrido(idtransito)
+          .subscribe((result: any) => {
+            if (result && !result.error && !this.equalCoordenada(result.data)) {
+              this.ultimaCoordenada = result.data;
+              if (this.ultimaCoordenada) {
+                this.trace.push(this.ultimaCoordenada);
+                this.showPosicion();
+                this.showRecorrido();
+              }
+            }
+            else
+              console.log("No hay coordenada o es misma coordenada: ", this.ultimaCoordenada, ", ", result);
+          });
       })).subscribe();
   }
 
@@ -134,7 +155,7 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
     //this.map.fitBounds(trays);
   }
 
-  
+
 
   private equalCoordenada(newCoordenada: Coordenada): boolean {
     if (!this.ultimaCoordenada)

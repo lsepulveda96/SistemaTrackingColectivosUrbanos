@@ -46,7 +46,9 @@ export class UsuariosListComponent implements OnInit, AfterViewInit {
     this.serviceUsuario.getUsuarios()
       .subscribe(result => {
         this.waiting = false;
-        this.usuarios = result.data.filter((usr: Usuario) => usr.id != this.tokenService.getUser().id);
+        this.usuarios = result.data.filter((usr: Usuario) =>
+          usr.id != this.tokenService.getUser().id && usr.usuario != 'sysadmin'
+        );
         this.usuariosDS.data = this.usuarios;
       });
   }
