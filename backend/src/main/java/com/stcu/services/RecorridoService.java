@@ -3,7 +3,6 @@ package com.stcu.services;
 import java.util.List;
 
 import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.Point;
 
 import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;

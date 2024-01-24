@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Coordenada } from 'src/app/data/coordenada';
 import { Subscription, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LineaService } from 'src/app/services/linea.service';
 
 @Component({
   selector: 'app-monit-unidad',
@@ -21,7 +22,15 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
   id: number;
   map: any;
   marker: any;
+
   iconParada: any = L.icon({
+    iconUrl: 'assets/images/stopbus.png',
+    iconSize: [45, 50],
+    iconAnchor: [45, 50],
+    popupAnchor: [-8, -37]
+  });
+
+  iconBus: any = L.icon({
     iconUrl: 'assets/images/buspin.png',
     iconSize: [45, 50],
     iconAnchor: [45, 50],
@@ -33,10 +42,14 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
   trace: Coordenada[];
   recGroup: any; // grupo de trayectos del recorrido actual seleccionado.
   coordenadasGroup: any; // grupo de coordenadas leidas;
-  colorRec = '#ffa500';
+  colorRecBus = '#1e90ff';
+  colorRec = '#008000';
+
+  paradasGroup: any; // grupo de paradas del recorrido.
 
   constructor(
     private serviceMonitor: MonitorService,
+    private serviceLinea: LineaService,
     private route: ActivatedRoute,
     private _snackbar: MatSnackBar
   ) { }
@@ -62,6 +75,8 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
       .subscribe(result => {
         this.waiting = false;
         this.colectivoRecorrido = result.data;
+        console.log("Colectivo recorrido en transito: ", this.colectivoRecorrido);
+        this.getParadasRecorrido( this.colectivoRecorrido.recorridoId)
         this.initCoordenadas(this.colectivoRecorrido.coordenadas);
         this.getCoordenadasLoop(idtransito);
       });
@@ -123,7 +138,7 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
   showPosicion() {
     if (this.marker)
       this.map.removeLayer(this.marker);
-    this.marker = L.marker([this.ultimaCoordenada.lat, this.ultimaCoordenada.lng], { icon: this.iconParada, draggable: false })
+    this.marker = L.marker([this.ultimaCoordenada.lat, this.ultimaCoordenada.lng], { icon: this.iconBus, draggable: false })
       .addTo(this.map)
       .bindPopup('Unidad: ' + this.colectivoRecorrido.colectivo.unidad.toString())
       .openPopup();
@@ -142,7 +157,7 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
       this.recGroup = new L.LayerGroup();
 
     // Crea el polyline que mostrara el recorrido.    
-    const polyline = L.polyline([], { color: this.colorRec });
+    const polyline = L.polyline([], { color: this.colorRecBus, dashArray: [10,10] });
 
     // Toma los trayectos del recorrido y en base a ellos genera el polyline
     const trays = this.trace.map((coord: any) => new L.LatLng(coord.lat, coord.lng));
@@ -153,6 +168,33 @@ export class MonitUnidadComponent implements OnInit, OnDestroy {
     this.recGroup.addLayer(polyline);
     this.recGroup.addTo(this.map);
     //this.map.fitBounds(trays);
+  }
+
+  getParadasRecorrido( id: number ) {
+    this.serviceLinea.getParadasRecorrido( id ).subscribe( result => {
+      if (!result.error) {
+        const paradasRec = result.data.map( (pr:any) => pr.parada );
+        console.log("paradas de recorrido " + id, paradasRec );
+        this.showParadasRecorrido( paradasRec );
+      }
+    });
+  }
+
+  showParadasRecorrido( paradas: any[]) {
+    if (this.paradasGroup)
+      this.paradasGroup.clearLayers();
+    else
+      this.paradasGroup = new L.LayerGroup();
+    
+    // Toma los trayectos del recorrido y en base a ellos genera el polyline
+    for (let parada of paradas) {
+      const markParada = new L.Marker(L.latLng(parada.coordenada.lat, parada.coordenada.lng), {
+        icon: this.iconParada
+      });
+      markParada.bindPopup( parada.codigo + ': ' + parada.direccion );
+      this.paradasGroup.addLayer(markParada);
+    }
+    this.paradasGroup.addTo(this.map);
   }
 
 

@@ -53,23 +53,23 @@ export class MonitorService {
 
 
   getUnidadesTransito(): Observable<any> {
-    return of({ error: false, codigo: 200, mensaje: 'lista de unidades en recorrido', data: this.data });
-    //return this.http.get(HTTPCONFIG.url + API + '/transito/unidades');
+    //return of({ error: false, codigo: 200, mensaje: 'lista de unidades en recorrido', data: this.data });
+    return this.http.get(HTTPCONFIG.url + API + '/transito/unidades');
   }
 
   getUnidadRecorridoTransito(idTransito: number): Observable<any> {
-    const transit = this.data.find((it: any) => it.id == idTransito);
-    return of({ error: false, codigo: 200, mensaje: 'transito ', data: transit })
+    /* const transit = this.data.find((it: any) => it.id == idTransito);
+    return of({ error: false, codigo: 200, mensaje: 'transito ', data: transit }) */
 
-    //return this.http.get(HTTPCONFIG.url + API + '/transito/unidad/' + idTransito);
+    return this.http.get(HTTPCONFIG.url + API + '/transito/unidad/' + idTransito);
   }
 
   getUltimaCoordenadaColectivoRecorrido(idColRec: number): Observable<any> {
-    if (this.last < this.coordenadas.length)
+    /* if (this.last < this.coordenadas.length)
       return of( {error:false, codigo:200, mensaje:'ultima coordenada', data: this.coordenadas[this.last++]});
     else 
-      return of( {error:false, codigo:200, mensaje:'ultima coordenada', data: this.coordenadas[this.last-1]}); 
-    //return this.http.get(HTTPCONFIG.url + API + '/transito/coordenadas/unidad/' + idColRec);
+      return of( {error:false, codigo:200, mensaje:'ultima coordenada', data: this.coordenadas[this.last-1]});   */
+    return this.http.get(HTTPCONFIG.url + API + '/transito/coordenadas/unidad/' + idColRec);
   }
 
   detenerColRec(idColRec: number, idLinea: number, disabled: boolean): Observable<any> {
