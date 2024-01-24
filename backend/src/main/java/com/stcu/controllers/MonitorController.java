@@ -54,20 +54,21 @@ public class MonitorController {
         ColectivoRecorrido colRec = this.service.getColectivoRecorrido(id);
         List<Ubicacion> ubicaciones;
         Response<ColectivoRecorridoDTO> response;
-        if (colRec != null) { // Si existe el colectivo recorrido recupera todas las coordenadas registradas hasta el momento
+        if (colRec != null) { // Si existe el colectivo recorrido recupera todas las coordenadas registradas
+                              // hasta el momento
             ubicaciones = this.service.findUbicaciones(id);
             List<CoordenadaDTO> coordenadas = new ArrayList<CoordenadaDTO>();
-            for (Ubicacion ubicacion: ubicaciones) {
-                CoordenadaDTO coor = new CoordenadaDTO( ubicacion.getCoordenada().getX(), ubicacion.getCoordenada().getY() );
+            for (Ubicacion ubicacion : ubicaciones) {
+                CoordenadaDTO coor = new CoordenadaDTO(ubicacion.getCoordenada().getX(),
+                        ubicacion.getCoordenada().getY());
                 coordenadas.add(coor);
             }
-            ColectivoRecorridoDTO crDto = new ColectivoRecorridoDTO( colRec );
+            ColectivoRecorridoDTO crDto = new ColectivoRecorridoDTO(colRec);
             crDto.setCoordenadas(coordenadas);
 
             response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo recorrido",
                     crDto);
-        }
-        else
+        } else
             response = new Response<ColectivoRecorridoDTO>(true, 400, "No se encontro colectivo recorrido", null);
         log.info("*** Colectivos en transito response: " + response.getMensaje());
         return Mapper.getResponseAsJson(response);
@@ -113,9 +114,13 @@ public class MonitorController {
     // para pantalla notificaciones activas
     @GetMapping("/notificacion/activas")
     public String findNotificacionesActivas() {
+        log.info("*** find notificaciones activas");
+
         List<Notificacion> list = service.findNotificacionesActivas();
         Response<List<NotificacionDTO>> response = new Response<List<NotificacionDTO>>(false, 200,
-                "Notificaciones activas ", NotificacionDTO.toListNotificacionDTO(list));
+                "Notificaciones activas " + list.size(), NotificacionDTO.toListNotificacionDTO(list));
+
+        log.info("*** Notificaciones activas: " + response.getMensaje());
         return Mapper.getResponseAsJson(response);
     }
 }

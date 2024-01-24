@@ -1,49 +1,60 @@
 <mat-card>
     <mat-card-header>
         <mat-card-title>
+            <mat-icon>
+                notifications_active
+            </mat-icon> &nbsp;
             Alertas de servicio activas
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
-        <table mat-table [dataSource]="notifDS">
-            <ng-container matColumnDef="linea">
-                <th mat-header-cell *matHeaderCellDef>Linea</th>
-                <td mat-cell *matCellDef="let notif">{{ notif.lineaDenom }}</td>
-            </ng-container>
-            <ng-container matColumnDef="unidad">
-                <th mat-header-cell *matHeaderCellDef>Unidad</th>
-                <td mat-cell *matCellDef="let notif">{{ notif.colectivoDenom }}</td>
-            </ng-container>
-            <ng-container matColumnDef="recorrido">
-                <th mat-header-cell *matHeaderCellDef>Recorrido</th>
-                <td mat-cell *matCellDef="let notif">{{ notif.recorridoDenom }}</td>
-            </ng-container>
-            <ng-container matColumnDef="descripcion">
-                <th mat-header-cell *matHeaderCellDef>Descripcion</th>
-                <td mat-cell *matCellDef="let notif">{{ notif.descripcion }}</td>
-            </ng-container>
-            <ng-container matColumnDef="fecha">
-                <th mat-header-cell *matHeaderCellDef>Fecha</th>
-                <td mat-cell *matCellDef="let notif">{{ notif.fecha }}</td>
-            </ng-container>
+        <div *ngIf="!waiting && notifDS.data.length==0">
+            <i class="bi bi-info-circle" style="color:blue;"></i>&nbsp;
+            <span>No existen notificaciones activas actualmente</span>
+        </div>
+        <div [hidden]="notifDS.data.length==0">
+            <table mat-table [dataSource]="notifDS">
+                <ng-container matColumnDef="linea">
+                    <th mat-header-cell *matHeaderCellDef>Linea</th>
+                    <td mat-cell *matCellDef="let notif">{{ notif.lineaDenom }}</td>
+                </ng-container>
+                <ng-container matColumnDef="unidad">
+                    <th mat-header-cell *matHeaderCellDef>Unidad</th>
+                    <td mat-cell *matCellDef="let notif">{{ notif.colectivoDenom }}</td>
+                </ng-container>
+                <ng-container matColumnDef="recorrido">
+                    <th mat-header-cell *matHeaderCellDef>Recorrido</th>
+                    <td mat-cell *matCellDef="let notif">{{ notif.recorridoDenom }}</td>
+                </ng-container>
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef>Descripcion</th>
+                    <td mat-cell *matCellDef="let notif">{{ notif.descripcion }}</td>
+                </ng-container>
+                <ng-container matColumnDef="fecha">
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <td mat-cell *matCellDef="let notif">{{ notif.fecha }}</td>
+                </ng-container>
 
-            <ng-container matColumnDef="acciones">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let notif">
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let notif">
 
-                    <button mat-icon-button class="ml-2" color="primary" (click)="verUbicacion( notif )"
-                        style="color: black" matTooltip="ver Ubicacion">
-                        <i class="material-icons">preview</i>
-                    </button>
+                        <button mat-icon-button class="ml-2" color="primary" (click)="verUbicacion( notif )"
+                            style="color: black" matTooltip="ver Ubicacion">
+                            <i class="material-icons">preview</i>
+                        </button>
 
-                </td>
-            </ng-container>
+                    </td>
+                </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="['linea','unidad','recorrido','descripcion','fecha','acciones']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['linea','unidad','recorrido','descripcion','fecha','acciones']">
-            </tr>
-        </table>
-        <mat-paginator #pag [pageSize]="10"></mat-paginator>
+                <tr mat-header-row *matHeaderRowDef="['linea','unidad','recorrido','descripcion','fecha','acciones']">
+                </tr>
+                <tr mat-row
+                    *matRowDef="let row; columns: ['linea','unidad','recorrido','descripcion','fecha','acciones']">
+                </tr>
+            </table>
+            <mat-paginator #pag [pageSize]="10"></mat-paginator>
+        </div>
     </mat-card-content>
 </mat-card>
