@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from '../../misc/confirm/confirm.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MonitorService } from 'src/app/services/monitor.service';
+import { NotificacionUbicacionComponent } from '../notificaciones-ubicacion/notificaciones-ubicacion.component';
 
 @Component({
   selector: 'app-notificaciones-list',
@@ -49,5 +50,12 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
       }) ); 
      
     });
+  }
+
+  verUbicacion( notif:any) {
+    const data = { 
+      notif: notif 
+    }
+    this.dialog.open( NotificacionUbicacionComponent, { data: data });
   }
 }

@@ -13,12 +13,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NotificacionUbicacionComponent } from './notificaciones-ubicacion/notificaciones-ubicacion.component';
 
 
 @NgModule({
   declarations: [
     NotificacionesComponent,
-    NotificacionesListComponent
+    NotificacionesListComponent,
+    NotificacionUbicacionComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,36 @@
+<mat-card class="p-0 m-0">
+    <mat-card-header class="p-0">
+        <mat-card-title>
+            Ubicacion colectivo
+        </mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="p-0">
+        <div class="row border">
+            <div class="col-12">
+               <span>{{ 'Colectivo: ' + notif?.colectivoDenom }}</span>
+            </div>
+            <div class="col-12">
+                <span>{{ 'Linea: ' + notif?.lineaDenom + ' - Recorrido: ' + notif?.recorridoDenom}}</span>
+             </div>
+            <div class="col-12">
+               <span>{{ 'Hora notificacion: ' + notif?.fecha}}</span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="map-container">
+                <div class="map-frame">
+                    <div id="map"></div>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-actions align="end">
+        <button mat-stroked-button color="primary" (click)="cerrar()" class="button-border">
+            Cerrar
+        </button>
+    </mat-card-actions>
+</mat-card>
