@@ -749,6 +749,7 @@ public class MobileController {
     int diferencia = 1000;
     ColectivoRecorrido colRecProximo = null;
     int ordenParadaColectivoSel = -1;
+    boolean colectivoEstaEnParadaPasajero = false;
 
     try {
       for (ColectivoRecorrido cr : crList) {
@@ -761,6 +762,10 @@ public class MobileController {
               diferencia = difparada;
               colRecProximo = cr;
               ordenParadaColectivoSel = ordenParadaColectivo;
+            }
+            //si el colectivo esta en la parada del pasajero
+            if(ordenParadaPasajero == ordenParadaColectivo){
+              colectivoEstaEnParadaPasajero = true;
             }
             break;
           }
@@ -799,6 +804,15 @@ public class MobileController {
 
     System.out
         .println(" else if EL TIEMPO ACUMULADO original ++++++++++++++++ ----------------------- " + tiempoAcumulado);
+
+    System.out
+        .println(" colectivoEstaEnParadaPasajero ++++++++++++++++ ----------------------- " + colectivoEstaEnParadaPasajero);
+
+    if (colectivoEstaEnParadaPasajero) {
+      System.out.println("El colectivo llego a la parada"); // y return
+      response = new Response<ColectivoRecorridoDTO>(false, 200, "El colectivo llego a la parada", null);
+      return Mapper.getResponseAsJson(response);
+    }
 
     if (tiempoAcumulado == 0) {
       response = new Response<ColectivoRecorridoDTO>(true, 400, "No hay colectivos cercanos", null);
@@ -856,6 +870,12 @@ public class MobileController {
     hor = segundos / 3600;
     min = (segundos - (3600 * hor)) / 60;
     seg = segundos - ((hor * 3600) + (min * 60));
+
+    if ((hor == 0 && min == 0 && seg < 10)) {
+      System.out.println("Colectivo aproximandose a la parada"); // y return
+      response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo aproximandose a la parada", null);
+      return Mapper.getResponseAsJson(response);
+    }
 
     tiempoTotal = hor + " hs: " + min + " min: " + seg + " seg ";
     response = new Response<ColectivoRecorridoDTO>(false, 200, tiempoTotal, null);
