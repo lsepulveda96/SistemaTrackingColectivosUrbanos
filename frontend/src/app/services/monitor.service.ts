@@ -79,7 +79,7 @@ export class MonitorService {
   notificaciones = [
     {
       id: 573,
-      fecha: "01/17/2024, 12:12 AM",
+      fecha: "01/17/2024, 12:35 AM",
       descripcion: "Unidad Desviada",
       tipo: "DESVIADO",
       activa: true,
@@ -88,7 +88,7 @@ export class MonitorService {
     }
   ]
   getNotificacionesActivas(): Observable<any> {
-    //return of( { error: false, codigo:200, mensaje: 'notificaciones activas', data: this.notificaciones });
-    return this.http.get(HTTPCONFIG.url + API + '/notificacion/activas');
+    return of( { error: false, codigo:200, mensaje: 'notificaciones activas', data: this.notificaciones });
+    //return this.http.get(HTTPCONFIG.url + API + '/notificacion/activas');
   }
 }

@@ -14,7 +14,7 @@
                 <span>{{ 'Linea: ' + notif?.lineaDenom + ' - Recorrido: ' + notif?.recorridoDenom}}</span>
              </div>
             <div class="col-12">
-               <span>{{ 'Hora notificacion: ' + notif?.fecha}}</span>
+               <span>{{ 'Hora notificacion: ' + (notif ? (notif.fecha | date:'dd/MM/yy HH:mm'):'') }}</span>
             </div>
         </div>
         <div class="container">
