@@ -88,7 +88,7 @@ export class MonitorService {
     }
   ]
   getNotificacionesActivas(): Observable<any> {
-    return of( { error: false, codigo:200, mensaje: 'notificaciones activas', data: this.notificaciones });
-    //return this.http.get(HTTPCONFIG.url + API + '/notificacion/activas');
+    //return of( { error: false, codigo:200, mensaje: 'notificaciones activas', data: this.notificaciones });
+    return this.http.get(HTTPCONFIG.url + API + '/notificacion/activas');
   }
 }
