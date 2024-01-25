@@ -41,13 +41,13 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
       this.waiting = false;
       this.notifDS.data = result.data
 
-      this.notifDS.data.forEach((item) => item.fecha = new Date(item.fecha).toLocaleDateString('en-US', {
+      /* this.notifDS.data.forEach((item) => item.fecha = new Date(item.fecha).toLocaleDateString('en-US', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
-      }) ); 
+      }) );  */
      
     });
   }
@@ -56,6 +56,6 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
     const data = { 
       notif: notif 
     }
-    this.dialog.open( NotificacionUbicacionComponent, { data: data });
+    this.dialog.open( NotificacionUbicacionComponent, { data: data, width: '600px' });
   }
 }

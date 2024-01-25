@@ -35,10 +35,10 @@ export class MonitorService {
     { lat: -42.772762, lng: -65.047423 },
   ]
   data = [
-    { 
-      id: 23, colectivo: { id: 1, unidad: 'colectivo 3', }, 
+    {
+      id: 23, colectivo: { id: 1, unidad: 'colectivo 3', },
       lineaDenominacion: 'linea 2', recorridoDenominacion: 'IDA', transito: true,
-      coordenadas: this.coordenadas.slice(0,10)
+      coordenadas: this.coordenadas.slice(0, 10)
     },
     { id: 25, colectivo: { id: 1, unidad: 'colectivo 4', }, lineaDenominacion: 'linea 2', recorridoDenominacion: 'REGRESO', transito: true },
     { id: 26, colectivo: { id: 1, unidad: 'colectivo 1', }, lineaDenominacion: 'linea 1', recorridoDenominacion: 'IDA', transito: true },
@@ -46,7 +46,7 @@ export class MonitorService {
     { id: 77, colectivo: { id: 1, unidad: 'colectivo 6', }, lineaDenominacion: 'linea 3', recorridoDenominacion: 'REGRESO', transito: true },
     { id: 83, colectivo: { id: 1, unidad: 'colectivo 22', }, lineaDenominacion: 'linea 1', recorridoDenominacion: 'REGRESO', transito: true }
   ];
-  
+
   last: number = 9;
 
   constructor(private http: HttpClient) { }
@@ -76,7 +76,19 @@ export class MonitorService {
     return this.http.delete(HTTPCONFIG.url + API + '/transito/detener/unidad/' + idColRec + '/' + idLinea + '/' + disabled);
   }
 
+  notificaciones = [
+    {
+      id: 573,
+      fecha: "01/17/2024, 12:12 AM",
+      descripcion: "Unidad Desviada",
+      tipo: "DESVIADO",
+      activa: true,
+      coordenada: { id: 0, lat: -42.7763627, lng: -65.0523424, direccion: null, codigo: 0, fechaNotificacion: null, orden: 0 },
+      colectivoDenom: "23", recorridoDenom: "IDA", lineaDenom: "LINEA 2"
+    }
+  ]
   getNotificacionesActivas(): Observable<any> {
+    //return of( { error: false, codigo:200, mensaje: 'notificaciones activas', data: this.notificaciones });
     return this.http.get(HTTPCONFIG.url + API + '/notificacion/activas');
   }
 }

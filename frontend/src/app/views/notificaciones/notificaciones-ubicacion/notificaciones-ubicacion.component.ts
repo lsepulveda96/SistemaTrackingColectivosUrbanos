@@ -39,7 +39,7 @@ export class NotificacionUbicacionComponent implements OnInit {
     console.log(JSON.stringify(this.notif));
 
 
-    this.width = this.dialogRef.componentInstance.width;
+    //this.width = this.dialogRef.componentInstance.width;
 
     /*this.qrdata = JSON.stringify({
       linea: this.linea.id,
@@ -52,16 +52,16 @@ export class NotificacionUbicacionComponent implements OnInit {
     this.notifData = JSON.stringify({
       notif: this.notif
     });
-    this.notifData = this.notifData.slice(1,-1); // para eliminar corchetes al inicio y al final 
+    this.notifData = this.notifData.slice(1, -1); // para eliminar corchetes al inicio y al final 
 
 
     if (this.marker)
-    this.map.removeLayer(this.marker);
-  this.marker = L.marker([this.notif.coordenada.lat, this.notif.coordenada.lng], { icon: this.iconParada, draggable: false })
-    .addTo(this.map)
-    .bindPopup('Unidad: ' + this.notif.colectivoDenom)
-    .openPopup();
-  this.map.panTo(new L.LatLng(this.notif.coordenada.lat, this.notif.coordenada.lng));
+      this.map.removeLayer(this.marker);
+    this.marker = L.marker([this.notif.coordenada.lat, this.notif.coordenada.lng], { icon: this.iconParada, draggable: false })
+      .addTo(this.map)
+      .bindPopup('Unidad: ' + this.notif.colectivoDenom)
+      .openPopup();
+    this.map.panTo(new L.LatLng(this.notif.coordenada.lat, this.notif.coordenada.lng));
 
 
   }
