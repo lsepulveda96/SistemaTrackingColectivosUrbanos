@@ -26,7 +26,7 @@
                     <span *ngIf="!recorridos || recorridos.length ==0">No existen recorridos activos para esta
                         linea</span>
                 </div>
-                <div class="col d-flex justify-content-end">
+                <div class="col d-flex justify-content-end" *ngIf="false">
                     <button mat-stroked-button color="primary" matTooltip="historial" class="small"
                         *ngIf="recorridos && recorridos.length >0">
                         <mat-icon class="icon-size">history</mat-icon>
