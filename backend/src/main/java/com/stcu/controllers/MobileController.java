@@ -2,6 +2,7 @@ package com.stcu.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -722,13 +723,13 @@ public class MobileController {
     // Buscar recorrido y todas sus paradas
     List<ParadaRecorrido> prlist = serviceRecorrido.getParadasRecorridoByLineaIdYRecorridoId(idLinea, idRecorrido);
 
-    System.out.println("++++++++++++ lista paradas recorrido: " + prlist.size());
+    //System.out.println("++++++++++++ lista paradas recorrido: " + prlist.size());
     for (ParadaRecorrido paradaRecorrido : prlist) {
       System.out
           .println(paradaRecorrido.getParada().toString() + " --- " + paradaRecorrido.getRecorrido().getDenominacion());
     }
 
-    System.out.println("++++++++++++ lista colectivo recorrido activo" + crList.size());
+    //System.out.println("++++++++++++ lista colectivo recorrido activo" + crList.size());
     for (ColectivoRecorrido colectivoRecorrido : crList) {
       System.out.println(colectivoRecorrido.getColectivo().getUnidad() + " --- "
           + colectivoRecorrido.getRecorrido().getDenominacion());
@@ -763,8 +764,8 @@ public class MobileController {
               colRecProximo = cr;
               ordenParadaColectivoSel = ordenParadaColectivo;
             }
-            //si el colectivo esta en la parada del pasajero
-            if(ordenParadaPasajero == ordenParadaColectivo){
+            // si el colectivo esta en la parada del pasajero
+            if (ordenParadaPasajero == ordenParadaColectivo) {
               colectivoEstaEnParadaPasajero = true;
             }
             break;
@@ -785,28 +786,20 @@ public class MobileController {
     int ordenParadaActual = ordenParadaColectivoSel;
 
     for (ParadaRecorrido pr : prlist) {
-      System.out
-          .println("pr.getOrden() : " + pr.getOrden() + " //// ordenParadaColectivoSel: " + ordenParadaColectivoSel);
       if (pr.getOrden() == ordenParadaColectivoSel) {
         if (calculoTiempoIniciado == false) {
           calculoTiempoIniciado = true;
           // tiempoAcumulado = pr.getTiempo();
-          System.out.println(
-              " if pr.getOrden() == ordenParadaColectivoSel EL TIEMPO ACUMULADO ++++++++++++++++ " + tiempoAcumulado);
           ordenParadaActual++;
         }
       } else if (calculoTiempoIniciado && ordenParadaActual <= ordenParadaPasajero) {
         tiempoAcumulado += pr.getTiempo();
-        System.out.println(" else if EL TIEMPO ACUMULADO ++++++++++++++++ " + tiempoAcumulado);
         ordenParadaActual++;
       }
     }
 
-    System.out
-        .println(" else if EL TIEMPO ACUMULADO original ++++++++++++++++ ----------------------- " + tiempoAcumulado);
-
-    System.out
-        .println(" colectivoEstaEnParadaPasajero ++++++++++++++++ ----------------------- " + colectivoEstaEnParadaPasajero);
+    // System.out.println(" colectivoEstaEnParadaPasajero: " +
+    // colectivoEstaEnParadaPasajero);
 
     if (colectivoEstaEnParadaPasajero) {
       System.out.println("El colectivo llego a la parada"); // y return
@@ -828,6 +821,8 @@ public class MobileController {
     double lat2Rad = 0;
     double lon2Rad = 0;
 
+    Double tiempoSobrante = 0.0;
+
     Ubicacion ultimaCoordColeRec;
     if (colRecProximo != null) {
 
@@ -837,29 +832,58 @@ public class MobileController {
       ultimaCoordColeRec = this.serviceMonitor.getLastUbicacion(colRecProximo.getId());
       lat2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getX());
       lon2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getY());
+
+      /*Calendar calInicio = colRecProximo.getFechaParadaActual();
+      Calendar calSalida = ultimaCoordColeRec.getFecha();
+
+      int difHoras = calSalida.get(Calendar.HOUR) - calInicio.get(Calendar.HOUR);
+      int difMinutos = calSalida.get(Calendar.MINUTE) - calInicio.get(Calendar.MINUTE);
+      int difSegundos = calSalida.get(Calendar.SECOND) - calInicio.get(Calendar.SECOND);
+      Calendar calDif = Calendar.getInstance();// variable para diferencia de tiempo
+
+      calDif.set(Calendar.HOUR, difHoras);
+      calDif.set(Calendar.MINUTE, difMinutos);
+      calDif.set(Calendar.SECOND, difSegundos);
+      int segundosTranscurridos = calDif.get(Calendar.HOUR) * 60 * 60 + calDif.get(Calendar.MINUTE) * 60 +  calDif.get(Calendar.SECOND);
+
+      double hsTranscurridas = segundosTranscurridos/60/60;
+
+      System.out.println("----- ");
+      System.out.println("horas diferencia" + calDif.get(Calendar.HOUR));
+      System.out.println("minutos diferencia" + calDif.get(Calendar.MINUTE));
+      System.out.println("segundos diferencia" + calDif.get(Calendar.SECOND));
+      System.out.println("----- ");
+*/
+      int EARTH_RADIUS = 6371;
+      int VEL_PROMEDIO = 25000;
+
+      double x = (lon2Rad - lon1Rad) * Math.cos((lat1Rad + lat2Rad) / 2);
+      double y = (lat2Rad - lat1Rad);
+      Double distanciaTranscurrida = Math.sqrt(x * x + y * y) * EARTH_RADIUS;
+
+      //Double distEnKms = distanciaTranscurrida;
+      // para distancia en metros
+      distanciaTranscurrida = distanciaTranscurrida * 1000;
+
+     /* double velocidadEnriquecida;
+      if (segundosTranscurridos != 0){
+        //velocidadEnriquecida = distanciaTranscurrida.intValue() / segundosTranscurridos;
+        velocidadEnriquecida = distEnKms / hsTranscurridas;
+        System.out.println("()()()()()()()()()()()()()()() Distancia transcurrida desde ultima parada visitada: " + distEnKms);
+        System.out.println(" +++++++++++++++++++++++ ");
+        System.out.println(" %%%%%%%%%%%%%%%%%%%%%% Total segundos trascurridos desde ultima parada visitada" + hsTranscurridas);
+        System.out.println(" &&&&&&&&&&&&&&&&&&&&&& Velocidad a la que circulo el cole desde parada visitada: " + velocidadEnriquecida);
+      }
+       */
+      
+      // tiempoSobranteEnriquecido = (distanciaTranscurrida / velocidadEnriquecida) *60 *60
+      tiempoSobrante = (distanciaTranscurrida / VEL_PROMEDIO) * 60 * 60;
+
+
     }
 
-    int EARTH_RADIUS = 6371;
-    int VEL_PROMEDIO = 30000;
-
-    double x = (lon2Rad - lon1Rad) * Math.cos((lat1Rad + lat2Rad) / 2);
-    double y = (lat2Rad - lat1Rad);
-    double distance = Math.sqrt(x * x + y * y) * EARTH_RADIUS;
-
-    // para distancia en metros
-    distance = distance * 1000;
-
-    System.out.println("++++++++++++++++ --------------- ++++++++++ orden parada sel: " + ordenParadaColectivoSel);
-
-    System.out.println("++++++++++++++++++++++++++++++++++++++++++++ distancia sobrante: " + distance);
-
-    Double tiempoSobrante = (distance / VEL_PROMEDIO) * 60 * 60;
-
-    System.out.println("++++++++++++++++++++++++++++++++++++++++++++ tiempo sobrante: " + tiempoSobrante);
-
+    // segundosDouble = tiempoAcumulado - tiempoSobranteEnriquecido;
     Double segundosDouble = tiempoAcumulado - tiempoSobrante;
-
-    System.out.println("++++++++++++++++++++++++++++++++++++++ perdida de segundos" + segundosDouble);
 
     int segundos = segundosDouble.intValue();
 

@@ -78,6 +78,7 @@ public class MonitorServiceImp implements MonitorService {
             //Colectivo colectivo = this.rep.findById(id);
             if (cr != null) {
                 cr.setParadaActual(repoParada.findByCodigo(codigoParada));
+                cr.setFechaParadaActual(Calendar.getInstance());
                 return this.repoColRec.save(cr);
             }
             return null;

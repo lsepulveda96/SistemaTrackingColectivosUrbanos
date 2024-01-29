@@ -50,12 +50,16 @@ public class ColectivoRecorrido {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parada_id")
     private Parada paradaActual;
-   
 
+    @Column(name="fecha_parada_actual")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar fechaParadaActual;
+   
     public ColectivoRecorrido() {}
     
     public ColectivoRecorrido( Colectivo col, Recorrido rec ) {
         this.colectivo = col;
         this.recorrido = rec;
     }
+
 }

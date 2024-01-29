@@ -22,7 +22,7 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
     Notificacion findNotificacionColeDetenidoActiva(long idcr);
 
     // para pantalla notificaciones-avisos activas
-    @Query("SELECT notif FROM Notificacion notif WHERE notif.activa IS TRUE")
+    @Query("SELECT notif FROM Notificacion notif WHERE notif.activa IS TRUE order by notif.fecha DESC")
     public List<Notificacion> findNotificacionesActivas();
 
 }
