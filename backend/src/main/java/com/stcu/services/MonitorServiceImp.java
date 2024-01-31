@@ -14,9 +14,11 @@ import com.stcu.model.Ubicacion;
 import com.stcu.repository.ColectivoRecorridoRepository;
 import com.stcu.repository.NotificacionRepository;
 import com.stcu.repository.ParadaRepository;
+import com.stcu.repository.RecorridoRepository;
 import com.stcu.repository.UbicacionRepository;
 import org.locationtech.jts.geom.Point;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class MonitorServiceImp implements MonitorService {
@@ -29,6 +31,10 @@ public class MonitorServiceImp implements MonitorService {
     private ParadaRepository repoParada;
     @Autowired
     private NotificacionRepository repoNotificacion;
+
+    @Autowired
+    private RecorridoRepository repoRecorrido;
+
     
 
     @Override
@@ -320,5 +326,7 @@ public class MonitorServiceImp implements MonitorService {
             return null;
         }
     }
+
+
 
 }

@@ -723,13 +723,14 @@ public class MobileController {
     // Buscar recorrido y todas sus paradas
     List<ParadaRecorrido> prlist = serviceRecorrido.getParadasRecorridoByLineaIdYRecorridoId(idLinea, idRecorrido);
 
-    //System.out.println("++++++++++++ lista paradas recorrido: " + prlist.size());
+    // System.out.println("++++++++++++ lista paradas recorrido: " + prlist.size());
     for (ParadaRecorrido paradaRecorrido : prlist) {
       System.out
           .println(paradaRecorrido.getParada().toString() + " --- " + paradaRecorrido.getRecorrido().getDenominacion());
     }
 
-    //System.out.println("++++++++++++ lista colectivo recorrido activo" + crList.size());
+    // System.out.println("++++++++++++ lista colectivo recorrido activo" +
+    // crList.size());
     for (ColectivoRecorrido colectivoRecorrido : crList) {
       System.out.println(colectivoRecorrido.getColectivo().getUnidad() + " --- "
           + colectivoRecorrido.getRecorrido().getDenominacion());
@@ -833,27 +834,32 @@ public class MobileController {
       lat2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getX());
       lon2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getY());
 
-      /*Calendar calInicio = colRecProximo.getFechaParadaActual();
-      Calendar calSalida = ultimaCoordColeRec.getFecha();
-
-      int difHoras = calSalida.get(Calendar.HOUR) - calInicio.get(Calendar.HOUR);
-      int difMinutos = calSalida.get(Calendar.MINUTE) - calInicio.get(Calendar.MINUTE);
-      int difSegundos = calSalida.get(Calendar.SECOND) - calInicio.get(Calendar.SECOND);
-      Calendar calDif = Calendar.getInstance();// variable para diferencia de tiempo
-
-      calDif.set(Calendar.HOUR, difHoras);
-      calDif.set(Calendar.MINUTE, difMinutos);
-      calDif.set(Calendar.SECOND, difSegundos);
-      int segundosTranscurridos = calDif.get(Calendar.HOUR) * 60 * 60 + calDif.get(Calendar.MINUTE) * 60 +  calDif.get(Calendar.SECOND);
-
-      double hsTranscurridas = segundosTranscurridos/60/60;
-
-      System.out.println("----- ");
-      System.out.println("horas diferencia" + calDif.get(Calendar.HOUR));
-      System.out.println("minutos diferencia" + calDif.get(Calendar.MINUTE));
-      System.out.println("segundos diferencia" + calDif.get(Calendar.SECOND));
-      System.out.println("----- ");
-*/
+      /*
+       * Calendar calInicio = colRecProximo.getFechaParadaActual();
+       * Calendar calSalida = ultimaCoordColeRec.getFecha();
+       * 
+       * int difHoras = calSalida.get(Calendar.HOUR) - calInicio.get(Calendar.HOUR);
+       * int difMinutos = calSalida.get(Calendar.MINUTE) -
+       * calInicio.get(Calendar.MINUTE);
+       * int difSegundos = calSalida.get(Calendar.SECOND) -
+       * calInicio.get(Calendar.SECOND);
+       * Calendar calDif = Calendar.getInstance();// variable para diferencia de
+       * tiempo
+       * 
+       * calDif.set(Calendar.HOUR, difHoras);
+       * calDif.set(Calendar.MINUTE, difMinutos);
+       * calDif.set(Calendar.SECOND, difSegundos);
+       * int segundosTranscurridos = calDif.get(Calendar.HOUR) * 60 * 60 +
+       * calDif.get(Calendar.MINUTE) * 60 + calDif.get(Calendar.SECOND);
+       * 
+       * double hsTranscurridas = segundosTranscurridos/60/60;
+       * 
+       * System.out.println("----- ");
+       * System.out.println("horas diferencia" + calDif.get(Calendar.HOUR));
+       * System.out.println("minutos diferencia" + calDif.get(Calendar.MINUTE));
+       * System.out.println("segundos diferencia" + calDif.get(Calendar.SECOND));
+       * System.out.println("----- ");
+       */
       int EARTH_RADIUS = 6371;
       int VEL_PROMEDIO = 25000;
 
@@ -861,24 +867,32 @@ public class MobileController {
       double y = (lat2Rad - lat1Rad);
       Double distanciaTranscurrida = Math.sqrt(x * x + y * y) * EARTH_RADIUS;
 
-      //Double distEnKms = distanciaTranscurrida;
+      // Double distEnKms = distanciaTranscurrida;
       // para distancia en metros
       distanciaTranscurrida = distanciaTranscurrida * 1000;
 
-     /* double velocidadEnriquecida;
-      if (segundosTranscurridos != 0){
-        //velocidadEnriquecida = distanciaTranscurrida.intValue() / segundosTranscurridos;
-        velocidadEnriquecida = distEnKms / hsTranscurridas;
-        System.out.println("()()()()()()()()()()()()()()() Distancia transcurrida desde ultima parada visitada: " + distEnKms);
-        System.out.println(" +++++++++++++++++++++++ ");
-        System.out.println(" %%%%%%%%%%%%%%%%%%%%%% Total segundos trascurridos desde ultima parada visitada" + hsTranscurridas);
-        System.out.println(" &&&&&&&&&&&&&&&&&&&&&& Velocidad a la que circulo el cole desde parada visitada: " + velocidadEnriquecida);
-      }
+      /*
+       * double velocidadEnriquecida;
+       * if (segundosTranscurridos != 0){
+       * //velocidadEnriquecida = distanciaTranscurrida.intValue() /
+       * segundosTranscurridos;
+       * velocidadEnriquecida = distEnKms / hsTranscurridas;
+       * System.out.
+       * println("()()()()()()()()()()()()()()() Distancia transcurrida desde ultima parada visitada: "
+       * + distEnKms);
+       * System.out.println(" +++++++++++++++++++++++ ");
+       * System.out.
+       * println(" %%%%%%%%%%%%%%%%%%%%%% Total segundos trascurridos desde ultima parada visitada"
+       * + hsTranscurridas);
+       * System.out.
+       * println(" &&&&&&&&&&&&&&&&&&&&&& Velocidad a la que circulo el cole desde parada visitada: "
+       * + velocidadEnriquecida);
+       * }
        */
-      
-      // tiempoSobranteEnriquecido = (distanciaTranscurrida / velocidadEnriquecida) *60 *60
-      tiempoSobrante = (distanciaTranscurrida / VEL_PROMEDIO) * 60 * 60;
 
+      // tiempoSobranteEnriquecido = (distanciaTranscurrida / velocidadEnriquecida)
+      // *60 *60
+      tiempoSobrante = (distanciaTranscurrida / VEL_PROMEDIO) * 60 * 60;
 
     }
 
@@ -897,14 +911,46 @@ public class MobileController {
 
     if ((hor == 0 && min == 0 && seg < 10)) {
       System.out.println("Colectivo aproximandose a la parada"); // y return
-      response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo aproximandose a la parada", null);
+      response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo aproximandose a la parada",
+          ColectivoRecorridoDTO.toColectivoRecorridoDTO(colRecProximo));
       return Mapper.getResponseAsJson(response);
     }
 
     tiempoTotal = hor + " hs: " + min + " min: " + seg + " seg ";
-    response = new Response<ColectivoRecorridoDTO>(false, 200, tiempoTotal, null);
+    response = new Response<ColectivoRecorridoDTO>(false, 200, tiempoTotal,
+        ColectivoRecorridoDTO.toColectivoRecorridoDTO(colRecProximo));
     return Mapper.getResponseAsJson(response);
 
   } // fin metodo tiempo llegada
+
+
+
+
+
+
+  @GetMapping("/obtenerUbicacionParadaRecorrido/{idLineaString}/{idRecorridoString}/{codigoParadaString}")
+  public String obtenerUbicacionParadaRecorrido(@PathVariable String idLineaString, @PathVariable String idRecorridoString,
+      @PathVariable String codigoParadaString) {
+
+    Response<ParadaRecorridoDTO> response;
+
+    String separator = ":";
+    int sepPos = idLineaString.indexOf(separator);
+    long idLinea = Long.valueOf(idLineaString.substring(sepPos + separator.length()));
+
+    int sepPos1 = idRecorridoString.indexOf(separator);
+    long idRecorrido = Long.valueOf(idRecorridoString.substring(sepPos1 + separator.length()));
+
+    int sepPos2 = codigoParadaString.indexOf(separator);
+    long codigoParada = Long.valueOf(codigoParadaString.substring(sepPos2 + separator.length()));
+
+    ParadaRecorrido pr = serviceRecorrido.getParadaRecorrido(idLinea, idRecorrido, codigoParada);
+
+    // envia las coordenadas de la paradaRecorrido correspondiente a la ubicacion del usuario
+    response = new Response<ParadaRecorridoDTO>(false, 200, pr.getParada().getCoordenadas().getX()+","+pr.getParada().getCoordenadas().getY(),
+        null);
+    return Mapper.getResponseAsJson(response);
+
+  }
 
 } // fin clase

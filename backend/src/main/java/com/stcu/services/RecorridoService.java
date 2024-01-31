@@ -6,6 +6,7 @@ import org.locationtech.jts.geom.LineString;
 
 import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
+import com.stcu.model.Ubicacion;
 
 public interface RecorridoService {
     
@@ -54,4 +55,7 @@ public interface RecorridoService {
 
     // prueba punto intermedio
     public String crearPuntoIntermedio( LineString lineStringIntermedio );
+
+    // para mostrar ubicacion parada pasajero en mapa arribo colectivo mobile
+    public ParadaRecorrido getParadaRecorrido(long idLinea, long idRecorrido, long codigoParada);
 }
