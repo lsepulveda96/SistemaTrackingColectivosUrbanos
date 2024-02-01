@@ -28,9 +28,13 @@ public class ColectivoRecorridoDTO {
     private String lineaDenominacion;
     private long lineaId;
     private List<CoordenadaDTO> coordenadas;
+    private Calendar fechaParadaActual;
 
     //para App colectivo
     private Parada paradaActual;
+
+    //para monitoreo
+    private CoordenadaDTO ultimaUbicacion;
 
     public ColectivoRecorridoDTO() {
     }
@@ -40,6 +44,7 @@ public class ColectivoRecorridoDTO {
         this.desde = cr.getDesde();
         this.hasta = cr.getHasta();
         this.transito = cr.isTransito();
+        this.fechaParadaActual = cr.getFechaParadaActual();
         Colectivo col = cr.getColectivo();
         if (col != null )
             this.colectivo = new Colectivo(col.getId(), col.getUnidad(), col.getPatente());
@@ -77,6 +82,7 @@ public class ColectivoRecorridoDTO {
         ncr.setRecorridoDenominacion(cr.getRecorrido().getDenominacion());
         ncr.setLineaDenominacion(cr.getRecorrido().getLinea().getDenominacion());
         ncr.setLineaId(cr.getRecorrido().getLinea().getId());
+        ncr.setFechaParadaActual(cr.getFechaParadaActual());
         Parada par =cr.getParadaActual();
         if(par != null)
             ncr.setParadaActual(new Parada(par.getCodigo(),par.getDireccion(),par.getCoordenadas()));

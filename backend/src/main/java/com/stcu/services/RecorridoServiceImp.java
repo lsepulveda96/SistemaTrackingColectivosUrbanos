@@ -12,6 +12,7 @@ import java.util.List;
 import com.stcu.model.Parada;
 import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
+import com.stcu.model.Ubicacion;
 import com.stcu.repository.ParadaRecorridoRepository;
 import com.stcu.repository.ParadaRepository;
 import com.stcu.repository.RecorridoRepository;
@@ -27,7 +28,6 @@ public class RecorridoServiceImp implements RecorridoService {
     private ParadaRepository paradaRepo;
 
     private static final int VEL_PROMEDIO = 25000;
-
 
     @Override
     public Recorrido getRecorrido(long id) {
@@ -60,7 +60,7 @@ public class RecorridoServiceImp implements RecorridoService {
                 newPR.setOrden(pr.getOrden());
                 newPR.setDistancia(pr.getDistancia());
                 Double distDoubleAux = Double.valueOf(pr.getDistancia());
-                newPR.setTiempo(((distDoubleAux/VEL_PROMEDIO) * 60 * 60));
+                newPR.setTiempo(((distDoubleAux / VEL_PROMEDIO) * 60 * 60));
                 this.paradaRecRepo.save(newPR);
             }
             return newRec;
@@ -88,7 +88,7 @@ public class RecorridoServiceImp implements RecorridoService {
                         ParadaRecorrido newPR = new ParadaRecorrido(par, rec);
                         newPR.setOrden(pr.getOrden());
                         newPR.setDistancia(pr.getDistancia());
-                        newPR.setTiempo(pr.getDistancia()/VEL_PROMEDIO);
+                        newPR.setTiempo(pr.getDistancia() / VEL_PROMEDIO);
                         this.paradaRecRepo.save(newPR);
                     } else if (pr.getId() > 0) { // actualizar o eliminar parada recorrido.
                         if (pr.getParada() != null) { // actualizar
@@ -131,7 +131,7 @@ public class RecorridoServiceImp implements RecorridoService {
         return null;
     }
 
-    //para App colectivo
+    // para App colectivo
 
     @Override
     public List<Recorrido> getRecorridosActivosByDenomLinea(String denomLinea) {
@@ -140,30 +140,32 @@ public class RecorridoServiceImp implements RecorridoService {
 
     // este esta causando error. reemplazarlo por otro
     @Override
-    public Recorrido getRecorridoByDenom(String denomRecorrido){
+    public Recorrido getRecorridoByDenom(String denomRecorrido) {
         return this.recorridoRepo.findRecorridoByDenom(denomRecorrido);
     }
 
-    @Override  
-    public List<ParadaRecorrido> getParadasRecorridoByLineaDenomYRecorridoDenom( String lineaDenom, String recorridoDenom ){
-               List<ParadaRecorrido> prs = this.paradaRecRepo.findParadasRecorridoByLineaDenomYRecorridoDenom(lineaDenom,recorridoDenom);
+    @Override
+    public List<ParadaRecorrido> getParadasRecorridoByLineaDenomYRecorridoDenom(String lineaDenom,
+            String recorridoDenom) {
+        List<ParadaRecorrido> prs = this.paradaRecRepo.findParadasRecorridoByLineaDenomYRecorridoDenom(lineaDenom,
+                recorridoDenom);
         return prs;
     }
 
-    //obsoleto, no traia activos
-    @Override  
-    public Recorrido getRecorridoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido){
-        return this.recorridoRepo.findRecorridoByLineaDenomYRecorridoDenom(denomLinea,denomRecorrido);
+    // obsoleto, no traia activos
+    @Override
+    public Recorrido getRecorridoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido) {
+        return this.recorridoRepo.findRecorridoByLineaDenomYRecorridoDenom(denomLinea, denomRecorrido);
     }
 
     // nuevo metodo usado para waypoints recorrido simulacion. trae solo activos
-    @Override  
-    public Recorrido getRecorridoActivoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido){
-        return this.recorridoRepo.findRecorridoActivoByLineaDenomYRecorridoDenom(denomLinea,denomRecorrido);
+    @Override
+    public Recorrido getRecorridoActivoByLineaDenomYRecorridoDenom(String denomLinea, String denomRecorrido) {
+        return this.recorridoRepo.findRecorridoActivoByLineaDenomYRecorridoDenom(denomLinea, denomRecorrido);
     }
 
     public Boolean verificarUnidadEnRecorrido(String latitud, String longitud, long idRec) {
-        return this.recorridoRepo.verificarUnidadEnRecorrido(latitud,longitud,idRec);
+        return this.recorridoRepo.verificarUnidadEnRecorrido(latitud, longitud, idRec);
     }
 
     // Para app Pasajero
@@ -171,29 +173,34 @@ public class RecorridoServiceImp implements RecorridoService {
     public List<Recorrido> getRecorridosActivosByIdLinea(int idLinea) {
         return this.recorridoRepo.findActivosByIdLinea(idLinea);
     }
-    
 
     // Para app Pasajero
-    @Override  
-    public List<ParadaRecorrido> getParadasRecorridoByLineaIdYRecorridoId( long idLinea, long idRecorrido ){
-               List<ParadaRecorrido> prs = this.paradaRecRepo.getParadasRecorridoByLineaIdYRecorridoId(idLinea,idRecorrido);
+    @Override
+    public List<ParadaRecorrido> getParadasRecorridoByLineaIdYRecorridoId(long idLinea, long idRecorrido) {
+        List<ParadaRecorrido> prs = this.paradaRecRepo.getParadasRecorridoByLineaIdYRecorridoId(idLinea, idRecorrido);
         return prs;
     }
-
 
     // para traer todas paradas app pasajero (recorridos activos)
     // Para app Pasajero
-    @Override  
-    public List<ParadaRecorrido> getParadasRecorridoByLineaDenom( String lineaDenom ){
-               List<ParadaRecorrido> prs = this.paradaRecRepo.getParadasRecorridoByLineaDenom(lineaDenom);
+    @Override
+    public List<ParadaRecorrido> getParadasRecorridoByLineaDenom(String lineaDenom) {
+        List<ParadaRecorrido> prs = this.paradaRecRepo.getParadasRecorridoByLineaDenom(lineaDenom);
         return prs;
     }
 
-
-    @Override  
-    public String crearPuntoIntermedio( LineString lineStringIntermedio ){
-               String puntoIntermedio = this.recorridoRepo.crearPuntoIntermedioTrayecto(lineStringIntermedio);
+    @Override
+    public String crearPuntoIntermedio(LineString lineStringIntermedio) {
+        String puntoIntermedio = this.recorridoRepo.crearPuntoIntermedioTrayecto(lineStringIntermedio);
         return puntoIntermedio;
+    }
+
+
+    // para mostrar ubicacion parada pasajero en mapa arribo colectivo mobile
+    @Override
+        public ParadaRecorrido getParadaRecorrido(long idLinea, long idRecorrido, long codigoParada){
+        System.out.println("****************** GET UBICACION PARADA RECORRIDO... ");
+        return this.paradaRecRepo.getParadaRecorrido( idLinea, idRecorrido, codigoParada );
     }
 
 }

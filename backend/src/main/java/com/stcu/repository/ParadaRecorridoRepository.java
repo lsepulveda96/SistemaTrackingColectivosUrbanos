@@ -29,4 +29,11 @@ public interface ParadaRecorridoRepository extends JpaRepository<ParadaRecorrido
     @Query("SELECT pr FROM ParadaRecorrido pr WHERE pr.recorrido.linea.denominacion = ?1 AND pr.recorrido.activo is TRUE ORDER BY pr.orden")
     List<ParadaRecorrido> getParadasRecorridoByLineaDenom(String lineaDenom);
 
+
+
+
+    // para mostrar ubicacion parada pasajero en mapa arribo colectivo mobile
+    @Query("SELECT pr FROM ParadaRecorrido pr WHERE pr.recorrido.linea.id = ?1 AND pr.recorrido.id = ?2 AND pr.parada.codigo = ?3")
+    ParadaRecorrido getParadaRecorrido(long idLinea, long idRecorrido, long codigoParada);
+
 }

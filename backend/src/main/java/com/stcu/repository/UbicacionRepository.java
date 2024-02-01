@@ -16,4 +16,5 @@ public interface UbicacionRepository extends JpaRepository<Ubicacion, Long> {
     @Query("SELECT u FROM Ubicacion u WHERE u.colectivoRecorrido.id =:idCR AND " +
           "u.fecha = (SELECT max(fecha) FROM Ubicacion ub WHERE ub.colectivoRecorrido =:idCR)")
     public Ubicacion findLastByColectivoRecorrido(@Param("idCR") long crId);
+    
 }
