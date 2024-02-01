@@ -11,4 +11,5 @@ export interface Colectivo {
     fechaBaja: Date;
     enCirculacion: boolean;
     imgpath: string;
+    documentos: any[];
 }

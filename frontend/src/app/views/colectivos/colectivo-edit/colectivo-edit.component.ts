@@ -60,6 +60,15 @@ export class ColectivoEditComponent implements OnInit {
   imagen: any;
   url: any;
 
+  documentos: any[];
+  editDoc: boolean;
+  docNombreIC = new FormControl('', Validators.required);
+  docVenceIC = new FormControl(false);
+  docVencimientoIC = new FormControl(null);
+  docNameFile = '';
+  docFile: any;
+  indexEdit: number;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -85,6 +94,7 @@ export class ColectivoEditComponent implements OnInit {
     this.capacidadIC.setValue(null);
     this.compraIC.setValue(null);
     this.estadoIC.setValue(this.estados[0]);
+    this.documentos = [];
     this.spin = false;
   }
 
@@ -106,6 +116,10 @@ export class ColectivoEditComponent implements OnInit {
         this.compraIC.setValue(new Date(this.colectivo.fechaCompra));
         this.estadoIC.setValue(this.colectivo.estado);
         this.imagen = null;
+        this.documentos = this.colectivo.documentos.map((doc: any) => {
+          doc.vencimiento = new Date(doc.vencimiento)
+          return doc;
+        });
         if (this.colectivo.imgpath) {
           this.serviceColectivo
             .downloadImagen(this.colectivo.imgpath)
@@ -120,123 +134,10 @@ export class ColectivoEditComponent implements OnInit {
     });
   }
 
-  registrarNuevoColectivo() {
-    if (this.imagen) {
-      this.spin = true;
-      this.serviceColectivo.uploadImagen(this.imagen).subscribe(
-        result => {
-          this.spin = false;
-          if (result.error) {
-            this._snackbar.open(result.mensaje, "", {
-              duration: 4500,
-              verticalPosition: "bottom", // 'top' | 'bottom'
-              horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-              panelClass: ["red-snackbar"],
-            });
-          }
-          const filename = !result.error ? result.data : null;
-          this.cargarValores(filename);
-          this.guardar();
-        },
-        err => {
-          if (err.error) {
-            this._snackbar.open(err.error.mensaje, "", {
-              duration: 4500,
-              verticalPosition: "bottom", // 'top' | 'bottom'
-              horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-              panelClass: ["red-snackbar"],
-            });
-          }
-          this.cargarValores(null);
-          this.guardar();
-        });
-    } else {
-      this.cargarValores(null);
-      this.guardar();
-    }
-  }
-
-  private guardar() {
-    this.spin = true;
-    this.serviceColectivo.saveColectivo(this.colectivo).subscribe((result) => {
-      this._snackbar.open(result.mensaje, "", {
-        duration: 4500,
-        verticalPosition: "top", // 'top' | 'bottom'
-        horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-        panelClass: result.error ? ["red-snackbar"] : ["blue-snackbar"],
-      });
-      if (!result.error)
-        this.router.navigate(["../"], { relativeTo: this.route });
-      this.spin = false;
-    });
-  }
-
-  actualizarColectivo() {
-    if (this.imagen) {
-      // si se cargo una imagen
-      if (this.colectivo.imgpath && this.colectivo.imgpath.length > 0) {
-        // si habia una imagen anterior se elimina
-        this.serviceColectivo.deleteImagen(this.colectivo.imgpath)
-          .subscribe(res => {
-            console.log("Delete imagen res: ", res);
-          },
-            error => {
-              console.log("Delete imagen error : ", error);
-            });
-      }
-      // Se carga la nueva imagen.
-      this.spin = true;
-      this.serviceColectivo.uploadImagen(this.imagen).subscribe((res) => {
-        console.log("Upload res: ", res);
-        this.spin = false;
-        if (res.error) {
-          this._snackbar.open(res.mensaje, "", {
-            duration: 4500,
-            verticalPosition: "bottom", // 'top' | 'bottom'
-            horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-            panelClass: ["red-snackbar"],
-          });
-        }
-        const filename = !res.error ? res.data : null;
-        this.cargarValores(filename);
-        this.actualizar();
-      },
-        err => {
-          if (err.error) {
-            this._snackbar.open(err.error.mensaje, "", {
-              duration: 4500,
-              verticalPosition: "bottom", // 'top' | 'bottom'
-              horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-              panelClass: ["red-snackbar"],
-            });
-          }
-          this.cargarValores(null);
-          this.actualizar();
-        });
-    } else {
-      this.cargarValores(null);
-      this.actualizar();
-    }
-  }
-
-  private actualizar() {
-    this.spin = true;
-    this.serviceColectivo
-      .updateColectivo(this.colectivo)
-      .subscribe((result) => {
-        this._snackbar.open(result.mensaje, "", {
-          duration: 4500,
-          verticalPosition: "top", // 'top' | 'bottom'
-          horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
-          panelClass: result.error ? ["red-snackbar"] : ["blue-snackbar"],
-        });
-        if (!result.error)
-          this.router.navigate(["../.."], { relativeTo: this.route });
-        this.spin = false;
-      });
-  }
-
-  cargarValores(filename: string) {
+  /**
+   * Registra nueva unidad colectivo, carga su imagen(si la tiene) y sus documentos (si los tiene),
+   */
+  guardarColectivo() {
     this.colectivo = {
       id: this.id,
       unidad: this.unidadIC.value.toUpperCase(),
@@ -249,9 +150,229 @@ export class ColectivoEditComponent implements OnInit {
       estado: this.estadoIC.value,
       enCirculacion: false,
       fechaBaja: null,
-      imgpath: filename,
+      imgpath: null,
+      documentos: [],
     };
+    this.spin = true;
+    this.serviceColectivo.saveColectivo(this.colectivo).subscribe(result => {
+      this.spin = false;
+      this._snackbar.open(result.mensaje, result.error ? 'Error' : 'Exito', {
+        duration: 4500,
+        verticalPosition: "bottom", // 'top' | 'bottom'
+        horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+        panelClass: result.error ? ["red-snackbar"] : ["blue-snackbar"],
+      });
+      if (!result.error) {
+        const idColectivo = result.data.id;
+        if (this.imagen) { // si hay imagen se sube.
+          this.spin = true;
+          this.serviceColectivo.uploadImagen(idColectivo, this.imagen).subscribe(
+            resultUploadImg => {
+              this.spin = false;
+              if (resultUploadImg.error) {
+                this._snackbar.open(result.mensaje, "Error imagen", {
+                  duration: 4500,
+                  verticalPosition: "bottom", // 'top' | 'bottom'
+                  horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                  panelClass: ["red-snackbar"],
+                });
+              }
+            },
+            err => {
+              this.spin = false;
+              if (err.error) {
+                this._snackbar.open(result.mensaje, "Error imagen", {
+                  duration: 4500,
+                  verticalPosition: "bottom", // 'top' | 'bottom'
+                  horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                  panelClass: ["red-snackbar"],
+                });
+              }
+            }
+          );
+        }
+        for (let doc of this.documentos) { // se suben los documentos.
+          this.spin = true;
+          this.serviceColectivo.uploadDoc(idColectivo, doc.nombre, doc.vence, doc.vencimiento, doc.file)
+            .subscribe(
+              resultUploadDoc => {
+                this.spin = false;
+                if (resultUploadDoc.error) {
+                  this._snackbar.open(result.mensaje, "Error documento", {
+                    duration: 4500,
+                    verticalPosition: "bottom", // 'top' | 'bottom'
+                    horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                    panelClass: ["red-snackbar"],
+                  });
+                }
+              },
+              err => {
+                this.spin = false;
+                if (err.error) {
+                  this._snackbar.open(result.mensaje, "Error documento", {
+                    duration: 4500,
+                    verticalPosition: "bottom", // 'top' | 'bottom'
+                    horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                    panelClass: ["red-snackbar"],
+                  });
+                }
+              }
+            );
+        }
+        this.router.navigate(["../"], { relativeTo: this.route });
+      }
+    });
   }
+
+
+  actualizarColectivo() {
+    this.colectivo.unidad = this.unidadIC.value.toUpperCase();
+    this.colectivo.marca = this.marcaIC.value.toUpperCase();
+    this.colectivo.modelo = this.modeloIC.value.toUpperCase();
+    this.colectivo.patente = this.patenteIC.value.toUpperCase();
+    this.colectivo.anio = this.anioIC.value;
+    this.colectivo.capacidad = this.capacidadIC.value;
+    this.colectivo.fechaCompra = this.compraIC.value;
+    this.spin = true;
+    this.serviceColectivo.updateColectivo(this.colectivo).subscribe(result => {
+      this.spin = false;
+      this._snackbar.open(result.mensaje, result.error ? 'Error' : 'Exito', {
+        duration: 4500,
+        verticalPosition: "bottom", // 'top' | 'bottom'
+        horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+        panelClass: result.error ? ["red-snackbar"] : ["blue-snackbar"],
+      });
+      if (!result.error) {
+        if (this.imagen) { // si se actualizo la imagen se carga nuevamente.
+          this.spin = true;
+          this.serviceColectivo.uploadImagen(this.colectivo.id, this.imagen)
+            .subscribe(
+              resultUploadImg => {
+                this.spin = false;
+                if (resultUploadImg.error) {
+                  this._snackbar.open(result.mensaje, "Error imagen", {
+                    duration: 4500,
+                    verticalPosition: "bottom", // 'top' | 'bottom'
+                    horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                    panelClass: ["red-snackbar"],
+                  });
+                }
+              },
+              err => {
+                this.spin = false;
+                if (err.error) {
+                  this._snackbar.open(result.mensaje, "Error imagen", {
+                    duration: 4500,
+                    verticalPosition: "bottom", // 'top' | 'bottom'
+                    horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                    panelClass: ["red-snackbar"],
+                  });
+                }
+              });
+        }
+        const addDocs = this.documentos.filter((doc: any) => !doc.id); // documentos nuevos a cargar.
+        const updDocs = this.documentos.filter((doc: any) => doc.id) // documentos a actualizar.
+        const remDocs = this.colectivo.documentos.filter((doc: any) => !this.documentos.find((d: any) => doc.id == d.id)); // documentos a eliminar.
+
+        console.log("documentos a cargar: ", addDocs);
+        for (let doc of addDocs) {
+          this.spin = true;
+          this.serviceColectivo.uploadDoc(this.colectivo.id, doc.nombre, doc.vence, doc.vencimiento, doc.file)
+            .subscribe(resultUploadDoc => {
+              this.spin = false;
+              if (resultUploadDoc.error) {
+                this._snackbar.open(result.mensaje, "Error documento", {
+                  duration: 4500,
+                  verticalPosition: "bottom", // 'top' | 'bottom'
+                  horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                  panelClass: ["red-snackbar"],
+                });
+              }
+            },
+              err => {
+                this.spin = false;
+                if (err.error) {
+                  this._snackbar.open(result.mensaje, "Error documento", {
+                    duration: 4500,
+                    verticalPosition: "bottom", // 'top' | 'bottom'
+                    horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                    panelClass: ["red-snackbar"],
+                  });
+                }
+              });
+        }
+
+        console.log("documentos a actualizar: ", updDocs);
+        for (let doc of updDocs) {
+          if (doc.file) { // actualiza datos y archivo.
+            this.serviceColectivo.updateDocFile(doc.id, doc.nombre, doc.vence, new Date(doc.vencimiento), doc.file)
+              .subscribe(resultUpdDoc => {
+                if (resultUpdDoc.error) {
+                  this._snackbar.open(result.mensaje, "Error actualizando documento", {
+                    duration: 4500,
+                    verticalPosition: "bottom", // 'top' | 'bottom'
+                    horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                    panelClass: ["red-snackbar"],
+                  });
+                }
+              },
+                err => {
+                  if (err.error) {
+                    this._snackbar.open(result.mensaje, "Error actualizando documento", {
+                      duration: 4500,
+                      verticalPosition: "bottom", // 'top' | 'bottom'
+                      horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                      panelClass: ["red-snackbar"],
+                    });
+                  }
+                });
+          }
+          else { // Actualiza solo datos.
+            this.serviceColectivo.updateDocData(doc.id, doc )
+              .subscribe(resultUpdDoc => {
+                if (resultUpdDoc.error) {
+                  this._snackbar.open(result.mensaje, "Error actualizando documento", {
+                    duration: 4500,
+                    verticalPosition: "bottom", // 'top' | 'bottom'
+                    horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                    panelClass: ["red-snackbar"],
+                  });
+                }
+              });
+          }
+        }
+
+        console.log("documentos a eliminar: ", remDocs);
+        for (let doc of remDocs) {
+          this.spin = true;
+          this.serviceColectivo.deleteDoc(doc.id).subscribe(resultDelDoc => {
+            this.spin = false;
+            if (resultDelDoc.error) {
+              this._snackbar.open(result.mensaje, "Error eliminado documento", {
+                duration: 4500,
+                verticalPosition: "bottom", // 'top' | 'bottom'
+                horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                panelClass: ["red-snackbar"],
+              });
+            }
+          },
+            err => {
+              this.spin = false;
+              if (err.error) {
+                this._snackbar.open(result.mensaje, "Error eliminado documento", {
+                  duration: 4500,
+                  verticalPosition: "bottom", // 'top' | 'bottom'
+                  horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+                  panelClass: ["red-snackbar"],
+                });
+              }
+            });
+        }
+        this.router.navigate(["../.."], { relativeTo: this.route });
+      }
+    });
+  }
+
 
   bajaColectivo() {
     const ref = this.dialog.open(ConfirmComponent, {
@@ -305,5 +426,108 @@ export class ColectivoEditComponent implements OnInit {
         );
       }
     }
+  }
+
+  getClass(name: string) {
+    const ext = name.split('.').pop();
+    if (ext == 'pdf')
+      return 'bi bi-file-pdf-fill text-danger';
+    else if (ext == 'jpg' || ext == 'jpeg' || ext == 'png')
+      return 'bi bi-file-image-fill text-primary';
+    return 'bi bi-file-earmark-fill text-secondary';
+  }
+
+  onDocSelect(event: any) {
+    if (event.target.files) {
+      this.docFile = event.target.files[0];
+      this.docNameFile = this.docFile.name;
+    }
+  }
+
+  openDocument(doc: any) {
+    if (!doc.id) {
+      const blob = new Blob([doc.file]);
+      window.open(window.URL.createObjectURL(blob));
+    }
+    else {
+      this.spin = true;
+      this.serviceColectivo.downloadDoc( doc.pathfile ).subscribe( data =>{
+        this.spin = false;
+        if (!data.error) {
+          const blob = new Blob([data]);
+          window.open( window.URL.createObjectURL(blob)); 
+        }
+      }); 
+    }
+  }
+
+  nuevaDocumentacion() {
+    this.docNombreIC.setValue('');
+    this.docNameFile = '';
+    this.docFile = null;
+    this.docVenceIC.setValue(false);
+    this.docVencimientoIC.setValue(null);
+    this.editDoc = true;
+    this.indexEdit = -1;
+  }
+
+  editarDocumentacion(index: number) {
+    this.indexEdit = index;
+    const doc = this.documentos[index];
+    console.log("editar doc: ", doc);
+    this.docNombreIC.setValue(doc.nombre);
+    this.docNameFile = doc.namefile;
+    this.docVenceIC.setValue(doc.vence);
+    this.docVencimientoIC.setValue(doc.vencimiento);
+    this.docFile = doc.file;
+    this.editDoc = true;
+  }
+
+  cerrarEditarDoc() {
+    this.editDoc = false;
+  }
+
+  guardarDocumentacion() {
+    if (this.documentos.find((doc: any) => doc.nombre.toUpperCase() == this.docNombreIC.value.toUpperCase())) {
+      this._snackbar.open('Ya existe documento con igual nombre', '', {
+        duration: 4500,
+        verticalPosition: "bottom", // 'top' | 'bottom'
+        horizontalPosition: "end", //'start' | 'center' | 'end' | 'left' | 'right'
+        panelClass: ["red-snackbar"],
+      })
+      return;
+    }
+    const newDoc = {
+      id: null,
+      namefile: this.docNameFile,
+      nombre: this.docNombreIC.value,
+      vence: this.docVenceIC.value,
+      vencimiento: this.docVencimientoIC.value,
+      file: this.docFile
+    }
+    this.documentos.push(newDoc);
+    this.cerrarEditarDoc();
+  }
+
+  actualizarDocumentacion() {
+    this.documentos[this.indexEdit].nombre = this.docNombreIC.value;
+    this.documentos[this.indexEdit].nameFile = this.docNameFile;
+    this.documentos[this.indexEdit].file = this.docFile;
+    this.documentos[this.indexEdit].vence = this.docVenceIC.value;
+    this.documentos[this.indexEdit].vencimiento = this.docVencimientoIC.value;
+    this.cerrarEditarDoc();
+  }
+
+  quitarDocumento(index: number) {
+    const doc = this.documentos[index];
+    const data = { titulo: 'Quitar documento', mensaje: 'Confirma quitar documento ' + doc.nombre + '?' };
+    const refDialog = this.dialog.open(ConfirmComponent, { data: data });
+    refDialog.afterClosed().subscribe(aceptar => {
+      console.log("aceptar: ", aceptar);
+      if (aceptar) {
+        this.documentos = this.documentos.filter(d => d.nombre != doc.nombre);
+        console.log("docs: ", this.documentos);
+      }
+    });
   }
 }

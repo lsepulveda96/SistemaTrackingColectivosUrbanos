@@ -21,6 +21,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatListModule } from '@angular/material/list';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -47,7 +49,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatDatepickerModule,
     MatTooltipModule,
     MatSelectModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatListModule,
+    MatCheckboxModule
   ]
 })
 export class ColectivosModule { }

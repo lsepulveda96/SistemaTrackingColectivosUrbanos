@@ -12,14 +12,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -43,8 +40,8 @@ public class FilesController {
      * @param file
      * @return
      */
-    @PostMapping("/upload")
-    public ResponseEntity<Response<String>> uploadFile(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/img/upload")
+    public ResponseEntity<Response<String>> uploadImgFile(@RequestParam("file") MultipartFile file) {
         log.info("*** uploadFile: " + file.getOriginalFilename());
         Response<String> response;
         try {
@@ -65,7 +62,7 @@ public class FilesController {
      * 
      * @return
      */
-    @GetMapping("/list")
+    @GetMapping("/img/list")
     public ResponseEntity<List<FileInfo>> getListFiles() {
         log.info("*** getListFiles: ");
         List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
@@ -85,8 +82,8 @@ public class FilesController {
      * @param filename
      * @return
      */
-    @GetMapping("/download/{filename:.+}")
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+    @GetMapping("/img/download/{filename:.+}")
+    public ResponseEntity<Resource> getImgFile(@PathVariable String filename) {
         log.info("*** getFile: " + filename);
         Resource file = storageService.load(filename);
         return ResponseEntity.ok()
@@ -101,8 +98,8 @@ public class FilesController {
      * @param filename
      * @return
      */
-    @DeleteMapping("/delete/{filename:.+}")
-    public ResponseEntity<Response> deleteFile(@PathVariable String filename) {
+    @DeleteMapping("/img/delete/{filename:.+}")
+    public ResponseEntity<Response> deleteImgFile(@PathVariable String filename) {
         log.info("*** deleteFile: " + filename);
         String message = "";
         Response<String> response;

@@ -32,17 +32,47 @@ export class ColectivoService {
     return this.http.get( HTTPCONFIG.url + API + '/colectivo/baja/' + id );
   }
 
-  uploadImagen( img: any ): Observable<any> {
+  uploadImagen( id: number, img: any ): Observable<any> {
     const formdata = new FormData();
     formdata.append('file', img );
-    return this.http.post( HTTPCONFIG.url + API + '/files/upload', formdata );
+    return this.http.post( HTTPCONFIG.url + API + '/files/image/upload/' +id, formdata );
   }
 
   downloadImagen( filename: string ):Observable<any> {
-    return this.http.get( HTTPCONFIG.url + API + '/files/download/'+filename, { responseType:'blob'} );
+    return this.http.get( HTTPCONFIG.url + API + '/files/img/download/'+filename, { responseType:'blob'} );
   }
 
   deleteImagen( filename: string ): Observable<any> {
-    return this.http.delete( HTTPCONFIG.url + API + '/files/delete/'+filename );
+    return this.http.delete( HTTPCONFIG.url + API + '/files/img/delete/'+filename );
+  }
+
+  uploadDoc( idColectivo:number, nombre:string, vence:boolean, vencimiento: Date, doc: any ): Observable<any> {
+    const formdata = new FormData();
+    formdata.append('nombre',nombre);
+    formdata.append('vence',String(vence));
+    formdata.append('vencimiento',vencimiento ? vencimiento.toISOString(): null );
+    formdata.append('file', doc );
+    return this.http.post( HTTPCONFIG.url + API + '/files/doc/upload/'+idColectivo, formdata );
+  }
+
+  updateDocFile( idDoc:number, nombre:string, vence:boolean, vencimiento: Date, doc: any ): Observable<any> {
+    const formdata = new FormData();
+    formdata.append('nombre',nombre);
+    formdata.append('vence',String(vence));
+    formdata.append('vencimiento',vencimiento ? vencimiento.toISOString(): null );
+    formdata.append('file', doc );
+    return this.http.post( HTTPCONFIG.url + API + '/files/doc/updatefile/'+idDoc, formdata );
+  }
+
+  updateDocData( id: number, doc: any ): Observable<any> {
+    return this.http.put( HTTPCONFIG.url + API + '/files/doc/updatedata/'+id, doc );
+  }
+
+  downloadDoc( filename: string  ):Observable<any> {
+    return this.http.get( HTTPCONFIG.url + API + '/files/doc/download/'+filename, { responseType:'blob'} );
+  }
+
+  deleteDoc( docId:number ): Observable<any> {
+    return this.http.delete( HTTPCONFIG.url + API + '/files/doc/delete/'+docId );
   }
 }

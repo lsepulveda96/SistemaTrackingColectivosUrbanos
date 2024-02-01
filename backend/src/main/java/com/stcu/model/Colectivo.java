@@ -1,12 +1,17 @@
 package com.stcu.model;
 
 import java.util.Calendar;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -61,6 +66,11 @@ public class Colectivo {
 
     @Column(name = "imgpath")
     private String imgpath;
+
+    //@OneToMany(fetch=FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "colectivo_id", referencedColumnName = "id")
+    private List<Documento> documentos;
 
     public Colectivo() {
     }

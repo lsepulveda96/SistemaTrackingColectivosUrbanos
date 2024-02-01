@@ -34,6 +34,6 @@
   height: 205px;
   border: 1px solid gray;
   background: #eee;
-  margin: auto;
+  /* margin: auto; */
   padding: 2px;
 }

@@ -3,7 +3,9 @@ package com.stcu.services;
 import java.util.List;
 
 import com.stcu.model.Colectivo;
+import com.stcu.model.Documento;
 import com.stcu.repository.ColectivoRepository;
+import com.stcu.repository.DocumentoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -14,6 +16,8 @@ public class ColectivoServiceImp implements ColectivoService {
 
     @Autowired
     private ColectivoRepository rep;
+    @Autowired
+    private DocumentoRepository repDoc;
 
     @Override
     public List<Colectivo> getAllColectivos() {
@@ -83,6 +87,51 @@ public class ColectivoServiceImp implements ColectivoService {
         return cols;
     }
 
+    @Override
+    public Documento saveDocumento( long id, Documento doc) {
+        Colectivo col = this.rep.findById(id);
+        Documento ndoc = this.repDoc.save(doc);
+        col.getDocumentos().add(ndoc);
+        this.rep.save( col );
+        return doc;
+    }
 
+    @Override
+    public Documento updateDocumento(Documento doc) {
+        try {
+            Documento docu = this.repDoc.findById(doc.getId());
+            if (docu != null) {
+                docu.setNombre( doc.getNombre());
+                docu.setNamefile(doc.getNamefile());
+                docu.setPathfile(doc.getPathfile());
+                docu.setVence(doc.isVence());
+                docu.setVencimiento(doc.getVencimiento());
+                return this.repDoc.save(docu);
+            }
+            return null;
+        } catch (Exception ex) {
+            System.out.println("++++++ ERROR actualizando documento " + ex);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean removeDocumento(long id) {
+        this.repDoc.deleteById(id);
+        return true;
+    }
+
+    @Override
+    public Colectivo saveImage(long id, String path) {
+        Colectivo col = this.rep.findById(id);
+        col.setImgpath(path);
+        this.rep.save( col );
+        return col;
+    }
+
+    @Override
+    public Documento getDocumento( long id ) {
+        return this.repDoc.findById(id);
+    }
 
 }

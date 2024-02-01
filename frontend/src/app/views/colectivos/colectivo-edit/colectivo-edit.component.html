@@ -46,80 +46,186 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4 d-flex justify-content-start">
-                    <div class="frame">
-                        <img [src]="url" class="rounded float-right" width="200" height="200">
+                <div class="col-4 d-flex justify-content-end">
+                    <div class="d-flex align-items-baseline">
                         <button mat-icon-button color="primary" matTooltipPosition="left" matTooltip="cargar imagen"
-                            (click)="hiddenfileinput.click()" style="margin: auto;">
+                            (click)="hiddenfileinput.click()">
                             <mat-icon>add_photo_alternate</mat-icon>
                         </button>
                         <input #hiddenfileinput style="display: none" type="file" (change)="onImagenSelect($event)"
                             accept="image/png,image/jpeg">
                     </div>
+                    <div class="frame">
+                        <img [src]="url" class="rounded float-right" width="200" height="200">
+                    </div>
                 </div>
             </div>
+
             <div class="row">
-                <div class="col-4">
-                    <mat-form-field appearance="standard">
-                        <mat-label>Patente</mat-label>
-                        <input matInput [formControl]="patenteIC" autocomplete="off" class="text-upper" 
-                            required />
-                        <mat-error *ngIf="patenteIC.hasError('required')">requerido</mat-error>
-                        <mat-error *ngIf="patenteIC.hasError('pattern')">patente invalida</mat-error>
-                    </mat-form-field>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-4">
+                            <mat-form-field appearance="standard">
+                                <mat-label>Patente</mat-label>
+                                <input matInput [formControl]="patenteIC" autocomplete="off" class="text-upper"
+                                    required />
+                                <mat-error *ngIf="patenteIC.hasError('required')">requerido</mat-error>
+                                <mat-error *ngIf="patenteIC.hasError('pattern')">patente invalida</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <mat-form-field appearance="standard">
+                                <mat-label>Capacidad</mat-label>
+                                <input matInput [formControl]="capacidadIC" />
+                                <mat-error *ngIf="capacidadIC.hasError('pattern')">capacidad invalida (1 a
+                                    99)</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <mat-form-field appearance="standard">
+                                <mat-label>Fecha de compra</mat-label>
+                                <input matInput [formControl]="compraIC" [matDatepicker]="picker" autocomplete="off" />
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="id">
+                        <div class="col-6">
+                            <mat-form-field appearance="standard">
+                                <mat-label>Estado</mat-label>
+                                <input matInput [value]="colectivo?.estado" readonly />
+                                <button mat-stroked-button class="border-danger ml-3" color="warn" matSuffix
+                                    (click)="bajaColectivo()" *ngIf="colectivo?.estado!='BAJA'">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    Baja
+                                </button>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            documentacion
+                            <button mat-icon-button color="primary" matTooltipPosition="left"
+                                matTooltip="cargar documentacion" (click)="nuevaDocumentacion()">
+                                <i class="bi bi-file-plus"></i>
+                            </button>
+                        </div>
+                        <div class="card-body" *ngIf="!editDoc">
+                            <mat-list class="my-0 py-0">
+                                <mat-list-item *ngFor="let doc of documentos; let i=index" class="my-0 py-0">
+                                    <div mat-line>
+                                        <i [class]="getClass(doc.namefile)"></i>
+                                        <span style="cursor:pointer;" (click)="openDocument(doc)">
+                                            {{ doc.nombre }}
+                                        </span>
+                                    </div>
+                                    <span *ngIf="doc.vence">
+                                        {{ 'vence ' + (doc.vencimiento | date:'dd/MM/yy') }}
+                                    </span>
+                                    <button mat-icon-button color="primary"
+                                        (click)="editarDocumentacion(i)">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button mat-icon-button color="primary"
+                                        (click)="quitarDocumento(i)">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                    <mat-divider></mat-divider>
+                                </mat-list-item>
+                            </mat-list>
+                        </div>
+                        <div class="card-body px-4" *ngIf="editDoc">
+                            <div class="row">
+                                <div class="col-12">
+                                    <mat-form-field style="width: 100%;">
+                                        <mat-label>Nombre documentacion</mat-label>
+                                        <input matInput [formControl]="docNombreIC" required>
+                                        <mat-error *ngIf="docNombreIC.hasError('required')">campo requerido</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-start align-items-center">
+                                    <button mat-icon-button color="primary" matTooltip="cargar Archivo"
+                                    (click)="hiddenDocinput.click()">
+                                        <i class="bi bi-file-arrow-up"></i>
+                                    </button>
+                                    <input #hiddenDocinput style="display: none" type="file"
+                                        (change)="onDocSelect($event)" accept="image/png,image/jpeg,.pdf">
+                                    <mat-form-field style="width: 100%;">
+                                        <mat-label>Archivo</mat-label>
+                                        <input matInput [value]="docNameFile" readonly>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-12 d-flex justify-content-start align-items-center">
+                                    <mat-checkbox [formControl]="docVenceIC" color="primary">
+                                        Tiene vencimiento</mat-checkbox>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <mat-form-field *ngIf="docVenceIC.value">
+                                        <mat-label>fecha</mat-label>
+                                        <input matInput [formControl]="docVencimientoIC" [matDatepicker]="picker2"
+                                            autocomplete="off" required />
+                                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker2></mat-datepicker>
+                                        <mat-error *ngIf="docVencimientoIC.hasError('required')">requerido</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-flex justify-content-end">
+                                    <button mat-stroked-button color="primary" *ngIf="indexEdit==-1"
+                                        [disabled]="docNombreIC.hasError('required') ||  
+                                        !docFile || 
+                                        (docVenceIC.value && docVencimientoIC.hasError('required'))"
+                                        (click)="guardarDocumentacion()">
+                                        Aceptar
+                                    </button>
+                                    <button mat-stroked-button color="primary" *ngIf="indexEdit>=0"
+                                        [disabled]="docNombreIC.hasError('required') ||  
+                                        !docNameFile || 
+                                        (docVenceIC.value && docVencimientoIC.hasError('required'))"
+                                        (click)="actualizarDocumentacion()">
+                                        Actualizar
+                                    </button>
+                                    <button mat-stroked-button color="primary" class="mx-3"
+                                        (click)="cerrarEditarDoc()">
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-4">
-                    <mat-form-field appearance="standard">
-                        <mat-label>Capacidad</mat-label>
-                        <input matInput [formControl]="capacidadIC" />
-                        <mat-error *ngIf="capacidadIC.hasError('pattern')">capacidad invalida (1 a 99)</mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <mat-form-field appearance="standard">
-                        <mat-label>Fecha de compra</mat-label>
-                        <input matInput [formControl]="compraIC" [matDatepicker]="picker" autocomplete="off" />
-                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row" *ngIf="id">
-                <div class="col-6">
-                    <mat-form-field appearance="standard">
-                        <mat-label>Estado</mat-label>
-                        <input matInput [value]="colectivo?.estado" readonly />
-                        <button mat-stroked-button class="border-danger ml-3" color="warn" matSuffix
-                            (click)="bajaColectivo()" *ngIf="colectivo?.estado!='BAJA'">
-                            <i class="bi bi-x-circle-fill"></i>
-                            Baja
-                        </button>
-                    </mat-form-field>
-                </div>
-            </div>
-            <mat-divider></mat-divider>
-            <br>
-            <div class="row">
-                <div class="d-flex justify-content-end">
-                    <button mat-stroked-button class="border-primary m-2" color="primary"
-                        (click)="registrarNuevoColectivo()" *ngIf="!id"
-                        [disabled]="unidadIC.hasError('required') || marcaIC.hasError('requred') || patenteIC.hasError('required')">
-                        Guardar
-                    </button>
-                    <button mat-stroked-button class="border-primary m-2" color="primary"
-                        (click)="actualizarColectivo()" *ngIf="id"
-                        [disabled]="unidadIC.hasError('required') || marcaIC.hasError('requred') || patenteIC.hasError('required')">
-                        Actualizar
-                    </button>
-                    <button mat-stroked-button class="border-primary m-2" [routerLink]="id ? ['../..']:['../']"
-                        color="primary">
-                        Cancelar
-                    </button>
-                </div>
+        </div>
+
+        <mat-divider></mat-divider>
+        <br>
+        <div class="row">
+            <div class="d-flex justify-content-end">
+                <button mat-stroked-button class="border-primary m-2" color="primary"
+                    (click)="guardarColectivo()" *ngIf="!id"
+                    [disabled]="unidadIC.hasError('required') || marcaIC.hasError('requred') || patenteIC.hasError('required')">
+                    Guardar
+                </button>
+                <button mat-stroked-button class="border-primary m-2" color="primary" (click)="actualizarColectivo()"
+                    *ngIf="id"
+                    [disabled]="unidadIC.hasError('required') || marcaIC.hasError('requred') || patenteIC.hasError('required')">
+                    Actualizar
+                </button>
+                <button mat-stroked-button class="border-primary m-2" [routerLink]="id ? ['../..']:['../']"
+                    color="primary">
+                    Cancelar
+                </button>
             </div>
         </div>
     </mat-card-content>

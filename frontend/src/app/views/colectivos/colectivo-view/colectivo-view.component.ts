@@ -54,6 +54,10 @@ export class ColectivoViewComponent implements OnInit {
           return;
         }
         this.colectivo = result.data;
+        /* this.colectivo.documentos = [
+          {  id:1, nombre: 'arch1', pathfile:'', namefile:'archivo.pdf', vence:true, vencimiento:'2024-04-01'},
+          {  id:2, nombre: 'arch2', pathfile:'', namefile:'archivo2.png', vence:false, vencimiento:null}
+        ] */
         if (this.colectivo.imgpath) {
           this.waiting = true;
           this.servicioColectivo
@@ -66,6 +70,26 @@ export class ColectivoViewComponent implements OnInit {
             })
         }
       })
+  }
+
+  getClass(name: string) {
+    const ext = name.split('.').pop();
+    if (ext == 'pdf')
+      return 'bi bi-file-pdf-fill text-danger';
+    else if (ext == 'jpg' || ext == 'jpeg' || ext == 'png')
+      return 'bi bi-file-image-fill text-primary';
+    return 'bi bi-file-earmark-fill text-secondary';
+  }
+
+  openDocument(doc: any) {
+    this.waiting = true;
+    this.servicioColectivo.downloadDoc(doc.pathfile).subscribe(data => {
+      this.waiting = false;
+      if (!data.error) {
+        const blob = new Blob([data]);
+        window.open(window.URL.createObjectURL(blob));
+      }
+    });
   }
 
 }

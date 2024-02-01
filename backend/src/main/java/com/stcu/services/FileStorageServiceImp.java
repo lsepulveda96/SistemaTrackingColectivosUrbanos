@@ -2,25 +2,19 @@ package com.stcu.services;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.channels.SeekableByteChannel;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.core.env.Environment;
-
-import javax.management.RuntimeErrorException;
 
 @Service
 public class FileStorageServiceImp implements FileStorageService {
@@ -106,4 +100,5 @@ public class FileStorageServiceImp implements FileStorageService {
             throw new RuntimeException("Could not load the files!");
         }
     }
+
 }

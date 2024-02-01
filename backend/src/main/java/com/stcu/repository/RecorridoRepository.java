@@ -1,7 +1,6 @@
 package com.stcu.repository;
 
 import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.Point;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

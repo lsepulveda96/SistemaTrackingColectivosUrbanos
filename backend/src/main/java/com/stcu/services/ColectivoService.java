@@ -3,6 +3,7 @@ package com.stcu.services;
 import java.util.List;
 
 import com.stcu.model.Colectivo;
+import com.stcu.model.Documento;
 
 public interface ColectivoService {
     
@@ -19,4 +20,14 @@ public interface ColectivoService {
     public Colectivo getColectivoByUnidad( String unidad );
 
     public List<Colectivo> getAllColectivosSinCircular();
+
+    public Colectivo saveImage( long id, String path );
+
+    public Documento getDocumento( long id );
+    
+    public Documento saveDocumento( long id, Documento doc);
+
+    public Documento updateDocumento( Documento doc );
+
+    public boolean removeDocumento( long id );
 }

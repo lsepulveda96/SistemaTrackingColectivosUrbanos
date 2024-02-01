@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4 d-flex justify-content-start">
+                <div class="col-4 d-flex justify-content-end">
                     <div class="frame">
                         <img [src]="url" class="rounded float-right" width="200" height="200">
                     </div>
@@ -49,37 +49,66 @@
             </div>
 
             <div class="row">
-                <div class="col-2">
-                    <mat-form-field appearance="standard" style="width:100%">
-                        <mat-label>Patente</mat-label>
-                        <input matInput [value]="colectivo?.patente" readonly />
-                    </mat-form-field>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-2">
+                            <mat-form-field appearance="standard" style="width:100%">
+                                <mat-label>Patente</mat-label>
+                                <input matInput [value]="colectivo?.patente" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <mat-form-field appearance="standard">
+                                <mat-label>Capacidad</mat-label>
+                                <input matInput [value]="colectivo?.capacidad" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <mat-form-field appearance="standard">
+                                <mat-label>Fecha de compra</mat-label>
+                                <input matInput [value]="colectivo ? (colectivo.fechaCompra | date:'dd/MM/yyyy'):''"
+                                    readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <mat-form-field appearance="standard">
+                                <mat-label>Estado</mat-label>
+                                <input matInput [value]="colectivo?.estado" readonly />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            documentacion
+                        </div>
+                        <div class="card-body">
+                            <mat-list class="my-0 py-0">
+                                <mat-list-item *ngFor="let doc of colectivo?.documentos" class="my-0 py-0">
+                                    <div mat-line>
+                                        <i [class]="getClass(doc.namefile)"></i>
+                                        <span style="cursor:pointer;" (click)="openDocument(doc)">
+                                            {{ doc.nombre }}
+                                        </span>
+                                    </div>
+                                    <span *ngIf="doc.vence">
+                                        {{ 'vence ' + (doc.vencimiento | date:'dd/MM/yy') }}
+                                    </span>
+                                    <mat-divider></mat-divider>
+                                </mat-list-item>
+                            </mat-list>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-2">
-                    <mat-form-field appearance="standard">
-                        <mat-label>Capacidad</mat-label>
-                        <input matInput [value]="colectivo?.capacidad" readonly />
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-2">
-                    <mat-form-field appearance="standard">
-                        <mat-label>Fecha de compra</mat-label>
-                        <input matInput [value]="colectivo ? (colectivo.fechaCompra | date:'dd/MM/yyyy'):''" readonly />
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <mat-form-field appearance="standard">
-                        <mat-label>Estado</mat-label>
-                        <input matInput [value]="colectivo?.estado" readonly />
-                    </mat-form-field>
-                </div>
-            </div>
+
             <mat-divider></mat-divider>
             <br>
             <div class="d-flex justify-content-end">
