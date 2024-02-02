@@ -66,6 +66,22 @@ export class RecorridoEditComponent implements OnInit {
     className: 'myDivIcon'
   });
 
+   // Icono de parada inicial que pertenece al recorrido.
+   iconDivInicio = L.divIcon({
+    html: '<i class="bi bi-geo" style="font-size: 30px; color:green"></i>',
+    iconSize: [35, 40],
+    iconAnchor: [40, 45],
+    popupAnchor: [-15, -30],
+    className: 'myDivIcon'
+  });
+   // Icono de parada final que pertenece al recorrido.
+   iconDivFinal = L.divIcon({
+    html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:green"></i>',
+    iconSize: [35, 40],
+    iconAnchor: [40, 45],
+    popupAnchor: [-15, -30],
+    className: 'myDivIcon'
+  });
   @ViewChild('scroller') scroller: CdkVirtualScrollViewport;
 
   constructor(
@@ -194,11 +210,11 @@ export class RecorridoEditComponent implements OnInit {
     this.paradasGroup.addTo(this.map);
 
     // Mostrar popups de todas las paradas (si no hay paradas en el recorrido) o del ultimo en el recorrido.
-    const ultimaParadaRec = !this.paradasRecorrido ? null : this.paradasRecorrido[this.paradasRecorrido.length - 1];
+    /* const ultimaParadaRec = !this.paradasRecorrido ? null : this.paradasRecorrido[this.paradasRecorrido.length - 1];
     this.paradasGroup.eachLayer((mark: L.Marker) => {
       if (!ultimaParadaRec || ultimaParadaRec.parada.codigo.toString() == mark.options.title)
         mark.openPopup();
-    });
+    }); */
   }
 
   loadAllTrayectosToMap() {

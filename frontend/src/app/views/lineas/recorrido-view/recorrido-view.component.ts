@@ -34,6 +34,23 @@ export class RecorridoViewComponent implements OnInit {
     className: 'myDivIcon'
   });
   
+  // Icono de parada inicial que pertenece al recorrido.
+  iconDivInicio = L.divIcon({
+    html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:green"></i>',
+    iconSize: [35, 40],
+    iconAnchor: [40, 45],
+    popupAnchor: [-15, -30],
+    className: 'myDivIcon'
+  });
+   // Icono de parada final que pertenece al recorrido.
+   iconDivFinal = L.divIcon({
+    html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:green"></i>',
+    iconSize: [35, 40],
+    iconAnchor: [40, 45],
+    popupAnchor: [-15, -30],
+    className: 'myDivIcon'
+  });
+
   // colores: verde, marron, violeta, celeste, amarillo, azul
   colors = ['#008000','#a52a2a', '#8b008b', '#1e90ff','#ffa500', '#0000ff'];
 
@@ -70,9 +87,9 @@ export class RecorridoViewComponent implements OnInit {
   inicializarMapa() {
     this.map = L.map('map', {
       center: [-42.775935, -65.038144],
-      zoom: 14
+      zoom: 14, closePopupOnClick: false
     });
-
+    
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       minZoom: 12,
@@ -143,16 +160,27 @@ export class RecorridoViewComponent implements OnInit {
     else
       this.paradasGroup = new L.LayerGroup();
 
-    for (let paradaRec of paradasRec) {
-      const mark = new L.Marker(L.latLng(paradaRec.parada.coordenada.lat, paradaRec.parada.coordenada.lng), {
-        icon: this.iconDivIn
+    for (let index=0; index < paradasRec.length; index++) {
+      const first = index==0;
+      const last = index==(paradasRec.length-1);
+
+      const mark = new L.Marker(
+        L.latLng(paradasRec[index].parada.coordenada.lat, paradasRec[index].parada.coordenada.lng), {
+        icon: first ? this.iconDivInicio: (last ? this.iconDivFinal: this.iconDivIn) 
       });
-      const begin_end = paradaRec.orden == 0 ? 'INICIO ' : (paradaRec.orden == paradasRec.length - 1 ? 'FIN ' : '');
-      mark.bindPopup(begin_end + paradaRec.parada.codigo + ': ' + paradaRec.parada.direccion,
-        { closeOnClick: true, autoClose: true });
+      const begin_end = first ? 'INICIO ' : (last ? 'FIN ' : '');
+      mark.bindPopup(
+        begin_end + paradasRec[index].parada.codigo + ': ' + paradasRec[index].parada.direccion,
+        { autoClose: false });
+      //mark.bindPopup( begin_end + paradasRec[index].parada.codigo + ': ' + paradasRec[index].parada.direccion );
       this.paradasGroup.addLayer(mark);
     }
     this.paradasGroup.addTo(this.map);
+    this.paradasGroup.eachLayer((mark: L.Marker) => {
+      const content = mark.getPopup().getContent().toString();
+      if(content.startsWith('INICIO') || content.startsWith('FIN'))
+        mark.openPopup();
+    })
   }
 
   /**
