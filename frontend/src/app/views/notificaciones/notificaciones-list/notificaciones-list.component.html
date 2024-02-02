@@ -29,7 +29,7 @@
             <button mat-button color="primary" (click)="viewDocsVencimientos()">ver</button>
         </div>
 
-        <div [hidden]="notifDS.data.length==0 && viewVencimientos">
+        <div [hidden]="notifDS.data.length==0 || viewVencimientos">
             <table mat-table [dataSource]="notifDS">
                 <ng-container matColumnDef="linea">
                     <th mat-header-cell *matHeaderCellDef>Linea</th>
@@ -72,7 +72,6 @@
         </div>
 
         <div *ngIf="vencimientos && vencimientos.length>0 && viewVencimientos">
-
             <mat-list>
                 <div mat-header><strong>Vencimientos documentacion</strong></div>
                 <mat-divider></mat-divider>

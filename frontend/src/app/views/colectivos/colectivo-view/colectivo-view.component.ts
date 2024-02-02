@@ -99,11 +99,29 @@ export class ColectivoViewComponent implements OnInit {
     const fechaVenc = moment(fecha);
     if (fechaVenc.isSameOrBefore(fechaComp))
       return 'red';
-    
-    fechaComp.add( 1,'month' );
+
+    fechaComp.add(1, 'month');
     if (fechaVenc.isSameOrBefore(fechaComp))
       return 'orange';
 
     return 'black';
+  }
+
+  isVencido(fecha: Date): boolean {
+    if (!fecha) return false;
+    const fechaComp = moment(); // hoy
+    const fechaVenc = moment(fecha);
+    if (fechaVenc.isSameOrBefore(fechaComp))
+      return true;
+    return false;
+  }
+
+  isProximoVencer( fecha:Date): boolean {
+    if (!fecha) return false;
+    const fechaComp = moment().add(1,'month'); // un mes adelante.
+    const fechaVenc = moment(fecha);
+    if (fechaVenc.isSameOrBefore(fechaComp))
+      return true;
+    return false;
   }
 }

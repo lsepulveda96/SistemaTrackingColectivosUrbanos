@@ -98,7 +98,17 @@
                                             {{ doc.nombre }}
                                         </span>
                                     </div>
-                                    <span *ngIf="doc.vence" [style.color]="getColorVencimiento( doc.vencimiento)">
+                                    <span *ngIf="doc.vence" class="d-flex align-items-center">
+                                        <mat-icon *ngIf="isVencido( doc.vencimiento )" matTooltip="vencido"
+                                            matTooltipPosition="left" style="color:red;">
+                                            warning
+                                        </mat-icon>
+                                        <mat-icon
+                                            *ngIf="!isVencido( doc.vencimiento ) && isProximoVencer(doc.vencimiento)"
+                                            style="color:orange;" matTooltip="proximo a vencer"
+                                            matTooltipPosition="left">
+                                            warning
+                                        </mat-icon>
                                         {{ 'vencimiento ' + (doc.vencimiento | date:'dd/MM/yy') }}
                                     </span>
                                     <mat-divider></mat-divider>
