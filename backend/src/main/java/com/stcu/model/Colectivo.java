@@ -67,9 +67,9 @@ public class Colectivo {
     @Column(name = "imgpath")
     private String imgpath;
 
-    //@OneToMany(fetch=FetchType.EAGER)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "colectivo_id", referencedColumnName = "id")
+    /* @OneToMany(mappedBy = "colectivo") */
     private List<Documento> documentos;
 
     public Colectivo() {

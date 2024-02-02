@@ -2,11 +2,16 @@ package com.stcu.model;
 
 import java.util.Calendar;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -41,6 +46,10 @@ public class Documento {
     @Temporal(TemporalType.DATE)
     private Calendar vencimiento; // fecha de vencimiento si la tiene.
     
+    /* @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="colectivo_id")
+    private Colectivo colectivo; */
+
     public Documento() {}
 
     public Documento( long id, String nombre, String namefile,String path, boolean vence, Calendar vencimiento ) {

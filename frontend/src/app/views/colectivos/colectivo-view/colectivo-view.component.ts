@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as moment from 'moment';
 import { Colectivo } from 'src/app/data/colectivo';
 import { ColectivoService } from 'src/app/services/colectivo.service';
 
@@ -92,4 +93,17 @@ export class ColectivoViewComponent implements OnInit {
     });
   }
 
+  getColorVencimiento(fecha: Date): string {
+    if (!fecha) return 'black';
+    const fechaComp = moment();
+    const fechaVenc = moment(fecha);
+    if (fechaVenc.isSameOrBefore(fechaComp))
+      return 'red';
+    
+    fechaComp.add( 1,'month' );
+    if (fechaVenc.isSameOrBefore(fechaComp))
+      return 'orange';
+
+    return 'black';
+  }
 }

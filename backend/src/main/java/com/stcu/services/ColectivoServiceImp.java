@@ -1,5 +1,6 @@
 package com.stcu.services;
 
+import java.util.Calendar;
 import java.util.List;
 
 import com.stcu.model.Colectivo;
@@ -90,20 +91,22 @@ public class ColectivoServiceImp implements ColectivoService {
     @Override
     public Documento saveDocumento( long id, Documento doc) {
         Colectivo col = this.rep.findById(id);
+        System.err.println("save Document: col id " + id + ", col: " + col!=null ? col.toString():"" );
+        //doc.setColectivo(col);
         Documento ndoc = this.repDoc.save(doc);
         col.getDocumentos().add(ndoc);
         this.rep.save( col );
-        return doc;
+        return ndoc;
     }
 
     @Override
-    public Documento updateDocumento(Documento doc) {
+    public Documento updateDocumento(long id,Documento doc) {
         try {
-            Documento docu = this.repDoc.findById(doc.getId());
+            Documento docu = this.repDoc.findById(id);
             if (docu != null) {
                 docu.setNombre( doc.getNombre());
-                docu.setNamefile(doc.getNamefile());
-                docu.setPathfile(doc.getPathfile());
+                //docu.setNamefile(doc.getNamefile());
+                //docu.setPathfile(doc.getPathfile());
                 docu.setVence(doc.isVence());
                 docu.setVencimiento(doc.getVencimiento());
                 return this.repDoc.save(docu);
@@ -132,6 +135,19 @@ public class ColectivoServiceImp implements ColectivoService {
     @Override
     public Documento getDocumento( long id ) {
         return this.repDoc.findById(id);
+    }
+
+    @Override
+    public List<Documento> getDocsVencidosProximoVencer() {
+        Calendar fecha = Calendar.getInstance();
+        return this.repDoc.findAllByVenceTrueAndVencimientoBefore(fecha);
+    }
+
+    @Override
+    public List<Colectivo> getColectivosDocsVencimiento() {
+        Calendar fecha = Calendar.getInstance();
+        fecha.add(Calendar.DATE, 30); // Suma 30 dias a la fecha actual para recuperar los documentos.
+        return this.rep.findAllColectivosDocsVencidos(fecha);
     }
 
 }

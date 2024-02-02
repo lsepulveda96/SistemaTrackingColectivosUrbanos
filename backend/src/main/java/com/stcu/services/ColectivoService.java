@@ -27,7 +27,12 @@ public interface ColectivoService {
     
     public Documento saveDocumento( long id, Documento doc);
 
-    public Documento updateDocumento( Documento doc );
+    public Documento updateDocumento( long id, Documento doc );
 
     public boolean removeDocumento( long id );
+
+    public List<Documento> getDocsVencidosProximoVencer();
+
+    public List<Colectivo> getColectivosDocsVencimiento();
+
 }

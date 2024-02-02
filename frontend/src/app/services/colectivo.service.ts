@@ -75,4 +75,8 @@ export class ColectivoService {
   deleteDoc( docId:number ): Observable<any> {
     return this.http.delete( HTTPCONFIG.url + API + '/files/doc/delete/'+docId );
   }
+
+  getDocumentosVencimientos(): Observable<any> {
+    return this.http.get( HTTPCONFIG.url + API + '/colectivos/docs/vencimientos' );
+  }
 }

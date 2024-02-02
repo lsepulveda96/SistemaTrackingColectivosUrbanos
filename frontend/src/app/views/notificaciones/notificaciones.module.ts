@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificacionUbicacionComponent } from './notificaciones-ubicacion/notificaciones-ubicacion.component';
+import { MatListModule } from '@angular/material/list';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { NotificacionUbicacionComponent } from './notificaciones-ubicacion/notif
     MatProgressSpinnerModule,
     MatNativeDateModule,
     MatTooltipModule,
+    MatListModule
   ]
 })
 export class NotificacionesModule { }

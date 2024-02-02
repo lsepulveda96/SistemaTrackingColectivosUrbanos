@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -214,13 +213,13 @@ public class ColectivoController {
                 String fn = doc.getPathfile();
                 storageService.delete(fn); // eliminar archivo anterior
                 fn = storageService.save(file); // guardar nuevo archivo.
-                
+
                 doc.setNamefile(namefile);
                 doc.setNombre(nombre);
                 doc.setPathfile(fn);
                 doc.setVence("true".equalsIgnoreCase(vence));
                 doc.setVencimiento(venc);
-                this.service.updateDocumento(doc);
+                this.service.updateDocumento(id, doc);
                 log.info("*** Archivo documento actualizado");
 
                 response = new Response<String>(false, 200, "Archivo docuemnto actualizado exitosamente",
@@ -248,7 +247,7 @@ public class ColectivoController {
         log.info("*** update Doc data File: " + id);
 
         Response<Documento> response;
-        Documento udoc = service.saveDocumento(id, doc);
+        Documento udoc = service.updateDocumento(id, doc);
         if (udoc != null) {
             log.info("*** documento actualizado " + id);
             response = new Response<Documento>(false, 200, "Documento " + id + " actualizado", udoc);
@@ -377,4 +376,15 @@ public class ColectivoController {
         }
     }
 
+    @GetMapping("/colectivos/docs/vencimientos")
+    public String getDocsVencimientos() {
+        log.info("*** getDocsVencimientos");
+        /* List<Documento> list = service.getDocsVencidosProximoVencer();
+        log.info("*** documentos length: " + list.size());
+        Response<List<Documento>> response = new Response<List<Documento>>(false, 200, "Listado de documentos vencidos o proximos a vencer", list); */
+        List<Colectivo> list = service.getColectivosDocsVencimiento();
+        log.info("*** colectivos documentos length: " + list.size());
+        Response<List<Colectivo>> response = new Response<List<Colectivo>>(false, 200, "Listado de documentos vencidos o proximos a vencer", list);
+        return Mapper.getResponseAsJson(response);
+    }
 }

@@ -98,8 +98,8 @@
                                             {{ doc.nombre }}
                                         </span>
                                     </div>
-                                    <span *ngIf="doc.vence">
-                                        {{ 'vence ' + (doc.vencimiento | date:'dd/MM/yy') }}
+                                    <span *ngIf="doc.vence" [style.color]="getColorVencimiento( doc.vencimiento)">
+                                        {{ 'vencimiento ' + (doc.vencimiento | date:'dd/MM/yy') }}
                                     </span>
                                     <mat-divider></mat-divider>
                                 </mat-list-item>
