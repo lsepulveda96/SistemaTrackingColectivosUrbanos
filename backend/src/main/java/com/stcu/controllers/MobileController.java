@@ -1,6 +1,8 @@
 package com.stcu.controllers;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -33,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.aspectj.weaver.ast.Test;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.stcu.dto.response.ArriboColectivoDTO;
 import com.stcu.dto.response.ColectivoRecorridoDTO;
 import com.stcu.dto.response.CoordenadaDTO;
 import com.stcu.dto.response.NotificacionDTO;
@@ -43,6 +47,7 @@ import com.stcu.model.ColectivoRecorrido;
 import com.stcu.model.Coordenada;
 import com.stcu.model.Linea;
 import com.stcu.model.Notificacion;
+import com.stcu.model.Parada;
 import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
 import com.stcu.model.Ubicacion;
@@ -703,7 +708,7 @@ public class MobileController {
 
     // System.out.println("+++++++++++++++++ entra en obtener tiempo llegada cole");
 
-    Response<ColectivoRecorridoDTO> response;
+    Response<ArriboColectivoDTO> response;
     String separator = ":";
     int sepPos = idLineaString.indexOf(separator);
     long idLinea = Long.valueOf(idLineaString.substring(sepPos + separator.length()));
@@ -776,7 +781,10 @@ public class MobileController {
     } catch (NullPointerException e) {
       // por si hay colectivos que no alcanzaron a llegar a una parada y estan
       // desviados/detenidos
-      response = new Response<ColectivoRecorridoDTO>(true, 400, "No hay colectivos cercanos", null);
+
+
+      // aca tambien ojo al responder. if data != null
+      response = new Response<ArriboColectivoDTO>(true, 400, "No hay colectivos cercanos", null);
       return Mapper.getResponseAsJson(response);
     }
 
@@ -802,20 +810,24 @@ public class MobileController {
     // System.out.println(" colectivoEstaEnParadaPasajero: " +
     // colectivoEstaEnParadaPasajero);
 
+
+    // ojo estos dos casos, no tendria que ir al mapa! ver como identificarlo
+    // if data != null en android
     if (colectivoEstaEnParadaPasajero) {
       System.out.println("El colectivo llego a la parada"); // y return
-      response = new Response<ColectivoRecorridoDTO>(false, 200, "El colectivo llego a la parada", null);
+      response = new Response<ArriboColectivoDTO>(false, 400, "El colectivo llego a la parada", null);
       return Mapper.getResponseAsJson(response);
     }
 
-    if (tiempoAcumulado == 0) {
-      response = new Response<ColectivoRecorridoDTO>(true, 400, "No hay colectivos cercanos", null);
+    if (tiempoAcumulado == 0.0) {
+      response = new Response<ArriboColectivoDTO>(true, 400, "No hay colectivos cercanos", null);
       return Mapper.getResponseAsJson(response);
     }
 
     // al tiempo acumulado, restarle tiempo el tiempo de coordenada actual - tiempo
     // ultima parada visitada
 
+    
     double lat1Rad = 0;
     double lon1Rad = 0;
 
@@ -899,6 +911,11 @@ public class MobileController {
     // segundosDouble = tiempoAcumulado - tiempoSobranteEnriquecido;
     Double segundosDouble = tiempoAcumulado - tiempoSobrante;
 
+
+    System.out.println("-----------------------------------------------");
+    System.out.println("tiempo acumulado: "+ tiempoAcumulado);
+    System.out.println("tiempo sobrante: "+ tiempoSobrante);
+
     int segundos = segundosDouble.intValue();
 
     // para darle formato hs:min:seg
@@ -909,48 +926,130 @@ public class MobileController {
     min = (segundos - (3600 * hor)) / 60;
     seg = segundos - ((hor * 3600) + (min * 60));
 
+    
+
+
+    tiempoTotal = hor + " hs: " + min + " min: " + seg + " seg ";
+
+    // para responder dto
+    // tambien agregarle el recorrido faltante para ponerlo en el mapa
+    ArriboColectivoDTO acDTO = new ArriboColectivoDTO(colRecProximo.getFechaParadaActual(), 
+    tiempoTotal, colRecProximo.getParadaActual(), paradaPasajero.getParada());
+
+
+    // hacer lo del recorrido sobrante
+    List<Coordinate> listaCoorRestantes = new ArrayList<Coordinate>();
+    Boolean coordenadasSinTransitar = false;
+
+    Recorrido recorrido = serviceRecorrido.getRecorrido(idRecorrido);
+
+    //if (recorrido != null) {
+      // trae trayecto a recorrer
+      LineString recorridoCoor = recorrido.getTrayectos();
+    //}
+      
+    
+    org.locationtech.jts.geom.Point p = paradaPasajero.getParada().getCoordenadas();
+    BigDecimal bigDecimalLatParadaPasajero = new BigDecimal(p.getX()).setScale(4,RoundingMode.DOWN);
+    BigDecimal bigDecimalLngParadaPasajero = new BigDecimal(p.getY()).setScale(4,RoundingMode.DOWN);
+    //tambien voy a necesitar las coordenadas del pasajero. tengo que parar de guardar ahi. set bandera false.
+
+    // si no es preciso, tratar de guardar el recorrido densificado creado en trayecto a simular
+    double latParadaColectivo = colRecProximo.getParadaActual().getCoordenadas().getX();
+    double lngParadaColectivo = colRecProximo.getParadaActual().getCoordenadas().getY();
+    
+    BigDecimal bigDecimalLat = new BigDecimal(latParadaColectivo).setScale(4,RoundingMode.DOWN);
+    BigDecimal bigDecimalLng = new BigDecimal(lngParadaColectivo).setScale(4,RoundingMode.DOWN);
+
+    for (int i = 0; i < recorridoCoor.getNumPoints() - 1; i++) {
+
+      BigDecimal bigDecimalLatActual = new BigDecimal(recorridoCoor.getCoordinateN(i).getX()).setScale(4,RoundingMode.DOWN);
+      BigDecimal bigDecimalLngActual = new BigDecimal(recorridoCoor.getCoordinateN(i).getY()).setScale(4,RoundingMode.DOWN);
+
+      if(coordenadasSinTransitar){
+        listaCoorRestantes.add(recorridoCoor.getCoordinateN(i));
+        // if(coordenada actual == coordenada pasajero) // ya no tiene que guardar coordenadas
+        if(bigDecimalLatActual.doubleValue() == bigDecimalLatParadaPasajero.doubleValue() && bigDecimalLngActual.doubleValue() == bigDecimalLngParadaPasajero.doubleValue()){
+          coordenadasSinTransitar = false;
+        }        
+      }else{
+        System.out.println("coordenadas a comparar: "+ bigDecimalLat.doubleValue() + " - " + recorridoCoor.getCoordinateN(i).getX());
+        // if cordenada actual == coordenada parada actual colectivo
+        if( bigDecimalLat.doubleValue() ==  bigDecimalLatActual.doubleValue() && bigDecimalLng.doubleValue() ==  bigDecimalLngActual.doubleValue()){
+          coordenadasSinTransitar = true;
+          listaCoorRestantes.add(recorridoCoor.getCoordinateN(i));
+        }
+      }      
+    }
+
+
+    System.out.println("**********************************");
+    System.out.println("coordenadas recuperada por transitar");
+    for (Coordinate coordinate : listaCoorRestantes) {
+      System.out.println(coordinate.x + " - " + coordinate.y);
+    }
+
+
     if ((hor == 0 && min == 0 && seg < 10)) {
       System.out.println("Colectivo aproximandose a la parada"); // y return
-      response = new Response<ColectivoRecorridoDTO>(false, 200, "Colectivo aproximandose a la parada",
-          ColectivoRecorridoDTO.toColectivoRecorridoDTO(colRecProximo));
+      response = new Response<ArriboColectivoDTO>(false, 200, "Colectivo aproximandose a la parada",
+      ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
       return Mapper.getResponseAsJson(response);
     }
 
-    tiempoTotal = hor + " hs: " + min + " min: " + seg + " seg ";
-    response = new Response<ColectivoRecorridoDTO>(false, 200, tiempoTotal,
-        ColectivoRecorridoDTO.toColectivoRecorridoDTO(colRecProximo));
+
+
+    
+    // en el response dto necesito
+    // coord parada pasajero
+    // tiempo arribo colectivo (el que ya tenia) -> tiempoTotal
+    // utlima parada que visito el colRecProximo 
+    // fecha en que visito la ultima prada actual
+
+    response = new Response<ArriboColectivoDTO>(false, 200, tiempoTotal,
+    ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
     return Mapper.getResponseAsJson(response);
 
   } // fin metodo tiempo llegada
 
-
-
-
-
-
-  @GetMapping("/obtenerUbicacionParadaRecorrido/{idLineaString}/{idRecorridoString}/{codigoParadaString}")
-  public String obtenerUbicacionParadaRecorrido(@PathVariable String idLineaString, @PathVariable String idRecorridoString,
-      @PathVariable String codigoParadaString) {
-
-    Response<ParadaRecorridoDTO> response;
-
-    String separator = ":";
-    int sepPos = idLineaString.indexOf(separator);
-    long idLinea = Long.valueOf(idLineaString.substring(sepPos + separator.length()));
-
-    int sepPos1 = idRecorridoString.indexOf(separator);
-    long idRecorrido = Long.valueOf(idRecorridoString.substring(sepPos1 + separator.length()));
-
-    int sepPos2 = codigoParadaString.indexOf(separator);
-    long codigoParada = Long.valueOf(codigoParadaString.substring(sepPos2 + separator.length()));
-
-    ParadaRecorrido pr = serviceRecorrido.getParadaRecorrido(idLinea, idRecorrido, codigoParada);
-
-    // envia las coordenadas de la paradaRecorrido correspondiente a la ubicacion del usuario
-    response = new Response<ParadaRecorridoDTO>(false, 200, pr.getParada().getCoordenadas().getX()+","+pr.getParada().getCoordenadas().getY(),
-        null);
-    return Mapper.getResponseAsJson(response);
-
-  }
+  // esta clase no la necesitaria si hago el nuevo dto
+  /*
+   * @GetMapping(
+   * "/obtenerUbicacionParadaRecorrido/{idLineaString}/{idRecorridoString}/{codigoParadaString}")
+   * public String obtenerUbicacionParadaRecorrido(@PathVariable String
+   * idLineaString,
+   * 
+   * @PathVariable String idRecorridoString,
+   * 
+   * @PathVariable String codigoParadaString) {
+   * 
+   * Response<ParadaRecorridoDTO> response;
+   * 
+   * String separator = ":";
+   * int sepPos = idLineaString.indexOf(separator);
+   * long idLinea = Long.valueOf(idLineaString.substring(sepPos +
+   * separator.length()));
+   * 
+   * int sepPos1 = idRecorridoString.indexOf(separator);
+   * long idRecorrido = Long.valueOf(idRecorridoString.substring(sepPos1 +
+   * separator.length()));
+   * 
+   * int sepPos2 = codigoParadaString.indexOf(separator);
+   * long codigoParada = Long.valueOf(codigoParadaString.substring(sepPos2 +
+   * separator.length()));
+   * 
+   * ParadaRecorrido pr = serviceRecorrido.getParadaRecorrido(idLinea,
+   * idRecorrido, codigoParada);
+   * 
+   * // envia las coordenadas de la paradaRecorrido correspondiente a la ubicacion
+   * // del usuario
+   * response = new Response<ParadaRecorridoDTO>(false, 200,
+   * pr.getParada().getCoordenadas().getX() + "," +
+   * pr.getParada().getCoordenadas().getY(),
+   * null);
+   * return Mapper.getResponseAsJson(response);
+   * 
+   * }
+   */
 
 } // fin clase
