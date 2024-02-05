@@ -887,7 +887,7 @@ public class MobileController {
        */
 
       int EARTH_RADIUS = 6371;
-      int VEL_PROMEDIO = 25000;
+      int VEL_PROMEDIO = 10000;
 
       double x = (lon2Rad - lon1Rad) * Math.cos((lat1Rad + lat2Rad) / 2);
       double y = (lat2Rad - lat1Rad);
@@ -895,19 +895,20 @@ public class MobileController {
 
       //Double distEnKms = distanciaTranscurrida;
       // para distancia en metros
-      distanciaTranscurrida = distanciaTranscurrida * 1000;
+      //distanciaTranscurrida = distanciaTranscurrida * 1000;
 
       
         double velocidadEnriquecida;
 
         
 
-        if (secondsTotal != 0){
+        // esto es para saber la velocidad
+        if (secondsTotal > 0){
         //velocidadEnriquecida = distanciaTranscurrida.intValue() / segundosTranscurridos;
         //velocidadEnriquecida = distEnKms / hsTranscurridas;
 
-        // dist en kms / segundos
-        velocidadEnriquecida = distanciaTranscurrida / secondsTotal;
+        // dist en kms / hs
+        velocidadEnriquecida = distanciaTranscurrida / (secondsTotal/60/60);
         System.out.
         println("()()()()()()()()()()()()()()() Distancia transcurrida en mts desde ultima parada visitada: " + distanciaTranscurrida);
         System.out.println(" +++++++++++++++++++++++ ");
@@ -919,17 +920,22 @@ public class MobileController {
         + velocidadEnriquecida);
 
         // aca hacer el calculo de tiempo. con distacia total
+        }else{
+          velocidadEnriquecida = VEL_PROMEDIO;
         }
        
         // sino tomar tiempo promedio 10kms hs
 
       // tiempoSobranteEnriquecido = (distanciaTranscurrida / velocidadEnriquecida)
       // *60 *60
-      tiempoSobrante = (distanciaTranscurrida / VEL_PROMEDIO) * 60 * 60;
+      tiempoSobrante = (distanciaTranscurrida / velocidadEnriquecida) * 60 * 60;
 
     }
 
     // segundosDouble = tiempoAcumulado - tiempoSobranteEnriquecido;
+
+    // hacer esto 
+    // tiempo total = distancia total / velocidad enriquecida
     Double segundosDouble = tiempoAcumulado - tiempoSobrante;
 
 
