@@ -49,9 +49,9 @@
             </div>
 
             <div class="row">
-                <div class="col">
+                <div class="col-5">
                     <div class="row">
-                        <div class="col-2">
+                        <div class="col">
                             <mat-form-field appearance="standard" style="width:100%">
                                 <mat-label>Patente</mat-label>
                                 <input matInput [value]="colectivo?.patente" readonly />
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-2">
+                        <div class="col">
                             <mat-form-field appearance="standard">
                                 <mat-label>Capacidad</mat-label>
                                 <input matInput [value]="colectivo?.capacidad" readonly />
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-2">
+                        <div class="col">
                             <mat-form-field appearance="standard">
                                 <mat-label>Fecha de compra</mat-label>
                                 <input matInput [value]="colectivo ? (colectivo.fechaCompra | date:'dd/MM/yyyy'):''"
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-4">
+                        <div class="col">
                             <mat-form-field appearance="standard">
                                 <mat-label>Estado</mat-label>
                                 <input matInput [value]="colectivo?.estado" readonly />
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-7">
                     <div class="card mt-4">
                         <div class="card-header">
                             documentacion
