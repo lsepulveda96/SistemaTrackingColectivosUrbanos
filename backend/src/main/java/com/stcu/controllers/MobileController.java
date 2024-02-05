@@ -852,7 +852,9 @@ public class MobileController {
         
         long diferenciaTiempoMilis = calSalida.getTimeInMillis() - calInicio.getTimeInMillis();
 
-
+        System.out.println("calInicio : " + calInicio.toString());
+        System.out.println("calSalida : " + calSalida.toString());
+        System.out.println("tiempo en milis: " + diferenciaTiempoMilis);
 
         
         long minutes = (diferenciaTiempoMilis / 1000) / 60;
@@ -861,7 +863,7 @@ public class MobileController {
         // milliseconds to seconds
         long seconds = (diferenciaTiempoMilis / 1000) % 60;
 
-        long secondsTotal = minutes * 60;
+        long secondsTotal = minutes * 60 + seconds;
 
         /* int difHoras = calSalida.get(Calendar.HOUR) - calInicio.get(Calendar.HOUR);
         int difMinutos = calSalida.get(Calendar.MINUTE) - calInicio.get(Calendar.MINUTE);
@@ -897,6 +899,9 @@ public class MobileController {
 
       
         double velocidadEnriquecida;
+
+        
+
         if (secondsTotal != 0){
         //velocidadEnriquecida = distanciaTranscurrida.intValue() / segundosTranscurridos;
         //velocidadEnriquecida = distEnKms / hsTranscurridas;
@@ -912,6 +917,8 @@ public class MobileController {
         System.out.
         println(" &&&&&&&&&&&&&&&&&&&&&& Velocidad a la que circulo el cole desde parada visitada: "
         + velocidadEnriquecida);
+
+        // aca hacer el calculo de tiempo. con distacia total
         }
        
         // sino tomar tiempo promedio 10kms hs
