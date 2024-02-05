@@ -235,7 +235,7 @@ public class MobileController {
 
       // trae trayecto a recorrer
       LineString recorridoCoor = recorrido.getTrayectos();
-      System.out.println(" +++++++++++++++++++ coordenadas a recorrer original" + recorridoCoor.toText());
+      //System.out.println(" +++++++++++++++++++ coordenadas a recorrer original" + recorridoCoor.toText());
 
       // obtiene el factory
       GeometryFactory factory = recorridoCoor.getFactory();
@@ -269,12 +269,12 @@ public class MobileController {
       // crea lista de coordenadas para return
 
       LineString recorridoCoordDensificado = factory.createLineString(listFinal.toCoordinateArray());
-      System.out.println(
-          " +++++++++++++++++++ coordenadas a recorrer con mayor densidad:" + recorridoCoordDensificado.toText());
+      //System.out.println(
+        //  " +++++++++++++++++++ coordenadas a recorrer con mayor densidad:" + recorridoCoordDensificado.toText());
 
       for (Coordinate coordinate : recorridoCoordDensificado.getCoordinates()) {
         listaCoordenadasASimular.add(new Coordenada(coordinate.getX(), coordinate.getY()));
-        System.out.println("coordinate x y: " + coordinate.x + ", " + coordinate.y);
+        //System.out.println("coordinate x y: " + coordinate.x + ", " + coordinate.y);
       }
     }
 
