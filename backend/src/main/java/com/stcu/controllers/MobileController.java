@@ -850,20 +850,20 @@ public class MobileController {
         Calendar calInicio = colRecProximo.getFechaParadaActual();
         Calendar calSalida = ultimaCoordColeRec.getFecha();
         
-        long diferenciaTiempoMilis = calSalida.getTimeInMillis() - calInicio.getTimeInMillis();
+        double diferenciaTiempoMilis = calSalida.getTimeInMillis() - calInicio.getTimeInMillis();
 
-        System.out.println("calInicio : " + calInicio.toString());
-        System.out.println("calSalida : " + calSalida.toString());
+        System.out.println("calInicio : min: " + calInicio.MINUTE + " seg" + calInicio.SECOND);
+        System.out.println("calSalida : min" + calSalida.MINUTE +" seg: " + calSalida.SECOND);
         System.out.println("tiempo en milis: " + diferenciaTiempoMilis);
 
         
-        long minutes = (diferenciaTiempoMilis / 1000) / 60;
+        double minutes = (diferenciaTiempoMilis / 1000) / 60;
  
         // formula for conversion for
         // milliseconds to seconds
-        long seconds = (diferenciaTiempoMilis / 1000) % 60;
+        double seconds = (diferenciaTiempoMilis / 1000) % 60;
 
-        long secondsTotal = minutes * 60 + seconds;
+        double secondsTotal = minutes * 60 + seconds;
 
         /* int difHoras = calSalida.get(Calendar.HOUR) - calInicio.get(Calendar.HOUR);
         int difMinutos = calSalida.get(Calendar.MINUTE) - calInicio.get(Calendar.MINUTE);
