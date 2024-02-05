@@ -850,11 +850,22 @@ public class MobileController {
         Calendar calInicio = colRecProximo.getFechaParadaActual();
         Calendar calSalida = ultimaCoordColeRec.getFecha();
         
-        int difHoras = calSalida.get(Calendar.HOUR) - calInicio.get(Calendar.HOUR);
-        int difMinutos = calSalida.get(Calendar.MINUTE) -
-        calInicio.get(Calendar.MINUTE);
-        int difSegundos = calSalida.get(Calendar.SECOND) -
-        calInicio.get(Calendar.SECOND);
+        long diferenciaTiempoMilis = calSalida.getTimeInMillis() - calInicio.getTimeInMillis();
+
+
+
+        
+        long minutes = (diferenciaTiempoMilis / 1000) / 60;
+ 
+        // formula for conversion for
+        // milliseconds to seconds
+        long seconds = (diferenciaTiempoMilis / 1000) % 60;
+
+        long secondsTotal = minutes * 60;
+
+        /* int difHoras = calSalida.get(Calendar.HOUR) - calInicio.get(Calendar.HOUR);
+        int difMinutos = calSalida.get(Calendar.MINUTE) - calInicio.get(Calendar.MINUTE);
+        int difSegundos = calSalida.get(Calendar.SECOND) - calInicio.get(Calendar.SECOND);
         Calendar calDif = Calendar.getInstance();// variable para diferencia de tiempo
         
         calDif.set(Calendar.HOUR, difHoras);
@@ -863,6 +874,7 @@ public class MobileController {
         int segundosTranscurridos = calDif.get(Calendar.HOUR) * 60 * 60 +
         calDif.get(Calendar.MINUTE) * 60 + calDif.get(Calendar.SECOND);
         
+        
         double hsTranscurridas = segundosTranscurridos/60/60;
         
         System.out.println("----- ");
@@ -870,7 +882,8 @@ public class MobileController {
         System.out.println("minutos diferencia" + calDif.get(Calendar.MINUTE));
         System.out.println("segundos diferencia" + calDif.get(Calendar.SECOND));
         System.out.println("----- ");
-       
+       */
+
       int EARTH_RADIUS = 6371;
       int VEL_PROMEDIO = 25000;
 
@@ -884,18 +897,18 @@ public class MobileController {
 
       
         double velocidadEnriquecida;
-        if (segundosTranscurridos != 0){
+        if (secondsTotal != 0){
         //velocidadEnriquecida = distanciaTranscurrida.intValue() / segundosTranscurridos;
         //velocidadEnriquecida = distEnKms / hsTranscurridas;
 
         // dist en kms / segundos
-        velocidadEnriquecida = distanciaTranscurrida / segundosTranscurridos;
+        velocidadEnriquecida = distanciaTranscurrida / secondsTotal;
         System.out.
         println("()()()()()()()()()()()()()()() Distancia transcurrida en mts desde ultima parada visitada: " + distanciaTranscurrida);
         System.out.println(" +++++++++++++++++++++++ ");
         System.out.
         println(" %%%%%%%%%%%%%%%%%%%%%% Total segundos trascurridos desde ultima parada visitada"
-        + segundosTranscurridos);
+        + secondsTotal);
         System.out.
         println(" &&&&&&&&&&&&&&&&&&&&&& Velocidad a la que circulo el cole desde parada visitada: "
         + velocidadEnriquecida);
