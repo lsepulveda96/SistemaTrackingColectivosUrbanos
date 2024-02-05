@@ -719,8 +719,8 @@ public class MobileController {
     int sepPos2 = codigoParadaString.indexOf(separator);
     long codigoParada = Long.valueOf(codigoParadaString.substring(sepPos2 + separator.length()));
 
-    System.out.println("Los codigos obtenidos: idLinea: " + idLinea + " +++++++idRecorrido+++ " + idRecorrido
-        + " +++++codigoParada++++++ " + codigoParada);
+    //System.out.println("Los codigos obtenidos: idLinea: " + idLinea + " +++++++idRecorrido+++ " + idRecorrido
+      //  + " +++++codigoParada++++++ " + codigoParada);
 
     // buscar colectivos en servicio de la linea
     List<ColectivoRecorrido> crList = serviceMonitor.findAllColectivosRecorridoActivos(idLinea, idRecorrido);
@@ -970,7 +970,7 @@ public class MobileController {
           coordenadasSinTransitar = false;
         }        
       }else{
-        System.out.println("coordenadas a comparar: "+ bigDecimalLat.doubleValue() + " - " + recorridoCoor.getCoordinateN(i).getX());
+        //System.out.println("coordenadas a comparar: "+ bigDecimalLat.doubleValue() + " - " + recorridoCoor.getCoordinateN(i).getX());
         // if cordenada actual == coordenada parada actual colectivo
         if( bigDecimalLat.doubleValue() ==  bigDecimalLatActual.doubleValue() && bigDecimalLng.doubleValue() ==  bigDecimalLngActual.doubleValue()){
           coordenadasSinTransitar = true;
@@ -980,11 +980,11 @@ public class MobileController {
     }
 
 
-    System.out.println("**********************************");
-    System.out.println("coordenadas recuperada por transitar");
-    for (Coordinate coordinate : listaCoorRestantes) {
-      System.out.println(coordinate.x + " - " + coordinate.y);
-    }
+   // System.out.println("**********************************");
+   // System.out.println("coordenadas recuperada por transitar");
+   // for (Coordinate coordinate : listaCoorRestantes) {
+   //   System.out.println(coordinate.x + " - " + coordinate.y);
+   //  }
 
 
     if ((hor == 0 && min == 0 && seg < 10)) {
