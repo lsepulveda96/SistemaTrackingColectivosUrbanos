@@ -878,7 +878,7 @@ public class MobileController {
       double y = (lat2Rad - lat1Rad);
       Double distanciaTranscurrida = Math.sqrt(x * x + y * y) * EARTH_RADIUS;
 
-      Double distEnKms = distanciaTranscurrida;
+      //Double distEnKms = distanciaTranscurrida;
       // para distancia en metros
       distanciaTranscurrida = distanciaTranscurrida * 1000;
 
@@ -886,18 +886,22 @@ public class MobileController {
         double velocidadEnriquecida;
         if (segundosTranscurridos != 0){
         //velocidadEnriquecida = distanciaTranscurrida.intValue() / segundosTranscurridos;
-        velocidadEnriquecida = distEnKms / hsTranscurridas;
+        //velocidadEnriquecida = distEnKms / hsTranscurridas;
+
+        // dist en kms / segundos
+        velocidadEnriquecida = distanciaTranscurrida / segundosTranscurridos;
         System.out.
-        println("()()()()()()()()()()()()()()() Distancia transcurrida desde ultima parada visitada: " + distEnKms);
+        println("()()()()()()()()()()()()()()() Distancia transcurrida en mts desde ultima parada visitada: " + distanciaTranscurrida);
         System.out.println(" +++++++++++++++++++++++ ");
         System.out.
         println(" %%%%%%%%%%%%%%%%%%%%%% Total segundos trascurridos desde ultima parada visitada"
-        + hsTranscurridas);
+        + segundosTranscurridos);
         System.out.
         println(" &&&&&&&&&&&&&&&&&&&&&& Velocidad a la que circulo el cole desde parada visitada: "
         + velocidadEnriquecida);
         }
        
+        // sino tomar tiempo promedio 10kms hs
 
       // tiempoSobranteEnriquecido = (distanciaTranscurrida / velocidadEnriquecida)
       // *60 *60
