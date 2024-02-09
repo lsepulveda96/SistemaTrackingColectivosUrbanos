@@ -33,7 +33,7 @@ export class RecorridoViewComponent implements OnInit {
     popupAnchor: [-15, -30],
     className: 'myDivIcon'
   });
-  
+
   // Icono de parada inicial que pertenece al recorrido.
   iconDivInicio = L.divIcon({
     html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:green"></i>',
@@ -42,8 +42,8 @@ export class RecorridoViewComponent implements OnInit {
     popupAnchor: [-15, -30],
     className: 'myDivIcon'
   });
-   // Icono de parada final que pertenece al recorrido.
-   iconDivFinal = L.divIcon({
+  // Icono de parada final que pertenece al recorrido.
+  iconDivFinal = L.divIcon({
     html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:green"></i>',
     iconSize: [35, 40],
     iconAnchor: [40, 45],
@@ -52,7 +52,7 @@ export class RecorridoViewComponent implements OnInit {
   });
 
   // colores: verde, marron, violeta, celeste, amarillo, azul
-  colors = ['#008000','#a52a2a', '#8b008b', '#1e90ff','#ffa500', '#0000ff'];
+  colors = ['#008000', '#a52a2a', '#8b008b', '#1e90ff', '#ffa500', '#0000ff'];
 
   constructor(
     private serviceLinea: LineaService,
@@ -61,6 +61,9 @@ export class RecorridoViewComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.inicializarMapa();
+    });
     this.id = this.route.snapshot.paramMap.get("id");
     this.waiting = true;
     this.serviceLinea.getLinea(parseInt(this.id)).subscribe(result => {
@@ -74,11 +77,15 @@ export class RecorridoViewComponent implements OnInit {
           rec.color = this.colors[i];
           return rec;
         });
+        if (this.recorridos && this.recorridos.length > 0) {
+          this.recorridoIC.setValue([this.recorridos[0]]);
+          this.onSelectRecorrido();
+          this.showParadasIC.setValue(true);
+          this.changeShowParadas(null);
+        }
       }
     });
-    setTimeout(() => {
-      this.inicializarMapa();
-    });
+
   }
 
   /**
@@ -89,7 +96,7 @@ export class RecorridoViewComponent implements OnInit {
       center: [-42.775935, -65.038144],
       zoom: 14, closePopupOnClick: false
     });
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       minZoom: 12,
@@ -101,9 +108,9 @@ export class RecorridoViewComponent implements OnInit {
    * Muestra el recorrido seleccionado en el mapa.
    */
   onSelectRecorrido() {
-    this.showParadasIC.setValue(false);
-    if (this.paradasGroup)
-      this.paradasGroup.clearLayers();
+    //this.showParadasIC.setValue(true);
+    //if (this.paradasGroup)
+    //this.paradasGroup.clearLayers();
 
     // Toma el recorrido seleccionado
     const recSel = this.recorridoIC.value[0];
@@ -121,7 +128,8 @@ export class RecorridoViewComponent implements OnInit {
     }
     this.recGroup.addLayer(polyline);
     this.recGroup.addTo(this.map);
-    this.map.fitBounds( trays );
+    this.map.fitBounds(trays);
+    this.changeShowParadas(null);
   }
 
   /**
@@ -160,13 +168,13 @@ export class RecorridoViewComponent implements OnInit {
     else
       this.paradasGroup = new L.LayerGroup();
 
-    for (let index=0; index < paradasRec.length; index++) {
-      const first = index==0;
-      const last = index==(paradasRec.length-1);
+    for (let index = 0; index < paradasRec.length; index++) {
+      const first = index == 0;
+      const last = index == (paradasRec.length - 1);
 
       const mark = new L.Marker(
         L.latLng(paradasRec[index].parada.coordenada.lat, paradasRec[index].parada.coordenada.lng), {
-        icon: first ? this.iconDivInicio: (last ? this.iconDivFinal: this.iconDivIn) 
+        icon: first ? this.iconDivInicio : (last ? this.iconDivFinal : this.iconDivIn)
       });
       const begin_end = first ? 'INICIO ' : (last ? 'FIN ' : '');
       mark.bindPopup(
@@ -178,7 +186,7 @@ export class RecorridoViewComponent implements OnInit {
     this.paradasGroup.addTo(this.map);
     this.paradasGroup.eachLayer((mark: L.Marker) => {
       const content = mark.getPopup().getContent().toString();
-      if(content.startsWith('INICIO') || content.startsWith('FIN'))
+      if (content.startsWith('INICIO') || content.startsWith('FIN'))
         mark.openPopup();
     })
   }

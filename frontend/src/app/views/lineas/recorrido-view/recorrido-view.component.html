@@ -52,7 +52,9 @@
                         </mat-list-option>
                         <mat-checkbox color="primary" class="pt-4" [formControl]="showParadasIC"
                             (change)="changeShowParadas($event)" *ngIf="recorridos && recorridos.length>0">
-                            <span style="font-size: x-small;">mostrar paradas</span>
+                            <span style="font-size: x-small;">
+                                {{ showParadasIC.value ? 'ocultar paradas':'mostrar paradas' }}
+                            </span>
                         </mat-checkbox>
                     </mat-selection-list>
                 </div>

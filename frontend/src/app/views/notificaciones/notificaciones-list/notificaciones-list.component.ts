@@ -33,6 +33,7 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.getNotificacionesActivas();
     this.getVencimientos();
+    this.viewDocsVencimientos();
   }
 
   ngAfterViewInit(): void {
