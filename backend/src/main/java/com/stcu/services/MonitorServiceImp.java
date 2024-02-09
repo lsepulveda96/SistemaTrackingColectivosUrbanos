@@ -46,6 +46,7 @@ public class MonitorServiceImp implements MonitorService {
     @Override
     public ColectivoRecorrido saveColectivoRecorrido(ColectivoRecorrido cr) {
         cr.getColectivo().setEnCirculacion(true);
+        cr.getColectivo().setVelocidadPromedio(10000);
         cr.setTransito(true);
         cr.setDesde(Calendar.getInstance());
         cr.setHasta(null);
@@ -228,7 +229,7 @@ public class MonitorServiceImp implements MonitorService {
         Notificacion notificacion = new Notificacion();
         notificacion.setFecha(Calendar.getInstance());
         notificacion.setColectivoRecorrido(cr);
-        notificacion.setDescripcion("Unidad detenida por "+segundosDetenidoStr+" minutos");
+        notificacion.setDescripcion("Unidad detenida por "+segundosDetenidoStr+" segundos");
         notificacion.setActiva(notificacionEstaActiva);
         notificacion.setTipo("DETENIDO");
         notificacion.setCoordenadas(coordenadasNotificacion);
@@ -328,5 +329,11 @@ public class MonitorServiceImp implements MonitorService {
     }
 
 
+    // para guardar velocidad promedio
+    @Override
+    public ColectivoRecorrido updateVelPromColectivoRecorrido(ColectivoRecorrido cr, int velocidadPromedio) {
+        cr.getColectivo().setVelocidadPromedio(velocidadPromedio);
+        return this.repoColRec.save( cr );
+    }
 
 }

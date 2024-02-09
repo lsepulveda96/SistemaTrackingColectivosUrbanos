@@ -70,5 +70,6 @@ public interface MonitorService {
     // para notificacion fin desvio, trae cr fuera de circulacion
     public ColectivoRecorrido getCrByLinRecColDenomFueraDeCirculacion(String denomLinea,String denomRecorrido,String unidad);
 
+    public ColectivoRecorrido updateVelPromColectivoRecorrido(ColectivoRecorrido cr, int velocidadPromedio);
     
 }

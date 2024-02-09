@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.DoubleBinaryOperator;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -212,70 +213,45 @@ public class MobileController {
     // coordinate y: " + coordenadaSinRepetidos.getLng());
     // }
 
-    /*
-     * por si lo necesito, para eliminar repetidos
-     * List auxArray = arrayList.clone();
-     * // Esto recorre todos los objetos del arrayList pero comparando y eliminando
-     * en el auxiliar
-     * for (Obj obj : arrayList) {
-     * while (auxArray.indexOf(obj) != auxArray.lastIndexOf(obj)) {
-     * auxArray.remove(lastIndexOf(obj));
-     * }
-     * }
-     * // Finalmente
-     * arrayList = auxArray();
-     */
-
     List<Coordenada> listaCoordenadasASimular = new ArrayList<>();
 
     // trae recorrido activo
     Recorrido recorrido = serviceRecorrido.getRecorridoActivoByLineaDenomYRecorridoDenom(denomLinea, denomRecorrido);
 
     if (recorrido != null) {
+      // invoca metodo que duplica waypoint del trayecto
+      LineString recorridoCoordDensificado = densificarTrayecto(recorrido.getTrayectos());
 
-      // trae trayecto a recorrer
-      LineString recorridoCoor = recorrido.getTrayectos();
-      //System.out.println(" +++++++++++++++++++ coordenadas a recorrer original" + recorridoCoor.toText());
+      // invoca nuevamente al metodo para volver a densificar el trayecto
+      LineString recorridoCoordDobleDensificado = densificarTrayecto(recorridoCoordDensificado);
 
-      // obtiene el factory
-      GeometryFactory factory = recorridoCoor.getFactory();
+      // por si quiero eliminar coordenadas repetidas. reemplazar por el codigo de
+      // abajo
+      boolean primeraPasada = true;
+      Coordinate coordinateAux = null;
 
-      // empieza a armar el trayecto con mayor densidad
-      CoordinateSequence sequenceOriginal = recorrido.getTrayectos().getCoordinateSequence(); // coordenas original
-
-      CoordinateList listFinal = new CoordinateList(); // lista que va a tener mas coordenadas que el original
-
-      for (int i = 0; i < recorridoCoor.getNumPoints() - 1; i++) {
-        // crea lineString entre punto actual y punto siguiente
-        LineString lineStringIntermedio = factory.createLineString(
-            new Coordinate[] { recorridoCoor.getCoordinateN(i), recorridoCoor.getCoordinateN(i + 1) });
-
-        // pasa el linestring intermedio al que crea punto intermedio
-        String pointStr = serviceRecorrido.crearPuntoIntermedio(lineStringIntermedio);
-
-        // deserializador
-        pointStr = pointStr.replaceAll("[()]", "");
-        pointStr = pointStr.replaceAll("POINT", "");
-        String[] latLngPoint = pointStr.split(" ");
-
-        // agrega la coordenada original
-        listFinal.add(sequenceOriginal.getCoordinate(i));
-        // luego agrega la coordenada intermedia generada
-        if (i < recorridoCoor.getNumPoints() - 2) // para que no entre a la ultima
-          listFinal.add(new Coordinate(Double.parseDouble(latLngPoint[0]), Double.parseDouble(latLngPoint[1])));
-
+      System.out.println("trayecto doblemente densificado sin repetidos");
+      for (Coordinate coordinate : recorridoCoordDobleDensificado.getCoordinates()) {
+        if (primeraPasada) {
+          coordinateAux = coordinate;
+          primeraPasada = false;
+        } else {
+          if (coordinateAux.x != coordinate.x && coordinateAux.y != coordinate.y) {
+            listaCoordenadasASimular.add(new Coordenada(coordinate.getX(), coordinate.getY()));
+            System.out.println("coord x: " + coordinate.x + " - coord y: " + coordinate.y);
+            coordinateAux = coordinate;
+          }
+        }
       }
 
-      // crea lista de coordenadas para return
+      // densificado sin sacar duplicados
+      // for (Coordinate coordinate : recorridoCoordDobleDensificado.getCoordinates())
+      // {
+      // listaCoordenadasASimular.add(new Coordenada(coordinate.getX(),
+      // coordinate.getY()));
+      // System.out.println("coordinate x y: " + coordinate.x + ", " + coordinate.y);
+      // }
 
-      LineString recorridoCoordDensificado = factory.createLineString(listFinal.toCoordinateArray());
-      //System.out.println(
-        //  " +++++++++++++++++++ coordenadas a recorrer con mayor densidad:" + recorridoCoordDensificado.toText());
-
-      for (Coordinate coordinate : recorridoCoordDensificado.getCoordinates()) {
-        listaCoordenadasASimular.add(new Coordenada(coordinate.getX(), coordinate.getY()));
-        //System.out.println("coordinate x y: " + coordinate.x + ", " + coordinate.y);
-      }
     }
 
     Response<List<CoordenadaDTO>> response;
@@ -290,6 +266,50 @@ public class MobileController {
         "No se pudo recuperar recorrido " + recorrido.getId() + " a simular", null);
     return Mapper.getResponseAsJson(response);
 
+  }
+
+  private LineString densificarTrayecto(LineString trayectos) {
+
+    // trae trayecto a recorrer
+    LineString recorridoCoor = trayectos;
+
+    // obtiene el factory
+    GeometryFactory factory = recorridoCoor.getFactory();
+
+    // empieza a armar el trayecto con mayor densidad
+    CoordinateSequence sequenceOriginal = trayectos.getCoordinateSequence(); // coordenas original
+
+    CoordinateList listFinal = new CoordinateList(); // lista que va a tener mas coordenadas que el original
+
+    for (int i = 0; i < recorridoCoor.getNumPoints() - 1; i++) {
+      // crea lineString entre punto actual y punto siguiente
+      LineString lineStringIntermedio = factory.createLineString(
+          new Coordinate[] { recorridoCoor.getCoordinateN(i), recorridoCoor.getCoordinateN(i + 1) });
+
+      // pasa el linestring intermedio al que crea punto intermedio
+      String pointStr = serviceRecorrido.crearPuntoIntermedio(lineStringIntermedio);
+
+      // deserializador
+      pointStr = pointStr.replaceAll("[()]", "");
+      pointStr = pointStr.replaceAll("POINT", "");
+      String[] latLngPoint = pointStr.split(" ");
+
+      // agrega la coordenada original
+      listFinal.add(sequenceOriginal.getCoordinate(i));
+      // luego agrega la coordenada intermedia generada
+      if (i < recorridoCoor.getNumPoints() - 2) // para que no entre a la ultima
+        listFinal.add(new Coordinate(Double.parseDouble(latLngPoint[0]), Double.parseDouble(latLngPoint[1])));
+
+    }
+
+    // crea lista de coordenadas para return
+
+    LineString recorridoCoordDensificado = factory.createLineString(listFinal.toCoordinateArray());
+    // System.out.println(
+    // " +++++++++++++++++++ coordenadas a recorrer con mayor densidad:" +
+    // recorridoCoordDensificado.toText());
+
+    return recorridoCoordDensificado;
   }
 
   @PostMapping("/inicio")
@@ -586,7 +606,8 @@ public class MobileController {
   @PostMapping("/enviarNotificacionColectivoDetenido")
   public String enviarNotificacion(@RequestBody String json) {
     Response<NotificacionDTO> response;
-    String denomLinea = "", denomRecorrido = "", unidad = "", latitud = "", longitud = "", segundosDetenidoStr = "";
+    String denomLinea = "", denomRecorrido = "", unidad = "", latitud = "", longitud = "",
+        tiempoTotalSegIntDetenidoStr = "";
 
     try {
       JSONObject obj = new JSONObject(json);
@@ -596,7 +617,7 @@ public class MobileController {
       latitud = obj.getString("latitud");
       longitud = obj.getString("longitud");
       // fechaNotificacion = obj.getString("fechaNotificacion");
-      segundosDetenidoStr = obj.getString("segundosDetenidoStr");
+      tiempoTotalSegIntDetenidoStr = obj.getString("tiempoTotalSegIntDetenidoStr");
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -604,7 +625,8 @@ public class MobileController {
     Boolean notificacionEstaActiva = true; // para saber que la notificacion esta activa
     ColectivoRecorrido cr = serviceMonitor.getColectivoRecorridoByLinDenomRecDenomColUnidad(denomLinea, denomRecorrido,
         unidad);
-    Notificacion respNotificacion = serviceMonitor.createNotificacion(cr, latitud, longitud, segundosDetenidoStr,
+    Notificacion respNotificacion = serviceMonitor.createNotificacion(cr, latitud, longitud,
+        tiempoTotalSegIntDetenidoStr,
         notificacionEstaActiva);
 
     response = new Response<NotificacionDTO>(false, 200, "Notificacion enviada",
@@ -622,7 +644,8 @@ public class MobileController {
 
     // Response<Notificacion> response = new Response<Notificacion>(false, 200,
     // json, null);
-    String denomLinea = "", denomRecorrido = "", unidad = "", latitud = "", longitud = "", segundosDetenidoStr = "";
+    String denomLinea = "", denomRecorrido = "", unidad = "", latitud = "", longitud = "",
+        tiempoTotalSegIntDetenidoStr = "";
 
     // fechaNotificacion = "",
 
@@ -634,7 +657,7 @@ public class MobileController {
       latitud = obj.getString("latitud");
       longitud = obj.getString("longitud");
       // fechaNotificacion = obj.getString("fechaNotificacion");
-      segundosDetenidoStr = obj.getString("segundosDetenidoStr");
+      tiempoTotalSegIntDetenidoStr = obj.getString("tiempoTotalSegIntDetenidoStr");
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -644,7 +667,8 @@ public class MobileController {
     ColectivoRecorrido cr = serviceMonitor.getColectivoRecorridoByLinDenomRecDenomColUnidad(denomLinea, denomRecorrido,
         unidad);
 
-    Notificacion respNotificacion = serviceMonitor.updateNotificacion(cr, latitud, longitud, segundosDetenidoStr,
+    Notificacion respNotificacion = serviceMonitor.updateNotificacion(cr, latitud, longitud,
+        tiempoTotalSegIntDetenidoStr,
         notificacionEstaActiva); // actualiza la descripcion con el nuevo tiempo
 
     response = new Response<NotificacionDTO>(false, 200, "Notificacion actualizada",
@@ -658,13 +682,15 @@ public class MobileController {
    * detenido
    * 
    * @param json datos enviados por app colectivo, indica nombres de linea,
-   *             recorrido, colectivo, ubicacion y cantidad de segundos detenidos
+   *             recorrido, colectivo, ubicacion y cantidad de tiempoTotalSegInt
+   *             detenidos
    * @return
    */
   @PostMapping("/finNotificacionColeDetenido")
   public String finNotificacionColeDetenido(@RequestBody String json) {
     Response<NotificacionDTO> response;
-    String denomLinea = "", denomRecorrido = "", unidad = "", latitud = "", longitud = "", segundosDetenidoStr = "";
+    String denomLinea = "", denomRecorrido = "", unidad = "", latitud = "", longitud = "",
+        tiempoTotalSegIntDetenidoStr = "";
 
     try {
       JSONObject obj = new JSONObject(json);
@@ -674,7 +700,7 @@ public class MobileController {
       latitud = obj.getString("latitud");
       longitud = obj.getString("longitud");
       // fechaNotificacion = obj.getString("fechaNotificacion");
-      segundosDetenidoStr = obj.getString("segundosDetenidoStr");
+      tiempoTotalSegIntDetenidoStr = obj.getString("tiempoTotalSegIntDetenidoStr");
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -683,7 +709,7 @@ public class MobileController {
     ColectivoRecorrido cr = serviceMonitor.getColectivoRecorridoByLinDenomRecDenomColUnidad(denomLinea, denomRecorrido,
         unidad);
     Notificacion respNotificacion = serviceMonitor.finNotificacionColeDetenido(cr, latitud, longitud,
-        segundosDetenidoStr,
+        tiempoTotalSegIntDetenidoStr,
         notificacionEstaActiva); // actualiza la descripcion con el nuevo tiempo
     response = new Response<NotificacionDTO>(false, 200, "Notificacion finalizada",
         NotificacionDTO.toDTO(respNotificacion));
@@ -706,8 +732,6 @@ public class MobileController {
   public String obtenerTiempoLlegadaCole(@PathVariable String idLineaString, @PathVariable String idRecorridoString,
       @PathVariable String codigoParadaString) {
 
-    // System.out.println("+++++++++++++++++ entra en obtener tiempo llegada cole");
-
     Response<ArriboColectivoDTO> response;
     String separator = ":";
     int sepPos = idLineaString.indexOf(separator);
@@ -719,23 +743,12 @@ public class MobileController {
     int sepPos2 = codigoParadaString.indexOf(separator);
     long codigoParada = Long.valueOf(codigoParadaString.substring(sepPos2 + separator.length()));
 
-    //System.out.println("Los codigos obtenidos: idLinea: " + idLinea + " +++++++idRecorrido+++ " + idRecorrido
-      //  + " +++++codigoParada++++++ " + codigoParada);
-
     // buscar colectivos en servicio de la linea
     List<ColectivoRecorrido> crList = serviceMonitor.findAllColectivosRecorridoActivos(idLinea, idRecorrido);
 
     // Buscar recorrido y todas sus paradas
     List<ParadaRecorrido> prlist = serviceRecorrido.getParadasRecorridoByLineaIdYRecorridoId(idLinea, idRecorrido);
 
-    // System.out.println("++++++++++++ lista paradas recorrido: " + prlist.size());
-    for (ParadaRecorrido paradaRecorrido : prlist) {
-      System.out
-          .println(paradaRecorrido.getParada().toString() + " --- " + paradaRecorrido.getRecorrido().getDenominacion());
-    }
-
-    // System.out.println("++++++++++++ lista colectivo recorrido activo" +
-    // crList.size());
     for (ColectivoRecorrido colectivoRecorrido : crList) {
       System.out.println(colectivoRecorrido.getColectivo().getUnidad() + " --- "
           + colectivoRecorrido.getRecorrido().getDenominacion());
@@ -755,7 +768,7 @@ public class MobileController {
     // Buscar el orden de la parada del colectivo
     int diferencia = 1000;
     ColectivoRecorrido colRecProximo = null;
-    int ordenParadaColectivoSel = -1;
+    int ordenParadaColectivoMasCercano = -1;
     boolean colectivoEstaEnParadaPasajero = false;
 
     try {
@@ -768,7 +781,7 @@ public class MobileController {
             if (difparada > 0 && difparada < diferencia) {
               diferencia = difparada;
               colRecProximo = cr;
-              ordenParadaColectivoSel = ordenParadaColectivo;
+              ordenParadaColectivoMasCercano = ordenParadaColectivo;
             }
             // si el colectivo esta en la parada del pasajero
             if (ordenParadaPasajero == ordenParadaColectivo) {
@@ -779,47 +792,39 @@ public class MobileController {
         }
       }
     } catch (NullPointerException e) {
-      // por si hay colectivos que no alcanzaron a llegar a una parada y estan
+      // por si hay colectivos que no alcanzaron a llegar a una parada o estan
       // desviados/detenidos
-
 
       // aca tambien ojo al responder. if data != null
       response = new Response<ArriboColectivoDTO>(true, 400, "No hay colectivos cercanos", null);
       return Mapper.getResponseAsJson(response);
     }
 
-    // obtiene sumatoria de tiempos hasta que la parada del colectivo sea igual a la
-    // parada del pasajero
-    Double tiempoAcumulado = 0.0;
-    boolean calculoTiempoIniciado = false;
-    int ordenParadaActual = ordenParadaColectivoSel;
+    // obtiene sumatoria distancias hasta que parada colectivo sea igual a parada
+    // pasajero
+    Double distanciaAcumulada = 0.0;
+    boolean calculoDistanciaIniciada = false;
+    int ordenParadaActual = ordenParadaColectivoMasCercano;
 
     for (ParadaRecorrido pr : prlist) {
-      if (pr.getOrden() == ordenParadaColectivoSel) {
-        if (calculoTiempoIniciado == false) {
-          calculoTiempoIniciado = true;
-          // tiempoAcumulado = pr.getTiempo();
+      if (pr.getOrden() == ordenParadaColectivoMasCercano) {
+        if (calculoDistanciaIniciada == false) {
+          calculoDistanciaIniciada = true;
           ordenParadaActual++;
+          distanciaAcumulada += pr.getDistancia(); //probar esto, sino sacarlo
         }
-      } else if (calculoTiempoIniciado && ordenParadaActual <= ordenParadaPasajero) {
-        tiempoAcumulado += pr.getTiempo();
+      } else if (calculoDistanciaIniciada && ordenParadaActual <= ordenParadaPasajero) {
+        distanciaAcumulada += pr.getDistancia();
         ordenParadaActual++;
       }
     }
 
-    // System.out.println(" colectivoEstaEnParadaPasajero: " +
-    // colectivoEstaEnParadaPasajero);
-
-
-    // ojo estos dos casos, no tendria que ir al mapa! ver como identificarlo
-    // if data != null en android
     if (colectivoEstaEnParadaPasajero) {
-      System.out.println("El colectivo llego a la parada"); // y return
       response = new Response<ArriboColectivoDTO>(false, 400, "El colectivo llego a la parada", null);
       return Mapper.getResponseAsJson(response);
     }
 
-    if (tiempoAcumulado == 0.0) {
+    if (distanciaAcumulada == 0.0) {
       response = new Response<ArriboColectivoDTO>(true, 400, "No hay colectivos cercanos", null);
       return Mapper.getResponseAsJson(response);
     }
@@ -827,7 +832,6 @@ public class MobileController {
     // al tiempo acumulado, restarle tiempo el tiempo de coordenada actual - tiempo
     // ultima parada visitada
 
-    
     double lat1Rad = 0;
     double lon1Rad = 0;
 
@@ -837,6 +841,9 @@ public class MobileController {
     Double tiempoSobrante = 0.0;
 
     Ubicacion ultimaCoordColeRec;
+    int VEL_PROMEDIO = 10000;
+    Double velocidadReal = Double.valueOf(VEL_PROMEDIO);
+
     if (colRecProximo != null) {
 
       lat1Rad = Math.toRadians(colRecProximo.getParadaActual().getCoordenadas().getX());
@@ -846,195 +853,111 @@ public class MobileController {
       lat2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getX());
       lon2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getY());
 
-      
-        Calendar calInicio = colRecProximo.getFechaParadaActual();
-        Calendar calSalida = ultimaCoordColeRec.getFecha();
-        
-        double diferenciaTiempoMilis = calSalida.getTimeInMillis() - calInicio.getTimeInMillis();
+      Calendar calInicio = colRecProximo.getFechaParadaActual();
+      Calendar calSalida = ultimaCoordColeRec.getFecha();
 
-        System.out.println("calInicio : min: " + calInicio.MINUTE + " seg" + calInicio.SECOND);
-        System.out.println("calSalida : min" + calSalida.MINUTE +" seg: " + calSalida.SECOND);
-        System.out.println("tiempo en milis: " + diferenciaTiempoMilis);
+      double diferenciaTiempoMilis = calSalida.getTimeInMillis() - calInicio.getTimeInMillis();
 
-        
-        double minutes = (diferenciaTiempoMilis / 1000) / 60;
- 
-        // formula for conversion for
-        // milliseconds to seconds
-        double seconds = (diferenciaTiempoMilis / 1000) % 60;
+      // para tiempo en segundos
+      double diferenciaTiempoSecond = diferenciaTiempoMilis / 1000;
 
-        double secondsTotal = minutes * 60 + seconds;
+      // double minutes = diferenciaTiempoMilis / (60 * 1000) % 60;
 
-        /* int difHoras = calSalida.get(Calendar.HOUR) - calInicio.get(Calendar.HOUR);
-        int difMinutos = calSalida.get(Calendar.MINUTE) - calInicio.get(Calendar.MINUTE);
-        int difSegundos = calSalida.get(Calendar.SECOND) - calInicio.get(Calendar.SECOND);
-        Calendar calDif = Calendar.getInstance();// variable para diferencia de tiempo
-        
-        calDif.set(Calendar.HOUR, difHoras);
-        calDif.set(Calendar.MINUTE, difMinutos);
-        calDif.set(Calendar.SECOND, difSegundos);
-        int segundosTranscurridos = calDif.get(Calendar.HOUR) * 60 * 60 +
-        calDif.get(Calendar.MINUTE) * 60 + calDif.get(Calendar.SECOND);
-        
-        
-        double hsTranscurridas = segundosTranscurridos/60/60;
-        
-        System.out.println("----- ");
-        System.out.println("horas diferencia" + calDif.get(Calendar.HOUR));
-        System.out.println("minutos diferencia" + calDif.get(Calendar.MINUTE));
-        System.out.println("segundos diferencia" + calDif.get(Calendar.SECOND));
-        System.out.println("----- ");
-       */
+      // double seconds = diferenciaTiempoMilis / 1000 % 60;
 
-      int EARTH_RADIUS = 6371;
-      int VEL_PROMEDIO = 10000;
+      // double secondsTotal = minutes * 60 + seconds;
+
+      int RADIO_TIERRA = 6371;
 
       double x = (lon2Rad - lon1Rad) * Math.cos((lat1Rad + lat2Rad) / 2);
       double y = (lat2Rad - lat1Rad);
-      Double distanciaTranscurrida = Math.sqrt(x * x + y * y) * EARTH_RADIUS;
+      Double distanciaParcialTranscurrida = Math.sqrt(x * x + y * y) * RADIO_TIERRA;
 
-      //Double distEnKms = distanciaTranscurrida;
+      // Double distanciaParcialTranscurrida = RADIO_TIERRA * Math.acos(Math.sin(lat1Rad) *
+      // Math.sin(lat2Rad))
+      // + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.cos(lon1Rad - lon2Rad);
+
+      Double distEnKms = distanciaParcialTranscurrida;
       // para distancia en metros
-      //distanciaTranscurrida = distanciaTranscurrida * 1000;
+      distanciaParcialTranscurrida = distanciaParcialTranscurrida * 1000;
 
-      
-        double velocidadEnriquecida;
+      // esto es para saber la velocidad
+      // System.out.println("distancia transcurrida ms: " + distanciaParcialTranscurrida + "
+      // / seconds pasado a hs: " + (secondsTotal / 60 / 60));
 
-        
+      System.out.println(
+          "()()()()()()() Distancia transcurrida en mts desde ultima parada visitada: " + distanciaParcialTranscurrida);
+      // System.out.println(" +++++++++++++++++++++++ ");
+      System.out.println("%%%%%%%%%%%%%%% segundos trascurridos desde ultima parada visitada" + diferenciaTiempoSecond
+          + " - o en hs: " + (diferenciaTiempoSecond / 60 / 60));
 
-        // esto es para saber la velocidad
-        if (secondsTotal > 0){
-        //velocidadEnriquecida = distanciaTranscurrida.intValue() / segundosTranscurridos;
-        //velocidadEnriquecida = distEnKms / hsTranscurridas;
+      if (diferenciaTiempoSecond > 1) {
+        // velocidadReal = distanciaParcialTranscurrida.intValue() /
+        // tiempoTotalSegIntTranscurridos;
+        // velocidadReal = distEnKms / hsTranscurridas;
 
         // dist en kms / hs
-        velocidadEnriquecida = distanciaTranscurrida / (secondsTotal/60/60);
-        System.out.
-        println("()()()()()()()()()()()()()()() Distancia transcurrida en mts desde ultima parada visitada: " + distanciaTranscurrida);
-        System.out.println(" +++++++++++++++++++++++ ");
-        System.out.
-        println(" %%%%%%%%%%%%%%%%%%%%%% Total segundos trascurridos desde ultima parada visitada"
-        + secondsTotal);
-        System.out.
-        println(" &&&&&&&&&&&&&&&&&&&&&& Velocidad a la que circulo el cole desde parada visitada: "
-        + velocidadEnriquecida);
+        velocidadReal = distanciaParcialTranscurrida / (diferenciaTiempoSecond / 60 / 60);
 
-        // aca hacer el calculo de tiempo. con distacia total
-        }else{
-          velocidadEnriquecida = VEL_PROMEDIO;
-        }
-       
-        // sino tomar tiempo promedio 10kms hs
+        // aca hacer el calculo de tiempo. con distancia total
+      }
 
-      // tiempoSobranteEnriquecido = (distanciaTranscurrida / velocidadEnriquecida)
-      // *60 *60
-      tiempoSobrante = (distanciaTranscurrida / velocidadEnriquecida) * 60 * 60;
+      System.out.println("&&&&&&&&&&&&&&& Velocidad a la que circulo el cole desde parada visitada: " + velocidadReal);
+
+      tiempoSobrante = (distanciaParcialTranscurrida / velocidadReal) * 60 * 60;
+
+      System.out.println("·········································" );
+      System.out.println("·······················tiempo sobrante para restar" + tiempoSobrante);
 
     }
 
-    // segundosDouble = tiempoAcumulado - tiempoSobranteEnriquecido;
+    // tiempoTotalSeg = distanciaAcumulada - tiempoSobranteEnriquecido;
 
-    // hacer esto 
-    // tiempo total = distancia total / velocidad enriquecida
-    Double segundosDouble = tiempoAcumulado - tiempoSobrante;
+    // primero esto para obtener un numero entre paradas
+    int velocidadPromediada = (colRecProximo.getColectivo().getVelocidadPromedio() + velocidadReal.intValue()) / 2;
+    serviceMonitor.updateVelPromColectivoRecorrido(colRecProximo, velocidadPromediada);
 
+    Double tiempoTotalSeg = (distanciaAcumulada / velocidadPromediada) * 3600;
 
-    System.out.println("-----------------------------------------------");
-    System.out.println("tiempo acumulado: "+ tiempoAcumulado);
-    System.out.println("tiempo sobrante: "+ tiempoSobrante);
+    tiempoTotalSeg = tiempoTotalSeg - tiempoSobrante;
+    /*
+     * System.out.println("-----------------------------------------------");
+     * System.out.println("distancia acumulada: " + distanciaAcumulada +
+     * " / velocidad elegida: " + velocidadReal);
+     * System.out.println("-----------------------------------------------");
+     * System.out.println("tiempo Total seg: " + tiempoTotalSeg);
+     */
 
-    int segundos = segundosDouble.intValue();
+    // hacer esto despues para una mayor precision
+    // Double tiempoTotalSeg = distanciaAcumulada - tiempoSobrante;
+
+    // todavia no uso tiempo sobrante
+    // System.out.println("tiempo sobrante: " + tiempoSobrante);
+
+    int tiempoTotalSegInt = tiempoTotalSeg.intValue();
 
     // para darle formato hs:min:seg
     String tiempoTotal;
     int hor, min, seg;
 
-    hor = segundos / 3600;
-    min = (segundos - (3600 * hor)) / 60;
-    seg = segundos - ((hor * 3600) + (min * 60));
-
-    
-
+    hor = tiempoTotalSegInt / 3600;
+    min = (tiempoTotalSegInt - (3600 * hor)) / 60;
+    seg = tiempoTotalSegInt - ((hor * 3600) + (min * 60));
 
     tiempoTotal = hor + " hs: " + min + " min: " + seg + " seg ";
 
-    // para responder dto
-    // tambien agregarle el recorrido faltante para ponerlo en el mapa
-    ArriboColectivoDTO acDTO = new ArriboColectivoDTO(colRecProximo.getFechaParadaActual(), 
-    tiempoTotal, colRecProximo.getParadaActual(), paradaPasajero.getParada());
-
-
-    // hacer lo del recorrido sobrante
-    List<Coordinate> listaCoorRestantes = new ArrayList<Coordinate>();
-    Boolean coordenadasSinTransitar = false;
-
-    Recorrido recorrido = serviceRecorrido.getRecorrido(idRecorrido);
-
-    //if (recorrido != null) {
-      // trae trayecto a recorrer
-      LineString recorridoCoor = recorrido.getTrayectos();
-    //}
-      
-    
-    org.locationtech.jts.geom.Point p = paradaPasajero.getParada().getCoordenadas();
-    BigDecimal bigDecimalLatParadaPasajero = new BigDecimal(p.getX()).setScale(4,RoundingMode.DOWN);
-    BigDecimal bigDecimalLngParadaPasajero = new BigDecimal(p.getY()).setScale(4,RoundingMode.DOWN);
-    //tambien voy a necesitar las coordenadas del pasajero. tengo que parar de guardar ahi. set bandera false.
-
-    // si no es preciso, tratar de guardar el recorrido densificado creado en trayecto a simular
-    double latParadaColectivo = colRecProximo.getParadaActual().getCoordenadas().getX();
-    double lngParadaColectivo = colRecProximo.getParadaActual().getCoordenadas().getY();
-    
-    BigDecimal bigDecimalLat = new BigDecimal(latParadaColectivo).setScale(4,RoundingMode.DOWN);
-    BigDecimal bigDecimalLng = new BigDecimal(lngParadaColectivo).setScale(4,RoundingMode.DOWN);
-
-    for (int i = 0; i < recorridoCoor.getNumPoints() - 1; i++) {
-
-      BigDecimal bigDecimalLatActual = new BigDecimal(recorridoCoor.getCoordinateN(i).getX()).setScale(4,RoundingMode.DOWN);
-      BigDecimal bigDecimalLngActual = new BigDecimal(recorridoCoor.getCoordinateN(i).getY()).setScale(4,RoundingMode.DOWN);
-
-      if(coordenadasSinTransitar){
-        listaCoorRestantes.add(recorridoCoor.getCoordinateN(i));
-        // if(coordenada actual == coordenada pasajero) // ya no tiene que guardar coordenadas
-        if(bigDecimalLatActual.doubleValue() == bigDecimalLatParadaPasajero.doubleValue() && bigDecimalLngActual.doubleValue() == bigDecimalLngParadaPasajero.doubleValue()){
-          coordenadasSinTransitar = false;
-        }        
-      }else{
-        //System.out.println("coordenadas a comparar: "+ bigDecimalLat.doubleValue() + " - " + recorridoCoor.getCoordinateN(i).getX());
-        // if cordenada actual == coordenada parada actual colectivo
-        if( bigDecimalLat.doubleValue() ==  bigDecimalLatActual.doubleValue() && bigDecimalLng.doubleValue() ==  bigDecimalLngActual.doubleValue()){
-          coordenadasSinTransitar = true;
-          listaCoorRestantes.add(recorridoCoor.getCoordinateN(i));
-        }
-      }      
-    }
-
-
-   // System.out.println("**********************************");
-   // System.out.println("coordenadas recuperada por transitar");
-   // for (Coordinate coordinate : listaCoorRestantes) {
-   //   System.out.println(coordinate.x + " - " + coordinate.y);
-   //  }
-
+    ArriboColectivoDTO acDTO = new ArriboColectivoDTO(colRecProximo.getFechaParadaActual(),
+        tiempoTotal, colRecProximo.getParadaActual(), paradaPasajero.getParada());
 
     if ((hor == 0 && min == 0 && seg < 10)) {
       System.out.println("Colectivo aproximandose a la parada"); // y return
       response = new Response<ArriboColectivoDTO>(false, 200, "Colectivo aproximandose a la parada",
-      ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
+          ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
       return Mapper.getResponseAsJson(response);
     }
 
-
-
-    
-    // en el response dto necesito
-    // coord parada pasajero
-    // tiempo arribo colectivo (el que ya tenia) -> tiempoTotal
-    // utlima parada que visito el colRecProximo 
-    // fecha en que visito la ultima prada actual
-
     response = new Response<ArriboColectivoDTO>(false, 200, tiempoTotal,
-    ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
+        ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
     return Mapper.getResponseAsJson(response);
 
   } // fin metodo tiempo llegada

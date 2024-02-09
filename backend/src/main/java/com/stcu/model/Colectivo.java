@@ -67,6 +67,9 @@ public class Colectivo {
     @Column(name = "imgpath")
     private String imgpath;
 
+    @Column(name = "velocidad_promedio")
+    private Integer velocidadPromedio;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "colectivo_id", referencedColumnName = "id")
     /* @OneToMany(mappedBy = "colectivo") */
