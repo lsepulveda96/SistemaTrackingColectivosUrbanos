@@ -7,6 +7,7 @@ import java.util.List;
 import com.stcu.model.Colectivo;
 import com.stcu.model.ColectivoRecorrido;
 import com.stcu.model.Parada;
+import com.stcu.model.ParadaRecorrido;
 import com.stcu.model.Recorrido;
 
 import lombok.Getter;
@@ -20,11 +21,12 @@ public class ArriboColectivoDTO {
     String tiempoArriboColProximo;
     Parada paradaActual;
     Parada paradaActualPasajero;
+    List<ParadaRecorridoDTO> listaParadasPorRecorrer;
 
     public ArriboColectivoDTO() {
     }
 
-    public ArriboColectivoDTO(Calendar fechaParadaActual, String tiempoArriboColProximo, Parada paradaActual, Parada paradaActualPasajero ) {
+    public ArriboColectivoDTO(Calendar fechaParadaActual, String tiempoArriboColProximo, Parada paradaActual, Parada paradaActualPasajero, List<ParadaRecorrido> listaParadasPorRecorrer ) {
         this.fechaParadaActual = fechaParadaActual;
         this.tiempoArriboColProximo = tiempoArriboColProximo;
         Parada parActCole = paradaActual;
@@ -37,6 +39,14 @@ public class ArriboColectivoDTO {
             this.paradaActualPasajero = new Parada(parActPasajero.getCodigo(), parActPasajero.getDireccion(),
                     parActPasajero.getCoordenadas());
         }
+        
+        this.listaParadasPorRecorrer = new ArrayList<ParadaRecorridoDTO>();
+        
+        if(listaParadasPorRecorrer!=null)
+            for (ParadaRecorrido pr : listaParadasPorRecorrer) {
+                ParadaRecorridoDTO prd = new ParadaRecorridoDTO(pr);
+                this.listaParadasPorRecorrer.add(prd);
+            }
     }
 
     public static ArriboColectivoDTO toColectivoRecorridoDTO(ArriboColectivoDTO acDTO) {
@@ -54,6 +64,7 @@ public class ArriboColectivoDTO {
             nacDTO.setParadaActualPasajero(new Parada(parActPasajero.getCodigo(), parActPasajero.getDireccion(),
                     parActPasajero.getCoordenadas()));
         }
+        nacDTO.setListaParadasPorRecorrer(acDTO.getListaParadasPorRecorrer());
 
         return nacDTO;
 
