@@ -51,7 +51,7 @@ export class RecorridoEditComponent implements OnInit {
   tiempo = 0;
 
   deshacerOption: boolean = false;
- 
+
   // Icono de parada general.
   iconDiv = L.divIcon({
     html: '<i class="bi bi-geo-fill" style="font-size: 30px; color:black"></i>',
@@ -230,7 +230,7 @@ export class RecorridoEditComponent implements OnInit {
    * Muestra una parada en el mapa como parada general o parada del recorrido (cambia icono): segun el valor de isParadaEnRecorrido.
    */
   loadParadaToMap(isParadaEnRecorrido: boolean, paradaRecorrido: any) {
-    console.log("load paradas to map: ", paradaRecorrido, ", isparadaEnRecorrido: ", isParadaEnRecorrido );
+    console.log("load paradas to map: ", paradaRecorrido, ", isparadaEnRecorrido: ", isParadaEnRecorrido);
     if (paradaRecorrido) {
       for (let par of this.paradasGroup.getLayers()) {
         if (par.options.title == paradaRecorrido.parada.codigo.toString()) {
@@ -268,17 +268,9 @@ export class RecorridoEditComponent implements OnInit {
       this.rutaEntreParadas = [];
 
     this.rutaEntreParadas.push(paradaRecAux);
-    console.log("++++++++++++++++++++++++++ this.rutaEntreParadas.length: " + this.rutaEntreParadas.length);
-
-    // para distancia entre paradas
-    /* var paradaOrigen;
-    var paradaSiguiente; */
 
     if (this.primeraParada) {
       const len = this.rutaEntreParadas.length;
-      console.log("++++++++++++++++++++++++++ paradasRecorrido.length: " + this.rutaEntreParadas.length);
-      console.log("++++++++++++++++++++++++++ parada origen lng: " + this.rutaEntreParadas[len - 2].parada.coordenada.lng);
-      console.log("++++++++++++++++++++++++++ parada destino lng: " + this.rutaEntreParadas[len - 1].parada.coordenada.lng);
       const paradaOrigen = L.latLng(this.rutaEntreParadas[len - 2].parada.coordenada.lat, this.rutaEntreParadas[len - 2].parada.coordenada.lng);
       const paradaSiguiente = L.latLng(this.rutaEntreParadas[len - 1].parada.coordenada.lat, this.rutaEntreParadas[len - 1].parada.coordenada.lng);
       this.distancia = L.GeometryUtil.length([paradaOrigen, paradaSiguiente]);
@@ -387,20 +379,28 @@ export class RecorridoEditComponent implements OnInit {
 
     this.control.on('routeselected', (e: any) => {
       console.log("RouteSelected : ", e);
-      this.rutasAnterior = this.rutas ? this.rutas: e.route;
+
+      this.rutasAnterior = this.rutas ? this.rutas : e.route;
       this.rutas = e.route;
 
       // Comparar si las rutas anterior y actual son disintas.
-      const lengthAnterior = this.rutasAnterior ? this.rutasAnterior.waypoints.length:0;
-      const lengthActual = this.rutas ? this.rutas.waypoints.length:0;
+      const lengthAnterior = this.rutasAnterior ? this.rutasAnterior.waypoints.length : 0;
+      const lengthActual = this.rutas ? this.rutas.waypoints.length : 0;
+
       // solo se analiza si se agregaron waypoints
       if (lengthActual > 0 && lengthAnterior > 0 && lengthActual > lengthAnterior) {
-        // si se agregaron waypoints, puede ser que se haya agregado una nueva parada.
-        // si las ultimas paradas del actual y el anterior son iguales entonces se modifico el recorrido, se habilita deshacer.
-        if (this.rutas.waypoints[lengthActual-1].latLng.lat == this.rutasAnterior.waypoints[lengthAnterior-1].latLng.lat &&
-          this.rutas.waypoints[lengthActual-1].latLng.lng == this.rutasAnterior.waypoints[lengthAnterior-1].latLng.lng)
+        const ultimaParadaActual = this.rutas.waypoints[lengthActual - 1];
+        const ultimaParadaAnterior = this.rutasAnterior.waypoints[lengthAnterior - 1];
+        // si la ultimas paradas son distintas, entonces se agrego o elimino una parada, entonces no se habilita deshacer.
+        if (!this.equalCoordenada(ultimaParadaActual.latLng, ultimaParadaAnterior.latLng)) {
+          this.deshacerOption = false;
+        }
+        else {
+          // si las ultimas paradas del actual y el anterior son iguales entonces se modifico el recorrido, se habilita deshacer.
           this.deshacerOption = true;
+        }
       }
+      console.log("opcion deshace: ", this.deshacerOption );
     });
 
     // Oculta el itinerario
@@ -409,32 +409,54 @@ export class RecorridoEditComponent implements OnInit {
     controlContainerParent.removeChild(routingControlContainer);
   }
 
+
+  /**
+   * Verifica si dos coordenadas son iguales;
+   * @param coord1 
+   * @param coord2 
+   * @returns 
+   */
+  equalCoordenada(coord1: any, coord2: any): boolean {
+    if (!coord1 || !coord2) return false;
+    if (coord1.lat == coord2.lat && coord1.lng == coord2.lng) return true;
+    return false;
+  }
+
   /**
    * Remueve los trayectos posteriores a la ultima parada del recorrido
    */
   removeTrayectoRecorrido() {
+    console.log("++++ recorrido actual: ", this.rutas.waypoints );
+    console.log("++++ recorrido anterior: ", this.rutasAnterior.waypoints );
+
     const len = this.paradasRecorrido.length;
-    if (len <= 1) {
+    if (len <= 1) { // si queda una para o ninguna se reinicia el control.
       if (this.control) {
         this.control.setWaypoints([]);
         this.control.remove();
         this.control = null;
       }
     }
-    else { // if (len > 2) 
+    else { // if (len > 2)  // si quedan mas de dos paradas, entonces se eliminan los waypoints posteriores a la ultima.
       const wps = this.control.getWaypoints();
       const ultimaPR = this.paradasRecorrido[len - 1];
+      
+      const ultimaParada = L.latLng( ultimaPR.parada.coordenada.lat, ultimaPR.parada.coordenada.lng );
       let lastwp = wps.pop();
       do {
-        if (lastwp.latLng.lat != ultimaPR.parada.coordenada.lat && lastwp.latLng.lng != ultimaPR.parada.coordenada.lng) {
+        /* if (lastwp.latLng.lat != ultimaPR.parada.coordenada.lat && lastwp.latLng.lng != ultimaPR.parada.coordenada.lng) {
+          console.log("--- quitando parada: ", lastwp );
           lastwp = wps.pop();
-        }
+        } */
+        if (!this.equalCoordenada( ultimaParada, lastwp.latLng ))
+          lastwp = wps.pop();
         else {
           wps.push(lastwp);
           lastwp = null;
         }
       }
       while (lastwp != null);
+
       this.control.setWaypoints(wps);
     }
   }
