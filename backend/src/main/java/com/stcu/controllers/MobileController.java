@@ -817,7 +817,7 @@ public class MobileController {
     }
 
     // elimina la ultima para no interponerla con la del pasajero
-    listaParadasPorRecorrer.remove(listaParadasPorRecorrer.size()-1);
+    //listaParadasPorRecorrer.remove(listaParadasPorRecorrer.size()-1);
 
     if (colectivoEstaEnParadaPasajero) {
       response = new Response<ArriboColectivoDTO>(false, 400, "El colectivo llego a la parada", null);
