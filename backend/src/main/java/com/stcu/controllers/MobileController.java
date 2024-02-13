@@ -13,10 +13,13 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.sound.sampled.Line;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateList;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateXY;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
@@ -205,18 +208,39 @@ public class MobileController {
   public String findTrayectosRecorridoSimulacion(@PathVariable String denomLinea, @PathVariable String denomRecorrido)
       throws IOException {
 
-    // esto no anda. cambiar si lo necesito
-    // listaCoordenadasASimular =
-    // listaCoordenadasASimular.stream().distinct().collect(Collectors.toList());
-    // for (Coordenada coordenadaSinRepetidos : listaCoordenadasASimular) {
-    // System.out.println("coordinate x: " + coordenadaSinRepetidos.getLat() + " -
-    // coordinate y: " + coordenadaSinRepetidos.getLng());
-    // }
-
     List<Coordenada> listaCoordenadasASimular = new ArrayList<>();
 
     // trae recorrido activo
     Recorrido recorrido = serviceRecorrido.getRecorridoActivoByLineaDenomYRecorridoDenom(denomLinea, denomRecorrido);
+
+   // LineString trayectosRec = recorrido.getTrayectos();
+    LineString waypointsRec = recorrido.getWaypoints();
+
+   /* System.out.println("trayectosRec coordenadas: ");
+    for (Coordinate coordinate : trayectosRec.getCoordinates()) {
+      System.out.println(coordinate.x + "," + coordinate.y);
+    }
+    System.out.println("-------------------------------");
+
+    System.out.println("waypointsRec coordenadas: ");
+    for (Coordinate coordinate : waypointsRec.getCoordinates()) {
+      System.out.println(coordinate.x + "," + coordinate.y);
+    }
+    System.out.println("-------------------------------");
+ */
+
+    /*
+     * Geometry unionLs = trayectosRec.union(waypointsRec);
+     * 
+     * 
+     * 
+     * System.out.println("Union waypointsRec trayectosRec coordenadas: ");
+     * for (Coordinate coordinate : unionLs.getCoordinates()) {
+     * System.out.println(coordinate.x + "," + coordinate.y);
+     * }
+     * System.out.println("-------------------------------");
+     * System.out.println("Todavia falta la densificacion");
+     */
 
     if (recorrido != null) {
       // invoca metodo que duplica waypoint del trayecto
@@ -225,34 +249,57 @@ public class MobileController {
       // invoca nuevamente al metodo para volver a densificar el trayecto
       LineString recorridoCoordDobleDensificado = densificarTrayecto(recorridoCoordDensificado);
 
-      LineString recorridoCoordTripleDensificado = densificarTrayecto(recorridoCoordDobleDensificado);
+      // LineString recorridoCoordTripleDensificado =
+      // densificarTrayecto(recorridoCoordDobleDensificado);
 
       // por si quiero eliminar coordenadas repetidas. reemplazar por el codigo de
       // abajo
-      boolean primeraPasada = true;
-      Coordinate coordinateAux = null;
+     // boolean primeraPasada = true;
+      //Coordinate coordinateAux = null;
 
-      System.out.println("trayecto doblemente densificado sin repetidos");
-      for (Coordinate coordinate : recorridoCoordTripleDensificado.getCoordinates()) {
-        if (primeraPasada) {
-          coordinateAux = coordinate;
-          primeraPasada = false;
-        } else {
-          if (coordinateAux.x != coordinate.x && coordinateAux.y != coordinate.y) {
-            listaCoordenadasASimular.add(new Coordenada(coordinate.getX(), coordinate.getY()));
-            System.out.println("coord x: " + coordinate.x + " - coord y: " + coordinate.y);
-            coordinateAux = coordinate;
-          }
-        }
-      }
+      // System.out.println("trayecto doblemente densificado sin repetidos");
+      /*
+       * for (Coordinate coordinate : recorridoCoordDobleDensificado.getCoordinates())
+       * {
+       * //for (Coordinate coordinate :
+       * recorridoCoordTripleDensificado.getCoordinates()) {
+       * if (primeraPasada) {
+       * coordinateAux = coordinate;
+       * primeraPasada = false;
+       * } else {
+       * if (coordinateAux.x != coordinate.x && coordinateAux.y != coordinate.y) {
+       * listaCoordenadasASimular.add(new Coordenada(coordinate.getX(),
+       * coordinate.getY()));
+       * System.out.println("coord x: " + coordinate.x + " - coord y: " +
+       * coordinate.y);
+       * coordinateAux = coordinate;
+       * }
+       * }
+       * }
+       */
 
       // densificado sin sacar duplicados
-      // for (Coordinate coordinate : recorridoCoordDobleDensificado.getCoordinates())
-      // {
-      // listaCoordenadasASimular.add(new Coordenada(coordinate.getX(),
-      // coordinate.getY()));
-      // System.out.println("coordinate x y: " + coordinate.x + ", " + coordinate.y);
-      // }
+      System.out.println("trayecto densificado unido con paradas:");
+
+      // une el trayecto doble densificado con lineString que contiene las paradas
+      Geometry unionLs = recorridoCoordDobleDensificado.union(waypointsRec);
+
+      for (Coordinate coordinate : unionLs.getCoordinates()) {
+        listaCoordenadasASimular.add(new Coordenada(coordinate.getX(),
+            coordinate.getY()));
+       // System.out.println(coordinate.x + "," + coordinate.y);
+      }
+
+      /*
+       * for (Coordinate coordinate : recorridoCoordDobleDensificado.getCoordinates())
+       * {
+       * listaCoordenadasASimular.add(new Coordenada(coordinate.getX(),
+       * coordinate.getY()));
+       * System.out.println(coordinate.x + "," + coordinate.y);
+       * }
+       * System.out.println("--------------------------");
+       */
+
 
     }
 
@@ -789,11 +836,11 @@ public class MobileController {
         }
       }
     } catch (NullPointerException e) {
-      // por si hay colectivos que no alcanzaron a llegar a una parada o estan desviados/detenidos
+      // por si hay colectivos que no alcanzaron a llegar a una parada o estan
+      // desviados/detenidos
       response = new Response<ArriboColectivoDTO>(true, 400, "No hay colectivos cercanos", null);
       return Mapper.getResponseAsJson(response);
     }
-
 
     List<ParadaRecorrido> listaParadasPorRecorrer = new ArrayList<>();
 
@@ -801,7 +848,8 @@ public class MobileController {
     boolean calculoDistanciaIniciada = false;
     int ordenParadaActual = ordenParadaColectivoMasCercano;
 
-    // obtiene sumatoria distancias hasta que parada colectivo sea igual a parada pasajero
+    // obtiene sumatoria distancias hasta que parada colectivo sea igual a parada
+    // pasajero
     for (ParadaRecorrido pr : prlist) {
       if (pr.getOrden() == ordenParadaColectivoMasCercano) {
         if (calculoDistanciaIniciada == false) {
@@ -811,13 +859,13 @@ public class MobileController {
       } else if (calculoDistanciaIniciada && ordenParadaActual <= ordenParadaPasajero) {
         distanciaAcumulada += pr.getDistancia();
         ordenParadaActual++;
-        // para guardar paradas por recorrer y mostrar en mapa 
-          listaParadasPorRecorrer.add(pr);
+        // para guardar paradas por recorrer y mostrar en mapa
+        listaParadasPorRecorrer.add(pr);
       }
     }
 
     // elimina la ultima para no interponerla con la del pasajero
-    //listaParadasPorRecorrer.remove(listaParadasPorRecorrer.size()-1);
+    // listaParadasPorRecorrer.remove(listaParadasPorRecorrer.size()-1);
 
     if (colectivoEstaEnParadaPasajero) {
       response = new Response<ArriboColectivoDTO>(false, 400, "El colectivo llego a la parada", null);
@@ -904,7 +952,6 @@ public class MobileController {
       System.out.println("·······················tiempo sobrante para restar" + tiempoSobrante);
 
     }
-
 
     // resta la distancia transcurrida parcial
     distanciaAcumulada = distanciaAcumulada - distanciaParcialTranscurrida;
