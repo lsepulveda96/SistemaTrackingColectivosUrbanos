@@ -971,7 +971,7 @@ public class MobileController {
     min = (tiempoTotalSegInt - (3600 * hor)) / 60;
     seg = tiempoTotalSegInt - ((hor * 3600) + (min * 60));
 
-    tiempoTotal = hor + " hs: " + min + " min: " + seg + " seg ";
+    tiempoTotal = min + " min: " + seg + " seg ";
 
     ArriboColectivoDTO acDTO = new ArriboColectivoDTO(colRecProximo.getFechaParadaActual(),
         tiempoTotal, colRecProximo.getParadaActual(), paradaPasajero.getParada(), listaParadasPorRecorrer);
