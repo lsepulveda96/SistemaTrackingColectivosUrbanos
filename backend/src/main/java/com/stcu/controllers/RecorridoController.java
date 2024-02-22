@@ -137,7 +137,7 @@ public class RecorridoController {
         if (service.existDenominacion(drec.getLinea().getId(), drec.getDenominacion()) != 0) {
             log.info("*** Nuevo Recorrido no registrado, denominacion duplicada para una misma linea");
             response = new Response<RecorridoDTO>(true, 400,
-                    "Ya existe recorrido activo con igual denominacion, ingrese otro valor en el campo denominacion",
+                    "Ya existe recorrido activo con igual denominacion, ingrese otra denominacion",
                     null);
         } else {
             Recorrido newRec = service.saveRecorrido(drec.toRecorrido());
