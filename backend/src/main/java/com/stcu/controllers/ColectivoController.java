@@ -112,7 +112,7 @@ public class ColectivoController {
         Response<Colectivo> response;
         if (colectivo != null) {
             log.info("*** Colectivo actualizado " + id);
-            response = new Response<Colectivo>(false, 200, "Colectivo " + id + " actualizado", colectivo);
+            response = new Response<Colectivo>(false, 200, "Colectivo " + colectivo.getUnidad() + " actualizado", colectivo);
         } else {
             log.warning("*** No se puedo actualizar colectivo " + id);
             response = new Response<Colectivo>(true, 400, "No se pudo actualizar colectivo " + id, null);
