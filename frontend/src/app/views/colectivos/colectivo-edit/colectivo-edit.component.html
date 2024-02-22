@@ -3,13 +3,16 @@
         <mat-card-title>
             <div layout-align="bottom left">
                 <mat-icon>directions_bus</mat-icon>
-                &nbsp; {{ id ? ('Edicion colectivo ' + (colectivo ? colectivo.id:'')) : 'Registro nuevo colectivo'}}
+                &nbsp; {{ id ? 'Edicion colectivo ': 'Registro nuevo colectivo'}}
             </div>
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
         <div class="container">
+            <div class="loading-indicator" *ngIf="spin">
+                <mat-spinner mode="indeterminate" diameter="50"></mat-spinner>
+            </div>
             <div class="row">
                 <div class="col-8">
                     <div class="row">
@@ -114,8 +117,9 @@
                             documentacion
                             <button mat-icon-button color="primary" matTooltipPosition="left"
                                 matTooltip="cargar documentacion" (click)="nuevaDocumentacion()">
-                                <i class="bi bi-file-plus"></i>
+                                <mat-icon>add_box</mat-icon>
                             </button>
+                            <mat-spinner mode="indeterminate" diameter="30" *ngIf="opening"></mat-spinner>
                         </div>
                         <div class="card-body" *ngIf="!editDoc">
                             <mat-list class="my-0 py-0">

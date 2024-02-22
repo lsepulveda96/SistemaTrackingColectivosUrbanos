@@ -34,6 +34,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 })
 export class ColectivoEditComponent implements OnInit {
   spin: boolean = true;
+  opening: boolean;
   id: any;
   colectivo: Colectivo | undefined;
 
@@ -274,7 +275,6 @@ export class ColectivoEditComponent implements OnInit {
         const updDocs = this.documentos.filter((doc: any) => doc.id) // documentos a actualizar.
         const remDocs = this.colectivo.documentos.filter((doc: any) => !this.documentos.find((d: any) => doc.id == d.id)); // documentos a eliminar.
 
-        console.log("documentos a cargar: ", addDocs);
         for (let doc of addDocs) {
           this.spin = true;
           this.serviceColectivo.uploadDoc(this.colectivo.id, doc.nombre, doc.vence, doc.vencimiento, doc.file)
@@ -302,7 +302,6 @@ export class ColectivoEditComponent implements OnInit {
               });
         }
 
-        console.log("documentos a actualizar: ", updDocs);
         for (let doc of updDocs) {
           if (doc.file) { // actualiza datos y archivo.
             this.serviceColectivo.updateDocFile(doc.id, doc.nombre, doc.vence, new Date(doc.vencimiento), doc.file)
@@ -342,7 +341,6 @@ export class ColectivoEditComponent implements OnInit {
           }
         }
 
-        console.log("documentos a eliminar: ", remDocs);
         for (let doc of remDocs) {
           this.spin = true;
           this.serviceColectivo.deleteDoc(doc.id).subscribe(resultDelDoc => {
@@ -450,9 +448,9 @@ export class ColectivoEditComponent implements OnInit {
       window.open(window.URL.createObjectURL(blob));
     }
     else {
-      this.spin = true;
+      this.opening = true;
       this.serviceColectivo.downloadDoc( doc.pathfile ).subscribe( data =>{
-        this.spin = false;
+        this.opening = false;
         if (!data.error) {
           const blob = new Blob([data]);
           window.open( window.URL.createObjectURL(blob)); 

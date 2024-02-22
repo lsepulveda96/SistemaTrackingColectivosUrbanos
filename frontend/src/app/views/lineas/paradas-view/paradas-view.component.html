@@ -2,57 +2,58 @@
     <mat-card-header>
         <mat-card-title>
             <mat-icon>nature_people</mat-icon>
-            {{ (linea ? linea.denominacion:'') + ' :Paradas'}}
+            {{ (linea ? linea.denominacion:'') + ' : Paradas recorrido'}}
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
-        <div class="loading-indicator" *ngIf="waiting">
-            <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
-        </div>
-        <div class="row">
-            <div class="col-4 border">
-                <span>Recorridos activos</span>
-                <mat-selection-list #recs [multiple]="false"
-                    (selectionChange)="onSelectRecorrido( recs.selectedOptions.selected[0].value )" class="pt-4">
-                    <mat-list-option *ngFor="let rec of recorridos; let i=index;" [value]="rec">
-                        <div class="d-flex justify-content-start">
-                            <mat-icon matListIcon style="font-size: x-small;">
-                                <i class="bi bi-fullscreen-exit"></i>
-                            </mat-icon>
-                            <span>
-                                {{ rec.denominacion}}
-                            </span>
-                            <mat-divider></mat-divider>
-                        </div>
-                    </mat-list-option>
-                </mat-selection-list>
-            </div>
-            <div class="col-8 border">
-                <span>Paradas</span>
-                <cdk-virtual-scroll-viewport itemSize="10" class="scroll-viewport" #scroller>
-                    <mat-list dense>
-                        <mat-list-item *ngFor="let pr of paradasRec; let i=index">
-                            <div mat-line>
-                                <span *ngIf="pr.orden==0">Inicio</span>
-                                <span class="tab20" *ngIf="pr.orden==paradasRec.length-1">Fin</span>
-                                <span *ngIf="pr.orden!=0 && pr.orden!=paradasRec.length-1" class="tab25">
-                                    {{ pr.orden }}
-                                </span>
-                                <mat-icon matListIcon>
-                                    <i class="bi bi-geo-fill" style="color:blue;"></i>
+        <div class="container">
+            <div class="row">
+                <div class="loading-indicator" *ngIf="waiting">
+                    <mat-spinner mode="indeterminate" diameter="50" color="accent"></mat-spinner>
+                </div>
+                <div class="col-4 border pt-3">
+                    <strong class="mx-4">Recorridos activos</strong>
+                    <mat-selection-list [multiple]="false" [formControl]="recSelectIC"
+                        (selectionChange)="onSelectRecorrido()" class="pt-4">
+                        <mat-list-option *ngFor="let rec of recorridos; let i=index;" [value]="rec">
+                            <div class="d-flex justify-content-start">
+                                <mat-icon matListIcon style="font-size: x-small;">
+                                    <i class="bi bi-fullscreen-exit"></i>
                                 </mat-icon>
-                                <small>{{ pr.parada.codigo + ':' + pr.parada.direccion }}</small>
+                                <small>
+                                    {{ rec.denominacion}}
+                                </small>
+                                <mat-divider></mat-divider>
                             </div>
-                            <button mat-icon-button class="ml-2" color="primary" 
-                                (click)="showQRCode( pr,recs.selectedOptions.selected[0].value )"
-                                style="color: black" matTooltip="ver codigo QR">
-                                <mat-icon><i class="bi bi-qr-code"></i></mat-icon>
-                            </button>
-                            <mat-divider></mat-divider>
-                        </mat-list-item>
-                    </mat-list>
-                </cdk-virtual-scroll-viewport>
+                        </mat-list-option>
+                    </mat-selection-list>
+                </div>
+                <div class="col-8 border pt-3">
+                    <strong class="mx-4">Paradas</strong>
+                    <cdk-virtual-scroll-viewport itemSize="10" class="scroll-viewport" #scroller>
+                        <mat-list dense>
+                            <mat-list-item *ngFor="let pr of paradasRec; let i=index">
+                                <div mat-line>
+                                    <span *ngIf="pr.orden==0">Inicio</span>
+                                    <span class="tab20" *ngIf="pr.orden==paradasRec.length-1">Fin</span>
+                                    <span *ngIf="pr.orden!=0 && pr.orden!=paradasRec.length-1" class="tab25">
+                                        {{ pr.orden }}
+                                    </span>
+                                    <mat-icon matListIcon>
+                                        <i class="bi bi-geo-fill" style="color:blue;"></i>
+                                    </mat-icon>
+                                    <small>{{ pr.parada.codigo + ':' + pr.parada.direccion }}</small>
+                                </div>
+                                <button mat-icon-button class="ml-2" color="primary" (click)="showQRCode( pr )"
+                                    style="color: black" matTooltip="ver codigo QR">
+                                    <mat-icon><i class="bi bi-qr-code"></i></mat-icon>
+                                </button>
+                                <mat-divider></mat-divider>
+                            </mat-list-item>
+                        </mat-list>
+                    </cdk-virtual-scroll-viewport>
+                </div>
             </div>
         </div>
     </mat-card-content>

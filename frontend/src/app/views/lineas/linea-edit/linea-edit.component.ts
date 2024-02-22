@@ -73,6 +73,7 @@ export class LineaEditComponent implements OnInit {
     }
     this.spin = true;
     this.servicioLinea.saveLinea(this.linea).subscribe(result => {
+      this.spin = false;
       this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
       if (!result.error)
         this.router.navigate(['../'], { relativeTo: this.route });
@@ -85,6 +86,7 @@ export class LineaEditComponent implements OnInit {
     this.linea.estado = this.habilitadoIC.value ? 'ACTIVA' : 'NO ACTIVA';
     this.spin = true;
     this.servicioLinea.updateLinea(this.linea).subscribe(result => {
+      this.spin = false;
       this._msg.showMessage(result.mensaje, result.error ? 'ERROR' : 'EXITO');
       if (!result.error)
         this.router.navigate(['../..'], { relativeTo: this.route });

@@ -6,11 +6,11 @@
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
-    <div class="loading-indicator" *ngIf="waiting">
-        <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
-    </div>
     <mat-card-content>
         <div class="container">
+            <div class="loading-indicator" *ngIf="waiting">
+                <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+            </div>
             <div class="row">
                 <div class="col d-flex justify-content-start">
                     <button mat-stroked-button color="primary" (click)="nuevoRecorrido()" matTooltip="nuevo"
@@ -39,12 +39,13 @@
                     <mat-divider></mat-divider>
                     <mat-selection-list #recs [multiple]="false" [formControl]="recorridoIC"
                         (selectionChange)="onSelectRecorrido()" class="pt-4">
-                        <mat-list-option *ngFor="let rec of recorridos; let i=index;" [value]="rec" style="height: 40px;">
+                        <mat-list-option *ngFor="let rec of recorridos; let i=index;" [value]="rec"
+                            style="height: 40px;">
                             <div [style.color]="rec.color" class="d-flex justify-content-start">
                                 <mat-icon matListIcon style="font-size: x-small;">
                                     <i class="bi bi-fullscreen-exit" [style.color]="rec.color"></i>
                                 </mat-icon>
-                                <small [style.color]="rec.color" style="font-size: x-small;">
+                                <small [style.color]="rec.color">
                                     {{ rec.denominacion}}
                                 </small>
                                 <mat-divider></mat-divider>

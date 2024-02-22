@@ -14,6 +14,7 @@ import { ColectivoService } from 'src/app/services/colectivo.service';
 export class ColectivoViewComponent implements OnInit {
 
   waiting: boolean;
+  opening: boolean;
   colectivo: Colectivo;
   url: any;
 
@@ -55,12 +56,7 @@ export class ColectivoViewComponent implements OnInit {
           return;
         }
         this.colectivo = result.data;
-        /* this.colectivo.documentos = [
-          {  id:1, nombre: 'arch1', pathfile:'', namefile:'archivo.pdf', vence:true, vencimiento:'2024-04-01'},
-          {  id:2, nombre: 'arch2', pathfile:'', namefile:'archivo2.png', vence:false, vencimiento:null}
-        ] */
         if (this.colectivo.imgpath) {
-          this.waiting = true;
           this.servicioColectivo
             .downloadImagen(this.colectivo.imgpath)
             .subscribe(img => {
@@ -83,9 +79,9 @@ export class ColectivoViewComponent implements OnInit {
   }
 
   openDocument(doc: any) {
-    this.waiting = true;
+    this.opening = true;
     this.servicioColectivo.downloadDoc(doc.pathfile).subscribe(data => {
-      this.waiting = false;
+      this.opening = false;
       if (!data.error) {
         const blob = new Blob([data]);
         window.open(window.URL.createObjectURL(blob));

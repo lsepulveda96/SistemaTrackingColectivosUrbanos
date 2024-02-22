@@ -3,13 +3,16 @@
         <mat-card-title>
             <div layout-align="bottom left">
                 <mat-icon>directions_bus</mat-icon>
-                &nbsp; {{ 'Colectivo ' + (colectivo ? colectivo.id:'') }}
+                &nbsp; {{ 'Colectivo ' + (colectivo ? colectivo.unidad:'') }}
             </div>
         </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
         <div class="container">
+            <div class="loading-indicator" *ngIf="waiting">
+                <mat-spinner mode="indeterminate" diameter="50"></mat-spinner>
+            </div>
             <div class="row">
                 <div class="col-8">
                     <div class="row">
@@ -88,6 +91,8 @@
                     <div class="card mt-4">
                         <div class="card-header">
                             documentacion
+                            <mat-spinner mode="indeterminate" diameter="30" *ngIf="opening">
+                            </mat-spinner>
                         </div>
                         <div class="card-body">
                             <mat-list class="my-0 py-0">

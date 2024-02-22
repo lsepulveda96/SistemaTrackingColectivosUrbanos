@@ -10,6 +10,9 @@
     <mat-divider></mat-divider>
     <mat-card-content>
         <div class="container">
+            <div class="loading-indicator" *ngIf="spin">
+                <mat-spinner mode="indeterminate" diameter="50"></mat-spinner>
+            </div>
             <div class="row">
                 <div class="col-3">
                     <mat-form-field appearance="legacy" style="width: 100%" floatLabel="always">

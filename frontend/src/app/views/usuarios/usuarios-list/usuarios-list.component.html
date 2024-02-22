@@ -5,14 +5,12 @@
             &nbsp;Usuarios
         </mat-card-title>
     </mat-card-header>
-
     <mat-divider></mat-divider>
-    <div class="loading-indicator" *ngIf="waiting">
-        <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
-    </div>
-
     <mat-card-content>
         <div class="container">
+            <div class="loading-indicator" *ngIf="waiting">
+                <mat-spinner mode="indeterminate" color="accent"></mat-spinner>
+            </div>
             <span *ngIf="!isadmin">No tiene acceso a esta vista</span>
             <table mat-table [dataSource]="usuariosDS" class="mat-elevation-z6" *ngIf="isadmin">
                 <ng-container matColumnDef="id">
