@@ -7,6 +7,7 @@ import { MonitorService } from 'src/app/services/monitor.service';
 import { NotificacionUbicacionComponent } from '../notificaciones-ubicacion/notificaciones-ubicacion.component';
 import { ColectivoService } from 'src/app/services/colectivo.service';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-notificaciones-list',
@@ -28,6 +29,7 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
     private servicioMonitor: MonitorService,
     private servicioColectivo: ColectivoService,
     private dialog: MatDialog,
+    private router: Router,
     private _snackbar: MatSnackBar) { }
 
   ngOnInit(): void {
@@ -78,5 +80,9 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
 
   viewDocsVencimientos() {
     this.viewVencimientos = true;
+  }
+
+  viewColectivo(idcol: number) {
+    this.router.navigate( ['colectivos/view',idcol]);
   }
 }

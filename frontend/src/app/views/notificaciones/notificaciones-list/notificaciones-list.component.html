@@ -15,7 +15,7 @@
         </div>
         <div *ngIf="!waiting && notifDS.data.length > 0 && viewVencimientos">
             <i class="bi bi-info-circle" style="color:blue;"></i>&nbsp;
-            <span> {{ notifDS.data.length + '  notificaciones de unidades en transito' }}</span>
+            <span> {{ notifDS.data.length + ' notificaciones de unidades en transito' }}</span>
             <button mat-button color="primary" (click)="viewNotifTransito()">ver</button>
         </div>
         &nbsp;
@@ -78,15 +78,20 @@
                 <mat-divider></mat-divider>
                 <mat-list-item *ngFor="let unidad of vencimientos">
                     <mat-icon mat-list-icon color="primary">directions_bus</mat-icon>
-                    <div mat-line>{{'Unidad: ' + unidad.unidad}}</div>
-                    <div mat-line> {{'Patente: ' + unidad.patente}} </div>
+                    <div mat-line>
+                        <strong>{{'Unidad: ' + unidad.unidad}}</strong>
+                        <span class="mx-4">{{'Patente: ' + unidad.patente}}</span>
+                        <button mat-icon-button (click)="viewColectivo(unidad.id)" color="primary" matTooltip="ver documentos">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>
+                    </div>
                     <mat-list mat-line class="my-0 py-0">
                         <mat-list-item mat-line *ngFor="let doc of unidad.documentos" class="my-0 py-0">
                             <mat-icon matListIcon [style.color]="doc.vencido ? 'red':'orange'">warning</mat-icon>
                             <div matLine>
-                                {{ doc.nombre + ' - ' + 
-                                  (doc.vencido ? 'vencido':'proximo a vencer') + ' ' + 
-                                  (doc.vencimiento | date:'dd/MM/yy') }}
+                                <span style="font-size: medium;">{{doc.nombre}}</span> - 
+                                <span style="font-size: medium;">{{ doc.vencido ? 'vencido': 'proximo a vencer'}}</span>&nbsp;
+                                <span style="font-size: medium;">{{ doc.vencimiento | date:'dd/MM/yy' }}</span>
                             </div>
                         </mat-list-item>
                     </mat-list>
