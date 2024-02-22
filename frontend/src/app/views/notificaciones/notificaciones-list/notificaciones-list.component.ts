@@ -43,11 +43,10 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
   }
 
   getNotificacionesActivas() {
-    console.log("notificaciones activas: ");
     this.waiting = true;
     this.servicioMonitor.getNotificacionesActivas().subscribe(result => {
       this.waiting = false;
-      this.notifDS.data = result.data
+      this.notifDS.data = result.data;
     });
   }
 
@@ -62,7 +61,6 @@ export class NotificacionesListComponent implements OnInit, AfterViewInit {
     this.waiting = true;
     this.servicioColectivo.getDocumentosVencimientos().subscribe(result => {
       this.waiting = false;
-      console.log("documentos vencimientos result: ", result);
       const hoy = moment();
       this.vencimientos = result.data.map( (col:any) => {
         for (let doc of col.documentos) {
