@@ -768,7 +768,7 @@ public class MobileController {
   // trabajar en este metodo para el codigo qr
   // para app pasajero
 
-  /**
+    /**
    * Meotodo utilizado por app pasajero para obtener tiempo llegada del proximo
    * colectivo
    * 
@@ -816,177 +816,224 @@ public class MobileController {
     boolean colectivoEstaEnParadaPasajero = false;
 
     try {
+
+      // en que orden los trae? order by orden?
+      // crList tiene que ser ordenby idColeRec desc. 548, 547. quiero que recorra a lo ultimo el mas cercano.
+      // en el ultimo del for me tiene que quedar el primero creado.
+      // en el primero del for tiene que quedar el utlimo creado. el mas lejano a la parada.
+
+
+      // meterlo dentro de un while. 
       for (ColectivoRecorrido cr : crList) {
         int ordenParadaColectivo = -1;
-        for (ParadaRecorrido pr : prlist) {
-          if (pr.getParada().getCodigo() == cr.getParadaActual().getCodigo()) {
-            ordenParadaColectivo = pr.getOrden();
+
+        // esto es con un col rec de la lista
+        for (ParadaRecorrido parRec : prlist) {
+          // si la parada de la lista corresponde con la parada del colectivo rec
+          if (parRec.getParada().getCodigo() == cr.getParadaActual().getCodigo()) {
+            ordenParadaColectivo = parRec.getOrden();
             int difparada = ordenParadaPasajero - ordenParadaColectivo;
+            
+            // si hay colectivos proximos
             if (difparada > 0 && difparada < diferencia) {
               diferencia = difparada;
               colRecProximo = cr;
               ordenParadaColectivoMasCercano = ordenParadaColectivo;
+
+
+
+              // meter todo aca adentro
+
+
+              List<ParadaRecorrido> listaParadasPorRecorrer = new ArrayList<>();
+
+              Double distanciaAcumulada = 0.0;
+              boolean calculoDistanciaIniciada = false;
+              int ordenParadaActual = ordenParadaColectivoMasCercano;
+          
+              // obtiene sumatoria distancias hasta que parada colectivo sea igual a parada
+              // pasajero
+              for (ParadaRecorrido pr : prlist) {
+                if (pr.getOrden() == ordenParadaColectivoMasCercano) {
+                  if (calculoDistanciaIniciada == false) {
+                    calculoDistanciaIniciada = true;
+                    ordenParadaActual++;
+                  }
+                } else if (calculoDistanciaIniciada && ordenParadaActual <= ordenParadaPasajero) {
+                  distanciaAcumulada += pr.getDistancia();
+                  ordenParadaActual++;
+                  // para guardar paradas por recorrer y mostrar en mapa
+                  listaParadasPorRecorrer.add(pr);
+                }
+              }
+          
+            
+          
+              // al tiempo acumulado, restarle tiempo el tiempo de coordenada actual - tiempo
+              // ultima parada visitada
+          
+              double lat1Rad = 0;
+              double lon1Rad = 0;
+          
+              double lat2Rad = 0;
+              double lon2Rad = 0;
+          
+              Double tiempoSobrante = 0.0;
+          
+              Ubicacion ultimaCoordColeRec;
+              int VEL_PROMEDIO = 10000;
+          
+              Double distanciaParcialTranscurrida = 0.0;
+          
+              if (colRecProximo != null) {
+          
+                lat1Rad = Math.toRadians(colRecProximo.getParadaActual().getCoordenadas().getX());
+                lon1Rad = Math.toRadians(colRecProximo.getParadaActual().getCoordenadas().getY());
+          
+                ultimaCoordColeRec = this.serviceMonitor.getLastUbicacion(colRecProximo.getId());
+                lat2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getX());
+                lon2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getY());
+          
+                Calendar calInicio = colRecProximo.getFechaParadaActual();
+                Calendar calSalida = ultimaCoordColeRec.getFecha();
+          
+                double diferenciaTiempoMilis = calSalida.getTimeInMillis() - calInicio.getTimeInMillis();
+          
+                // para tiempo en segundos
+                double diferenciaTiempoSecond = diferenciaTiempoMilis / 1000;
+          
+                int RADIO_TIERRA = 6371;
+          
+                double x = (lon2Rad - lon1Rad) * Math.cos((lat1Rad + lat2Rad) / 2);
+                double y = (lat2Rad - lat1Rad);
+                distanciaParcialTranscurrida = Math.sqrt(x * x + y * y) * RADIO_TIERRA;
+          
+                // para distancia en metros
+                distanciaParcialTranscurrida = distanciaParcialTranscurrida * 1000;
+          
+                // velocidadReal arranca en vel_promedio, luego se reemplaza
+                Double velocidadReal = Double.valueOf(VEL_PROMEDIO);
+          
+                // para problema ubicacion cole antes de parada
+                if (diferenciaTiempoSecond > 2) {
+          
+                  // dist en mts / hs
+                  velocidadReal = distanciaParcialTranscurrida / (diferenciaTiempoSecond / 60 / 60);
+          
+                  System.out.println(
+                      "()()()()()()() Distancia transcurrida en mts desde ultima parada visitada: "
+                          + distanciaParcialTranscurrida);
+                  System.out.println(" +++++++++++++++++++++++ ");
+                  System.out.println("%%%%%%%%%%%%%%% segundos trascurridos desde ultima parada visitada" + diferenciaTiempoSecond
+                      + " - o en hs: " + (diferenciaTiempoSecond / 60 / 60));
+          
+                  // guardando la velocidad anterior
+                  // VEL_PROMEDIO = (colRecProximo.getColectivo().getVelocidadPromedio() +
+                  // velocidadReal.intValue()) / 2;
+                  // serviceMonitor.updateVelPromColectivoRecorrido(colRecProximo, VEL_PROMEDIO);
+          
+                  // comparando siempre contra velocidad promedio
+                  VEL_PROMEDIO = VEL_PROMEDIO + velocidadReal.intValue() / 2;
+          
+                  System.out.println("&&&&&&&&&&&&&&& Velocidad prom elegida: " + VEL_PROMEDIO);
+                }
+          
+                tiempoSobrante = (distanciaParcialTranscurrida / VEL_PROMEDIO) * 60 * 60;
+          
+                System.out.println("·········································");
+                System.out.println("·······················tiempo sobrante para restar" + tiempoSobrante);
+          
+              }
+          
+          
+            /*  if (colectivoEstaEnParadaPasajero) {
+          
+                // comparar si ya paso por 20 mts que diga que no hay colectivos cercanos
+                // que pasa si justo hay otro detras?
+                //System.out.println("/?/?/?/?/?/?/?/?/?/?/?/ distancia parcial transcurrida: " + distanciaParcialTranscurrida);
+                 if(distanciaParcialTranscurrida > 15.0){
+                  // no entra aca porque ya no hay colectivos cercanos. sale por null exception
+                  response = new Response<ArriboColectivoDTO>(false, 400, "dist > No hay colectivos cercanos", null);
+                  return Mapper.getResponseAsJson(response);
+                }
+                
+                
+                response = new Response<ArriboColectivoDTO>(false, 400, "El colectivo llego a la parada", null);
+                return Mapper.getResponseAsJson(response);
+              }
+              */
+          
+              if (distanciaAcumulada == 0.0) {
+                response = new Response<ArriboColectivoDTO>(true, 400, "dist 0No hay colectivos cercanos", null);
+                return Mapper.getResponseAsJson(response);
+              }
+          
+              // resta la distancia transcurrida parcial
+              distanciaAcumulada = distanciaAcumulada - distanciaParcialTranscurrida;
+              Double tiempoTotalSeg = (distanciaAcumulada / VEL_PROMEDIO) * 3600;
+          
+              System.out.println("Distancia total en mts: " + distanciaAcumulada);
+          
+              System.out.println("tiempoTotalSeg: " + tiempoTotalSeg);
+          
+              int tiempoTotalSegInt = tiempoTotalSeg.intValue();
+          
+              // para darle formato hs:min:seg
+              String tiempoTotal;
+              int hor, min, seg;
+          
+              hor = tiempoTotalSegInt / 3600;
+              min = (tiempoTotalSegInt - (3600 * hor)) / 60;
+              seg = tiempoTotalSegInt - ((hor * 3600) + (min * 60));
+          
+              tiempoTotal = min + " min: " + seg + " seg ";
+          
+              ArriboColectivoDTO acDTO = new ArriboColectivoDTO(colRecProximo.getFechaParadaActual(),
+                  tiempoTotal, colRecProximo.getParadaActual(), paradaPasajero.getParada(), listaParadasPorRecorrer);
+          
+              if ((hor == 0 && min == 0 && seg < 30)) {
+               // System.out.println("Colectivo aproximandose a la parada"); // y return
+               System.out.println("Colectivo aproximandose a la parada"); 
+                //response = new Response<ArriboColectivoDTO>(false, 400, "Colectivo aproximandose a la parada",
+                 //   ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
+                 response = new Response<ArriboColectivoDTO>(false, 400, "Colectivo aproximandose a la parada",
+                    ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
+                return Mapper.getResponseAsJson(response);
+              }
+          
+              response = new Response<ArriboColectivoDTO>(false, 200, tiempoTotal,
+                  ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
+              return Mapper.getResponseAsJson(response);
+          
+
+
+
+
             }
             // si el colectivo esta en la parada del pasajero
             if (ordenParadaPasajero == ordenParadaColectivo) {
               colectivoEstaEnParadaPasajero = true;
+              // si ya paso mas de 20mts, deberia buscar el siguiente si es que existe.
+
+              // si esta dentro del radio -> break
             }
             break;
           }
         }
+
+        // si eligio el cole y era el ultimo. sacarlo de la lista de cole rec y volver a pasarla.
       }
     } catch (NullPointerException e) {
       // por si hay colectivos que no alcanzaron a llegar a una parada o estan
       // desviados/detenidos
-      response = new Response<ArriboColectivoDTO>(true, 400, "No hay colectivos cercanos", null);
+      response = new Response<ArriboColectivoDTO>(true, 400, "null No hay colectivos cercanos", null);
       return Mapper.getResponseAsJson(response);
     }
 
-    List<ParadaRecorrido> listaParadasPorRecorrer = new ArrayList<>();
-
-    Double distanciaAcumulada = 0.0;
-    boolean calculoDistanciaIniciada = false;
-    int ordenParadaActual = ordenParadaColectivoMasCercano;
-
-    // obtiene sumatoria distancias hasta que parada colectivo sea igual a parada
-    // pasajero
-    for (ParadaRecorrido pr : prlist) {
-      if (pr.getOrden() == ordenParadaColectivoMasCercano) {
-        if (calculoDistanciaIniciada == false) {
-          calculoDistanciaIniciada = true;
-          ordenParadaActual++;
-        }
-      } else if (calculoDistanciaIniciada && ordenParadaActual <= ordenParadaPasajero) {
-        distanciaAcumulada += pr.getDistancia();
-        ordenParadaActual++;
-        // para guardar paradas por recorrer y mostrar en mapa
-        listaParadasPorRecorrer.add(pr);
-      }
-    }
-
-    // elimina la ultima para no interponerla con la del pasajero
-    // listaParadasPorRecorrer.remove(listaParadasPorRecorrer.size()-1);
-
-    if (colectivoEstaEnParadaPasajero) {
-      response = new Response<ArriboColectivoDTO>(false, 400, "El colectivo llego a la parada", null);
-      return Mapper.getResponseAsJson(response);
-    }
-
-    if (distanciaAcumulada == 0.0) {
-      response = new Response<ArriboColectivoDTO>(true, 400, "No hay colectivos cercanos", null);
-      return Mapper.getResponseAsJson(response);
-    }
-
-    // al tiempo acumulado, restarle tiempo el tiempo de coordenada actual - tiempo
-    // ultima parada visitada
-
-    double lat1Rad = 0;
-    double lon1Rad = 0;
-
-    double lat2Rad = 0;
-    double lon2Rad = 0;
-
-    Double tiempoSobrante = 0.0;
-
-    Ubicacion ultimaCoordColeRec;
-    int VEL_PROMEDIO = 10000;
-
-    Double distanciaParcialTranscurrida = 0.0;
-
-    if (colRecProximo != null) {
-
-      lat1Rad = Math.toRadians(colRecProximo.getParadaActual().getCoordenadas().getX());
-      lon1Rad = Math.toRadians(colRecProximo.getParadaActual().getCoordenadas().getY());
-
-      ultimaCoordColeRec = this.serviceMonitor.getLastUbicacion(colRecProximo.getId());
-      lat2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getX());
-      lon2Rad = Math.toRadians(ultimaCoordColeRec.getCoordenada().getY());
-
-      Calendar calInicio = colRecProximo.getFechaParadaActual();
-      Calendar calSalida = ultimaCoordColeRec.getFecha();
-
-      double diferenciaTiempoMilis = calSalida.getTimeInMillis() - calInicio.getTimeInMillis();
-
-      // para tiempo en segundos
-      double diferenciaTiempoSecond = diferenciaTiempoMilis / 1000;
-
-      int RADIO_TIERRA = 6371;
-
-      double x = (lon2Rad - lon1Rad) * Math.cos((lat1Rad + lat2Rad) / 2);
-      double y = (lat2Rad - lat1Rad);
-      distanciaParcialTranscurrida = Math.sqrt(x * x + y * y) * RADIO_TIERRA;
-
-      // para distancia en metros
-      distanciaParcialTranscurrida = distanciaParcialTranscurrida * 1000;
-
-      // velocidadReal arranca en vel_promedio, luego se reemplaza
-      Double velocidadReal = Double.valueOf(VEL_PROMEDIO);
-
-      // para problema ubicacion cole antes de parada
-      if (diferenciaTiempoSecond > 2) {
-
-        // dist en mts / hs
-        velocidadReal = distanciaParcialTranscurrida / (diferenciaTiempoSecond / 60 / 60);
-
-        System.out.println(
-            "()()()()()()() Distancia transcurrida en mts desde ultima parada visitada: "
-                + distanciaParcialTranscurrida);
-        System.out.println(" +++++++++++++++++++++++ ");
-        System.out.println("%%%%%%%%%%%%%%% segundos trascurridos desde ultima parada visitada" + diferenciaTiempoSecond
-            + " - o en hs: " + (diferenciaTiempoSecond / 60 / 60));
-
-        // guardando la velocidad anterior
-        // VEL_PROMEDIO = (colRecProximo.getColectivo().getVelocidadPromedio() +
-        // velocidadReal.intValue()) / 2;
-        // serviceMonitor.updateVelPromColectivoRecorrido(colRecProximo, VEL_PROMEDIO);
-
-        // comparando siempre contra velocidad promedio
-        VEL_PROMEDIO = VEL_PROMEDIO + velocidadReal.intValue() / 2;
-
-        System.out.println("&&&&&&&&&&&&&&& Velocidad prom elegida: " + VEL_PROMEDIO);
-      }
-
-      tiempoSobrante = (distanciaParcialTranscurrida / VEL_PROMEDIO) * 60 * 60;
-
-      System.out.println("·········································");
-      System.out.println("·······················tiempo sobrante para restar" + tiempoSobrante);
-
-    }
-
-    // resta la distancia transcurrida parcial
-    distanciaAcumulada = distanciaAcumulada - distanciaParcialTranscurrida;
-    Double tiempoTotalSeg = (distanciaAcumulada / VEL_PROMEDIO) * 3600;
-
-    System.out.println("Distancia total en mts: " + distanciaAcumulada);
-
-    System.out.println("tiempoTotalSeg: " + tiempoTotalSeg);
-
-    int tiempoTotalSegInt = tiempoTotalSeg.intValue();
-
-    // para darle formato hs:min:seg
-    String tiempoTotal;
-    int hor, min, seg;
-
-    hor = tiempoTotalSegInt / 3600;
-    min = (tiempoTotalSegInt - (3600 * hor)) / 60;
-    seg = tiempoTotalSegInt - ((hor * 3600) + (min * 60));
-
-    tiempoTotal = min + " min: " + seg + " seg ";
-
-    ArriboColectivoDTO acDTO = new ArriboColectivoDTO(colRecProximo.getFechaParadaActual(),
-        tiempoTotal, colRecProximo.getParadaActual(), paradaPasajero.getParada(), listaParadasPorRecorrer);
-
-    if ((hor == 0 && min == 0 && seg < 30)) {
-      System.out.println("Colectivo aproximandose a la parada"); // y return
-      response = new Response<ArriboColectivoDTO>(false, 200, "Colectivo aproximandose a la parada",
-          ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
-      return Mapper.getResponseAsJson(response);
-    }
-
-    response = new Response<ArriboColectivoDTO>(false, 200, tiempoTotal,
-        ArriboColectivoDTO.toColectivoRecorridoDTO(acDTO));
+   
+    // porque no se encontro nada. reemplazarlo por el try catch?
+    response = new Response<ArriboColectivoDTO>(true, 400, "null No hay colectivos cercanos", null);
     return Mapper.getResponseAsJson(response);
-
   } // fin metodo tiempo llegada
 
   // esta clase no la necesitaria si hago el nuevo dto

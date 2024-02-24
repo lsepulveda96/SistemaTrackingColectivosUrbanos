@@ -16,7 +16,8 @@ public interface ColectivoRecorridoRepository extends JpaRepository<ColectivoRec
     List<ColectivoRecorrido> findByTransitoTrueOrderByIdDesc();
 
     // get lista de colectivosRecorrido activos
-    @Query("SELECT cr FROM ColectivoRecorrido cr WHERE cr.recorrido.linea.id = ?1 AND cr.recorrido.id = ?2 AND cr.hasta IS NULL AND cr.transito is TRUE")
+    // order by mas bajo. asc. es el que mas  adelante va a estar en el recorrido
+    @Query("SELECT cr FROM ColectivoRecorrido cr WHERE cr.recorrido.linea.id = ?1 AND cr.recorrido.id = ?2 AND cr.hasta IS NULL AND cr.transito is TRUE order by cr.id asc")
     List<ColectivoRecorrido> findAllColectivosRecorridoActivos( long idLinea, long idRecorrido);
 
     //para App Colectivo
